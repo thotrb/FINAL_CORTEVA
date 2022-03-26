@@ -639,7 +639,6 @@ C:/Users/zgo158/Desktop/ZONE_TRAVAIL/CortevaAppAPI/CortevaApp/obj/Debug/netcorea
 C:/Users/zgo158/Desktop/ZONE_TRAVAIL/CortevaAppAPI/CortevaApp/obj/Debug/netcoreapp3.1/CortevaApp.genruntimeconfig.cache
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/appsettings.Development.json
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/appsettings.json
-/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/Properties/launchSettings.json
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/CortevaApp.deps.json
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/CortevaApp.runtimeconfig.json
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/CortevaApp.runtimeconfig.dev.json
@@ -746,3 +745,4 @@ C:/Users/zgo158/Desktop/ZONE_TRAVAIL/CortevaAppAPI/CortevaApp/obj/Debug/netcorea
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/obj/Debug/netcoreapp3.1/CortevaApp.dll
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/obj/Debug/netcoreapp3.1/CortevaApp.pdb
 /Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/obj/Debug/netcoreapp3.1/CortevaApp.genruntimeconfig.cache
+/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/bin/Debug/netcoreapp3.1/Properties/PublishProfiles/launchSettings.json

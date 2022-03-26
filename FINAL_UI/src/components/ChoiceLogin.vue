@@ -3,16 +3,12 @@
     <br>
     <div class="row">
       <div class="col">
-        <router-link to="/login">
-          <button class="btn btn-primary">{{ $t("choiceLoginOperator") }}</button>
-        </router-link>
+          <button class="btn btn-primary" v-on:click="loginChoice('operator')">{{ $t("choiceLoginOperator") }}</button>
       </div>
 
       <div class="col">
-        <router-link to="/login">
-          <button  class="btn btn-primary">{{ $t("choiceLoginSupervisor") }}
+          <button  class="btn btn-primary" v-on:click="loginChoice('supervisor')">{{ $t("choiceLoginSupervisor") }}
           </button>
-        </router-link>
       </div>
 
       <!--
@@ -28,9 +24,15 @@
 </template>
 
 <script>
+import router from "@/router";
 export default {
   name: "ChoiceLogin",
   methods: {
+
+    loginChoice: function(choice) {
+      sessionStorage.setItem("loginChoice", choice);
+      router.replace('/login');
+    },
     /**
 
     displayLoginPage: function (loginPage) {

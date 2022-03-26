@@ -55,9 +55,11 @@ export default {
             localStorage.setItem("username", user);
             localStorage.setItem("auth-token", resp.data.token);
             if (userCredential == 0) {
-              router.replace('/teamInfo')
-            } else if (userCredential == 1) {
-              router.replace('/Dashboard/downtimesReport')
+              router.replace('/teamInfo');
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "supervisor") {
+              router.replace('/Dashboard/downtimesReport');
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "operator") {
+              router.replace('/teamInfo');
             }
           }, 1000);  
         } else {

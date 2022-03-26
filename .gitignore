@@ -1,2 +1,5 @@
 .vs/
 .DS_Store
+**/CortevaAppAPI/CortevaApp/appsettings.json
+**/CortevaAppAPI/CortevaApp/Properties/launchSettings.json
+**/FINAL_UI/src/variables.js
