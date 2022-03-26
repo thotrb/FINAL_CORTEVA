@@ -74,13 +74,14 @@ export default {
     return {
       selection: 'packagingLineID',
       language: "en",
-
     }
   },
 
   methods: {
     nextPage: function () {
-      router.replace('/Dashboard/'+this.selection);
+      let pageToGo = "/Dashboard/" + this.selection;
+      console.log("Going to page: " + pageToGo);
+      router.replace(pageToGo);
     },
 
     swapLanguage : function(language)

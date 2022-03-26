@@ -1,32 +1,29 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\zgo158\\Desktop\\ZONE_TRAVAIL\\CortevaAppAPI\\CortevaApp\\CortevaApp.csproj": {}
+    "/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/CortevaApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\zgo158\\Desktop\\ZONE_TRAVAIL\\CortevaAppAPI\\CortevaApp\\CortevaApp.csproj": {
+    "/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/CortevaApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\zgo158\\Desktop\\ZONE_TRAVAIL\\CortevaAppAPI\\CortevaApp\\CortevaApp.csproj",
+        "projectUniqueName": "/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/CortevaApp.csproj",
         "projectName": "CortevaApp",
-        "projectPath": "C:\\Users\\zgo158\\Desktop\\ZONE_TRAVAIL\\CortevaAppAPI\\CortevaApp\\CortevaApp.csproj",
-        "packagesPath": "C:\\Users\\zgo158\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\zgo158\\Desktop\\ZONE_TRAVAIL\\CortevaAppAPI\\CortevaApp\\obj\\",
+        "projectPath": "/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/CortevaApp.csproj",
+        "packagesPath": "/Users/gustavobertoldi/.nuget/packages/",
+        "outputPath": "/Users/gustavobertoldi/Documents/Projetos/FINAL_CORTEVA/CortevaAppAPI/CortevaApp/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\zgo158\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/gustavobertoldi/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -38,7 +35,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "dependencies": {
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
@@ -83,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.417/RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -6,12 +6,12 @@ CREATE TABLE [machine_component] (
 );
 
 INSERT INTO [machine_component] VALUES
-(1, 'downstreamSaturation', 'filler', 1),
-(2, 'dosingTurret', 'filler', 0),
-(3, 'bowlStopper', 'filler', 0),
-(4, 'screwingTurret', 'filler', 0),
-(5, 'missingBottle', 'filler', 1),
-(6, 'other', 'filler', 0);
+('downstreamSaturation', 'filler', 1),
+('dosingTurret', 'filler', 0),
+('bowlStopper', 'filler', 0),
+('screwingTurret', 'filler', 0),
+('missingBottle', 'filler', 1),
+('other', 'filler', 0);
 
 CREATE TABLE [users] (
   [id] int identity(1,1) primary key,
@@ -197,7 +197,7 @@ CREATE TABLE [ole_planned_events] (
   [productionline] nvarchar(50) not null,
   [reason] nvarchar(100) not null,
   [duration] int not null,
-  [comment] text default '\' \'',
+  [comment] text default '''',
   [kind] int not null default 0
 );
 

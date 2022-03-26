@@ -145,7 +145,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:()=> QualityLosses_Dashboard
+    component: QualityLosses_Dashboard
   },
 
   {
@@ -154,7 +154,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>ProductionReport_Dashboard
+    component: ProductionReport_Dashboard
   },
   {
     path: '/Dashboard/overallLineEffectivness',
@@ -162,7 +162,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:()=> OLE_Dashboard
+    component: OLE_Dashboard
   },
 
   {
@@ -171,7 +171,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>UnplannedDowtimes_Dashboard
+    component: UnplannedDowtimes_Dashboard
   },
 
 
@@ -181,7 +181,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>UnplannedDowntimes_Shutdowns_Dashboard
+    component: UnplannedDowntimes_Shutdowns_Dashboard
   },
   {
     path: '/Dashboard/unplannedDowntimeSpeedLosses',
@@ -189,7 +189,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=> UnplannedSpeedlosses_Dashboard
+    component: UnplannedSpeedlosses_Dashboard
   },
 
 ]
