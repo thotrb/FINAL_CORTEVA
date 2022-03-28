@@ -17,12 +17,3 @@ new Vue({
   IconsPlugin,
   render: h => h(App)
 }).$mount('#app')
-
-import axios from 'axios'
-axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
-axios.interceptors.response.use(response => response, error => {
-  if (error.response.status == 401) {
-    localStorage.removeItem('username');
-    router.replace("/");
-  }
-});

@@ -25,8 +25,16 @@ import 'chart.js';
 import OLE_Dashboard from "@/views/Dashboards/OLE_Dashboard";
 import UnplannedDowtimes_Dashboard from "@/views/Dashboards/UnplannedDowtimes_Dashboard";
 import UnplannedDowntimes_Shutdowns_Dashboard from "@/views/Dashboards/UnplannedDowntimes_Shutdowns_Dashboard";
+import axios from 'axios'
 
-
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
+axios.interceptors.response.use(response => response, error => {
+  if (error.response.status == 401) {
+    localStorage.removeItem('username');
+    localStorage.removeItem('auth-token');
+    router.replace("/");
+  }
+});
 
 Vue.use(VueRouter)
 

@@ -32,11 +32,9 @@ export default {
     return {
       username:'',
       password:'',
-
       us : this.$t("user"),
       pass: this.$t("password"),
       lo: this.$t("connection")
-
     }
   },
   methods: {
@@ -49,6 +47,7 @@ export default {
       axios.post(urlAPI + "login", logData).then((resp) => {
         if (resp.status == 200 && resp.data.token) {
           const tokenDecoded = jwt_decode(resp.data.token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`;
           const user = tokenDecoded.login;
           const userCredential = tokenDecoded.status;
           setTimeout(() => {
