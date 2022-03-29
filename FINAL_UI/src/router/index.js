@@ -25,8 +25,16 @@ import 'chart.js';
 import OLE_Dashboard from "@/views/Dashboards/OLE_Dashboard";
 import UnplannedDowtimes_Dashboard from "@/views/Dashboards/UnplannedDowtimes_Dashboard";
 import UnplannedDowntimes_Shutdowns_Dashboard from "@/views/Dashboards/UnplannedDowntimes_Shutdowns_Dashboard";
+import axios from 'axios'
 
-
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
+axios.interceptors.response.use(response => response, error => {
+  if (error.response.status == 401) {
+    localStorage.removeItem('username');
+    localStorage.removeItem('auth-token');
+    router.replace("/");
+  }
+});
 
 Vue.use(VueRouter)
 
@@ -145,7 +153,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:()=> QualityLosses_Dashboard
+    component: QualityLosses_Dashboard
   },
 
   {
@@ -154,7 +162,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>ProductionReport_Dashboard
+    component: ProductionReport_Dashboard
   },
   {
     path: '/Dashboard/overallLineEffectivness',
@@ -162,7 +170,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component:()=> OLE_Dashboard
+    component: OLE_Dashboard
   },
 
   {
@@ -171,7 +179,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>UnplannedDowtimes_Dashboard
+    component: UnplannedDowtimes_Dashboard
   },
 
 
@@ -181,7 +189,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=>UnplannedDowntimes_Shutdowns_Dashboard
+    component: UnplannedDowntimes_Shutdowns_Dashboard
   },
   {
     path: '/Dashboard/unplannedDowntimeSpeedLosses',
@@ -189,7 +197,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: ()=> UnplannedSpeedlosses_Dashboard
+    component: UnplannedSpeedlosses_Dashboard
   },
 
 ]

@@ -311,7 +311,6 @@ export default {
       }
 
 
-
       if (sessionStorage.getItem("typeTeam") === null) {
         sessionStorage.typeTeam = valueTypeTeam;
       } else {

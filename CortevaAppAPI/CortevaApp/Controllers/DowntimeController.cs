@@ -67,7 +67,6 @@ namespace CortevaApp.Controllers
                 using (SqlCommand command = new SqlCommand(queryUnplannedDowntime2, connection))
                 {
                     reader = command.ExecuteReader();
-
                     UnplannedDowntime2.Load(reader);
                     reader.Close();
                 }

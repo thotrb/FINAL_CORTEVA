@@ -32,11 +32,9 @@ export default {
     return {
       username:'',
       password:'',
-
       us : this.$t("user"),
       pass: this.$t("password"),
       lo: this.$t("connection")
-
     }
   },
   methods: {
@@ -46,13 +44,23 @@ export default {
         password: this.password
       };
 
-      console.log(logData);
       axios.post(urlAPI + "login", logData).then((resp) => {
         if (resp.status == 200 && resp.data.token) {
           const tokenDecoded = jwt_decode(resp.data.token);
-          localStorage.setItem("username", tokenDecoded.login);
-          localStorage.setItem("auth-token", resp.data.token);
-          router.replace('/teamInfo')
+          axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`;
+          const user = tokenDecoded.login;
+          const userCredential = tokenDecoded.status;
+          setTimeout(() => {
+            localStorage.setItem("username", user);
+            localStorage.setItem("auth-token", resp.data.token);
+            if (userCredential == 0) {
+              router.replace('/teamInfo');
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "supervisor") {
+              router.replace('/Dashboard/downtimesReport');
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "operator") {
+              router.replace('/teamInfo');
+            }
+          }, 1000);  
         } else {
           localStorage.removeItem("username");
         }

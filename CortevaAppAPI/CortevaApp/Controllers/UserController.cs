@@ -133,7 +133,9 @@ namespace CortevaApp.Controllers
                 connection.Close();
             }
 
-            int result = int.Parse(UserAuth.Rows[0]["auth"].ToString());
+            int result = UserAuth.Rows.Count;
+            int _credentials = (int)UserAuth.Rows[0]["status"];
+            user.status = _credentials;
 
             if (result > 0)
             {
@@ -153,7 +155,8 @@ namespace CortevaApp.Controllers
             var ExpDate = DateTime.UtcNow.AddMinutes(720);
             var claims = new[]
             {
-                new Claim("login", user.login)
+                new Claim("login", user.login),
+                new Claim("status", user.status.ToString())
             };
 
             var token = new JwtSecurityToken(_configuration["Jwt:Issuer"],
