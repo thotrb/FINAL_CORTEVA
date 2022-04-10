@@ -34,12 +34,17 @@
               </tr>
               </thead>
               <tbody>
-                  <tr v-for="event in eventsPerProductionline[productionline]" :key="event.id">
-                    <th scope="row">{{$t(event.type)}}</th>
-                    <td>{{event.updated_at.split('T')[1].split('.')[0]}}</td>
-                    <td>{{event.total_duration}}</td>
-                    <td>{{event.comment}}</td>
-                  </tr>
+                <template v-if="eventsPerProductionline.length > 0">
+
+                    <tr v-for="event in eventsPerProductionline[productionline]" :key="event.id">
+
+                      <th scope="row">{{$t(event.type)}}</th>
+                      <td>{{event.updated_at.split('T')[1].split('.')[0]}}</td>
+                      <td>{{event.total_duration}}</td>
+                      <td>{{event.comment}}</td>
+                    </tr>
+                </template>
+
               </tbody>
             </table>
 

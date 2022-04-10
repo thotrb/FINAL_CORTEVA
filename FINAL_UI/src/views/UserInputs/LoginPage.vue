@@ -44,8 +44,12 @@ export default {
         password: this.password
       };
 
+      console.log(logData);
+
+
       axios.post(urlAPI + "login", logData).then((resp) => {
         if (resp.status == 200 && resp.data.token) {
+          console.log("ahahhaha");
           const tokenDecoded = jwt_decode(resp.data.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`;
           const user = tokenDecoded.login;

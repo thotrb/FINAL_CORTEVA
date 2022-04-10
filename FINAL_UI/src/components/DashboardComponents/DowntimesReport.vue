@@ -502,9 +502,6 @@ export default {
         tab.push(this.endingDate);
 
 
-        console.log(this.beginningDate);
-
-
         await axios.get(urlAPI + 'allevents/'+this.site+'/'+this.productionline+'/'+this.beginningDate+'/'+this.endingDate)
             .then(response => (this.allEvents = response.data))
 
