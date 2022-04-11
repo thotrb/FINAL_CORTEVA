@@ -245,7 +245,7 @@ export default {
             axios.put(urlAPI + 'PO/insertPO/PO', {
               number: number,
               GMIDCode: dcodesTab[i],
-              productionline_name: this.userWorksite.worksite_name,
+              productionline_name: this.userWorksite.productionline_name,
               shift: valueTypeTeam
             })
                 .then(response => (this.effective = response))
