@@ -109,7 +109,7 @@ namespace CortevaApp.Controllers
         [HttpPost("login")]
         public IActionResult Login(User user)
         {
-            string UserAuthQuery = @"select count(*) as auth
+            string UserAuthQuery = @"select *
                                    from dbo.users u
                                    where u.login = @username and u.password = @password";
 
