@@ -138,22 +138,22 @@ namespace CortevaApp.Controllers
             string QueryRRF = @"select sum(sl.duration) as Duration, count(*) as nbEvents
                                 from dbo.ole_speed_losses sl
                                 where sl.OLE = @po
-                                and sl.reason = 'Reduced Rate At Filler'";
+                                and sl.reason = 'reducedRateAtFiller'";
 
             string QueryRRM = @"select sum(sl.duration) as Duration, count(*) as nbEvents
                                 from dbo.ole_speed_losses sl
                                 where sl.OLE = @po
-                                and sl.reason = 'Reduced Rate At An Other Machine'";
+                                and sl.reason = 'reducedRateAtAnOtherMachine'";
 
             string QueryFOS = @"select sum(sl.duration) as Duration, count(*) as nbEvents
                                 from dbo.ole_speed_losses sl
                                 where sl.OLE = @po
-                                and sl.reason = 'Filler OWn Stoppage'";
+                                and sl.reason = 'fillerOwnStoppage'";
 
             string QueryFSM = @"select sum(sl.duration) as Duration, count(*) as nbEvents
                                 from dbo.ole_speed_losses sl
                                 where sl.OLE = @po
-                                and sl.reason = 'Filler Own Stoppage By An Other Machine'";
+                                and sl.reason = 'fillerOwnStoppageByAnOtherMachine'";
 
             DataTable RRF = new DataTable();
             DataTable RRM = new DataTable();

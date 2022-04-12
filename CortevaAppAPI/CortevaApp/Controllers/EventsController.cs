@@ -444,29 +444,29 @@ namespace CortevaApp.Controllers
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
-                                       and (pe.reason = 'Pause' or pe.reason = 'Reunion'
-                                       or pe.reason = 'Pas de production prevue')";
+                                       and (pe.reason = 'break' or pe.reason = 'meeting'
+                                       or pe.reason = 'noProductionPlanned')";
 
                     string QueryCP = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
-                                       and pe.reason = 'Implementation de projet'";
+                                       and pe.reason = 'projectImplementation'";
 
                     string QueryPM = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
-                                       and pe.reason = 'Maintenance'";
+                                       and pe.reason = 'maintenance'";
 
                     string QueryPP = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
-                                       and pe.reason = 'Pas de production prevue'";
+                                       and pe.reason = 'noProductionPlanned'";
 
                     string QueryCIP = @"select isnull(sum(cip.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_cips cip
@@ -513,56 +513,56 @@ namespace CortevaApp.Controllers
                                        where sl.productionline = @productionlineName
                                        and sl.created_at >= @startDate
                                        and sl.created_at <= @endDate
-                                       and sl.reason = 'Reduced Rate At Filler'";
+                                       and sl.reason = 'reducedRateAtFiller'";
 
                     string QueryRRFMonth = @"select *
                                             from dbo.ole_speed_losses sl
                                             where sl.productionline = @productionlineName
                                             and sl.created_at >= @startDate
                                             and sl.created_at <= @endDate
-                                            and sl.reason = 'Reduced Rate At Filler'";
+                                            and sl.reason = 'reducedRateAtFiller'";
 
                     string QueryRRMMonth = @"select *
                                             from dbo.ole_speed_losses sl
                                             where sl.productionline = @productionlineName
                                             and sl.created_at >= @startDate
                                             and sl.created_at <= @endDate
-                                            and sl.reason = 'Reduced Rate At An Other Machine'";
+                                            and sl.reason = 'reducedRateAtAnOtherMachine'";
 
                     string QueryFOSMonth = @"select *
                                             from dbo.ole_speed_losses sl
                                             where sl.productionline = @productionlineName
                                             and sl.created_at >= @startDate
                                             and sl.created_at <= @endDate
-                                            and sl.reason = 'Filler Own Stoppage'";
+                                            and sl.reason = 'fillerOwnStoppage'";
 
                     string QueryFSMMonth = @"select *
                                             from dbo.ole_speed_losses sl
                                             where sl.productionline = @productionlineName
                                             and sl.created_at >= @startDate
                                             and sl.created_at <= @endDate
-                                            and sl.reason = 'Filler Own Stoppage By An Other Machine'";
+                                            and sl.reason = 'fillerOwnStoppageByAnOtherMachine'";
 
                     string QueryRRM = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
                                         and sl.created_at <= @endDate
-                                        and sl.reason = 'Reduced Rate At An Other Machine'";
+                                        and sl.reason = 'reducedRateAtAnOtherMachine'";
 
                     string QueryFOS = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
                                         and sl.created_at <= @endDate
-                                        and sl.reason = 'Filler Own Stoppage'";
+                                        and sl.reason = 'fillerOwnStoppage'";
 
                     string QueryFSM = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
                                         and sl.created_at <= @endDate
-                                        and sl.reason = 'Filler Own Stoppage By An Other Machine'";
+                                        and sl.reason = 'fillerOwnStoppageByAnOtherMachine'";
 
                     string QueryPlannedEvents = @"select *
                                                   from dbo.ole_planned_events pe
