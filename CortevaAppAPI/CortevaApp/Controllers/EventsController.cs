@@ -385,6 +385,19 @@ namespace CortevaApp.Controllers
         [HttpGet("allevents/{site}/{productionLine}/{beginningDate}/{endingDate}")]
         public JsonResult GetAllEventsPeriod(string site, string productionLine, string beginningDate, string endingDate)
         {
+            string[] _begDate = beginningDate.Split('-');
+            int beginningYear = Int16.Parse(_begDate[0]);
+            int beginningMonth = Int16.Parse(_begDate[1]);
+            int beginningDay = Int16.Parse(_begDate[2]);
+
+            string[] _endDate = endingDate.Split('-');
+            int endingYear = Int16.Parse(_endDate[0]);
+            int endingMonth = Int16.Parse(_endDate[1]);
+            int endingDay = Int16.Parse(_endDate[2]);
+
+            string startDate = beginningYear + "-" + beginningMonth + "-" + beginningDay + " 00:00:00.000";
+            string endDate = endingYear + "-" + endingMonth + "-" + endingDay + " 23:59:59.000";
+
             string QuerySites = @"select *
                                 from dbo.ole_productionline pl, dbo.worksite w, dbo.ole_pos pos,
                                 dbo.ole_products prod, dbo.ole_rejection_counters rc
@@ -408,8 +421,8 @@ namespace CortevaApp.Controllers
                 {
                     command.Parameters.AddWithValue("@site", site);
                     command.Parameters.AddWithValue("@productionLine", productionLine);
-                    command.Parameters.AddWithValue("@beginningDate", beginningDate);
-                    command.Parameters.AddWithValue("@endingDate", endingDate);
+                    command.Parameters.AddWithValue("@beginningDate", startDate);
+                    command.Parameters.AddWithValue("@endingDate", endDate);
                     reader = command.ExecuteReader();
                     Sites.Load(reader);
                     reader.Close();
@@ -417,19 +430,6 @@ namespace CortevaApp.Controllers
 
                 if (Sites.Rows.Count > 0)
                 {
-                    string[] _begDate = beginningDate.Split('-');
-                    int beginningYear = Int16.Parse(_begDate[0]);
-                    int beginningMonth = Int16.Parse(_begDate[1]);
-                    int beginningDay = Int16.Parse(_begDate[2]);
-
-                    string[] _endDate = endingDate.Split('-');
-                    int endingYear = Int16.Parse(_endDate[0]);
-                    int endingMonth = Int16.Parse(_endDate[1]);
-                    int endingDay = Int16.Parse(_endDate[2]);
-
-                    string startDate = beginningYear + "-" + beginningMonth + "-" + beginningDay + " 00:00:00.000";
-                    string endDate = endingYear + "-" + endingMonth + "-" + endingDay + " 00:00:00.000";
-
                     string QuerySpeedLossesEvents = @"select sl.duration, sl.reason, sl.comment, pos.id, pos.qtyProduced,
                                                       pos.workingDuration, prod.size, prod.idealRate
                                                       from dbo.ole_speed_losses sl, dbo.ole_pos pos, dbo.ole_products prod
@@ -439,7 +439,7 @@ namespace CortevaApp.Controllers
                                                       and sl.created_at >= @startDate
                                                       and sl.created_at <= @endDate";
 
-                    string QueryBM = @"select sum(pe.duration) as Duration, count(*) as nbEvents
+                    string QueryBM = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
@@ -447,53 +447,53 @@ namespace CortevaApp.Controllers
                                        and (pe.reason = 'Pause' or pe.reason = 'Reunion'
                                        or pe.reason = 'Pas de production prevue')";
 
-                    string QueryCP = @"select sum(pe.duration) as Duration, count(*) as nbEvents
+                    string QueryCP = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
                                        and pe.reason = 'Implementation de projet'";
 
-                    string QueryPM = @"select sum(pe.duration) as Duration, count(*) as nbEvents
+                    string QueryPM = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
                                        and pe.reason = 'Maintenance'";
 
-                    string QueryPP = @"select sum(pe.duration) as Duration, count(*) as nbEvents
+                    string QueryPP = @"select isnull(sum(pe.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_planned_events pe
                                        where pe.productionline = @productionlineName
                                        and pe.created_at >= @startDate
                                        and pe.created_at <= @endDate
                                        and pe.reason = 'Pas de production prevue'";
 
-                    string QueryCIP = @"select sum(cip.total_duration) as Duration, count(*) as nbEvents
+                    string QueryCIP = @"select isnull(sum(cip.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_cips cip
                                        where cip.productionline = @productionlineName
                                        and cip.created_at >= @startDate
                                        and cip.created_at <= @endDate";
 
-                    string QueryCOV = @"select sum(cov.total_duration) as Duration, count(*) as nbEvents
+                    string QueryCOV = @"select isnull(sum(cov.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_changing_clients cov
                                        where cov.productionline = @productionlineName
                                        and cov.created_at >= @startDate
                                        and cov.created_at <= @endDate";
 
-                    string QueryBNC = @"select sum(bnc.total_duration) as Duration, count(*) as nbEvents
+                    string QueryBNC = @"select isnull(sum(bnc.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_changing_formats bnc
                                        where bnc.productionline = @productionlineName
                                        and bnc.created_at >= @startDate
                                        and bnc.created_at <= @endDate";
 
-                    string QueryUEE = @"select sum(ud.total_duration) as Duration, count(*) as nbEvents
+                    string QueryUEE = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_unplanned_downtimes ud
                                        where ud.productionline = @productionlineName
                                        and ud.created_at >= @startDate
                                        and ud.created_at <= @endDate
                                        and ud.component = 'other'";
 
-                    string QueryUSM = @"select sum(ud.total_duration) as Duration, count(*) as nbEvents
+                    string QueryUSM = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_unplanned_downtimes ud
                                        where ud.productionline = @productionlineName
                                        and ud.created_at >= @startDate
@@ -501,14 +501,14 @@ namespace CortevaApp.Controllers
                                        and (ud.component != 'downstreamSaturation' or ud.component != 'missingBottle'
                                        or ud.component != 'other')";
 
-                    string QueryFUS = @"select sum(ud.total_duration) as Duration, count(*) as nbEvents
+                    string QueryFUS = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_unplanned_event_unplanned_downtimes ud
                                        where ud.productionline = @productionlineName
                                        and ud.created_at >= @startDate
                                        and ud.created_at <= @endDate
                                        and (ud.component = 'downstreamSaturation' or ud.component = 'missingBottle')";
 
-                    string QueryRRF = @"select sum(sl.duration) as Duration, count(*) as nbEvents
+                    string QueryRRF = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_speed_losses sl
                                        where sl.productionline = @productionlineName
                                        and sl.created_at >= @startDate
@@ -543,21 +543,21 @@ namespace CortevaApp.Controllers
                                             and sl.created_at <= @endDate
                                             and sl.reason = 'Filler Own Stoppage By An Other Machine'";
 
-                    string QueryRRM = @"select sum(sl.duration) as Duration, count(*) as nbEvents
+                    string QueryRRM = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
                                         and sl.created_at <= @endDate
                                         and sl.reason = 'Reduced Rate At An Other Machine'";
 
-                    string QueryFOS = @"select sum(sl.duration) as Duration, count(*) as nbEvents
+                    string QueryFOS = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
                                         and sl.created_at <= @endDate
                                         and sl.reason = 'Filler Own Stoppage'";
 
-                    string QueryFSM = @"select sum(sl.duration) as Duration, count(*) as nbEvents
+                    string QueryFSM = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                         from dbo.ole_speed_losses sl
                                         where sl.productionline = @productionlineName
                                         and sl.created_at >= @startDate
