@@ -4,8 +4,7 @@
 
       <!--<div class="d-flex flex-row justify-content-between align-items-center bg-white">-->
 
-
-      <!--
+        <!--
       <div align="center" class="rcorners2 table-info-data">
         <h4>{{$t("downtimesHistory")}}</h4>
         <br>
@@ -31,7 +30,10 @@
         </table>
 
       </div>-->
+<<<<<<< HEAD
       <!--</div>-->
+=======
+>>>>>>> 0fe4080ab4138216c6c0ba0199fc4425675281ce
 
       <br>
 

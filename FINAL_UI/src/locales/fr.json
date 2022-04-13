@@ -200,4 +200,5 @@
   "qualityLossesMiDescription" :  "RMi, RF = Pièces rejetées à la remplisseuse ou à la machine Mi",
   "qualityLossesCiDescription" :  "CMi = Valeur du compteur de la machine à la fin de la production",
   "noPerformanceRegistered" : "Aucune perte de performance enregistrée"
+
 }

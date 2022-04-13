@@ -139,7 +139,7 @@
             <label for="answer1" class="checkbox labelsAnswer">
               <input type="radio"
                      id="answer1" name="reponseQuestion"
-                     value="Reduced Rate At Filler" class="response">
+                     value="reducedRateAtFiller" class="response">
               <span>{{$t("reducedRateAtFiller")}}</span>
             </label>
 
@@ -149,7 +149,7 @@
             <label for="answer2" class="checkbox labelsAnswer">
               <input type="radio"
                      id="answer2" name="reponseQuestion"
-                     value="Reduce Rate At An Other Machine" class="response">
+                     value="reducedRateAtAnOtherMachine" class="response">
               <span>{{$t("reducedRateAtAnOtherMachine")}}</span>
             </label>
 
@@ -161,7 +161,7 @@
             <label for="answer3" class="checkbox labelsAnswer">
               <input type="radio"
                      id="answer3" name="reponseQuestion"
-                     value="Filler Own Stoppage" class="response">
+                     value="fillerOwnStoppage" class="response">
               <span>{{$t("fillerOwnStoppage")}}</span>
             </label>
 
@@ -172,7 +172,7 @@
             <label for="answer4" class="checkbox labelsAnswer">
               <input type="radio"
                      id="answer4" name="reponseQuestion"
-                     value="Filler Own Stoppage By An Other Machine" class="response">
+                     value="fillerOwnStoppageByAnOtherMachine" class="response">
               <span>{{$t("fillerOwnStoppageByAnOtherMachine")}}</span>
             </label>
 

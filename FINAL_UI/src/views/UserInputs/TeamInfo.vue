@@ -179,22 +179,15 @@ export default {
         dcodesTab.push(''+DCODES[i].value);
       }
 
-
       if (sessionStorage.getItem("GMID") === null) {
         sessionStorage.GMID = dcodesTab;
       } else {
         sessionStorage.setItem("GMID", dcodesTab);
       }
 
-
       var POs = document.getElementsByClassName('PO');
-
-
       var poTab = [];
-
-
       var productionlinesTab = [];
-
       var typeTeam = document.getElementById('typeTeam');
       var valueTypeTeam = typeTeam.options[typeTeam.selectedIndex].value;
 
@@ -245,7 +238,8 @@ export default {
             axios.put(urlAPI + 'PO/insertPO/PO', {
               number: number,
               GMIDCode: dcodesTab[i],
-              productionline_name: this.productionLParam[0].productionline_name,
+
+              productionline_name: this.userWorksite.productionline,
               shift: valueTypeTeam
             })
                 .then(response => (this.effective = response))
