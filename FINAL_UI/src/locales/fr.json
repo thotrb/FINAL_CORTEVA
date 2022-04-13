@@ -47,6 +47,7 @@
   "fillerOwnStoppageByAnOtherMachine" : "Arrêt de la remplisseuse à cause d'une autre machine",
   "quality" : "Qualité",
   "filler" : "Remplisseuse",
+  "Filler" : "Remplisseuse",
   "caper" : "Visseuse",
   "labeler" : "Etiqueteuse",
   "counter" : "Compteur",

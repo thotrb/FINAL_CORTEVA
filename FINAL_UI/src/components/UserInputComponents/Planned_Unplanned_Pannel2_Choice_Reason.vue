@@ -18,7 +18,7 @@
       <div class="col-sm-4" v-for="reason in events" :key="reason.id">
         <button
             class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-            type="button" @click.prevent="setReasonDowntime($t(reason.reason))">
+            type="button" @click.prevent="setReasonDowntime(reason.reason)">
           {{$t(reason.reason)}}
         </button>
 
@@ -65,6 +65,8 @@ export default {
       }else{
         sessionStorage.setItem("reasonDowntime",reasonDowntime);
       }
+
+      console.log(reasonDowntime);
 
       switch (reasonDowntime) {
 

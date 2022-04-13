@@ -439,14 +439,17 @@ export default {
 
 
         console.log(this.beginningDate);
+        console.log(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate);
 
         await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate)
             .then(response => (this.allEvents = response.data))
 
+        console.log(this.allEvents);
 
         await axios.get(urlAPI + 'qualityLosses/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate)
             .then(response => (this.qualityLosses = response.data))
 
+        console.log(this.qualityLosses);
 
         this.show = 1;
         this.loadQualityLosses();

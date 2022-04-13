@@ -83,7 +83,7 @@ data() {
 
     parameters: [],
     printedStep: 0,
-    title: 'Changement de numéro de lot',
+    title: 'packNumberChanging',
     indice: sessionStorage.getItem("indice"),
 
     ChangingClient_Event: {

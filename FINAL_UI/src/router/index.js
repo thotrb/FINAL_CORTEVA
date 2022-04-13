@@ -95,7 +95,7 @@ const routes = [
   },
 
   {
-    path: '/eventDeclaration/:productionLine/unplannedDowntime/clientChanging',
+    path: '/eventDeclaration/:productionLine/unplannedDowntime/packNumberChanging',
     name: 'ChangingClient',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
