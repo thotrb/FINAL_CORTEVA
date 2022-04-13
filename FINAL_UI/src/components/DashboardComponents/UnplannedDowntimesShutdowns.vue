@@ -7,7 +7,7 @@
       <div class="d-flex site-pl-selection">
         <div class="d-flex">
           <label for="site-selection">Site: </label>
-          <select id="site-selection" v-model="site"  v-on:change="productionLineSelected();">
+          <select id="site-selection" v-model="site">
             <option disabled selected value>-- Select --</option>
             <template v-for="site of dataWorksite">
               <option v-bind:key="site.name" v-bind:value="site.name">{{site.name}}</option>
@@ -16,7 +16,7 @@
         </div>
         <div class="d-flex">
           <label for="pl-selection">{{$t("productionLine")}}: </label>
-          <select id="pl-selection" v-on:change="productionLineSelected();">
+          <select id="pl-selection">
             <option disabled selected value>-- Select --</option>
             <template v-for="productionLine of dataProductionlines">
               <template v-if="productionLine.name === site">
@@ -28,6 +28,8 @@
           </select>
         </div>
       </div>
+      <production-window style="width: 400px;"/>
+      <button id="pl-selection-load" type="button" class="btn btn-primary" v-on:click="productionLineSelected();" style="height: 50%; align-self: center;">{{$t("load")}}</button>
     </div>
 
 
@@ -122,6 +124,8 @@
 import axios from "axios";
 import {urlAPI} from "@/variables";
 import Chart from "chart.js/auto";
+import ProductionWindow from "@/components/DashboardComponents/ProductionWindow";
+
 
 export default {
   name: "UnplannedDowntimesShutdowns",
@@ -164,7 +168,10 @@ export default {
 
     productionLineSelected: function() {
       setTimeout(() => {
-        if (document.getElementById("pl-selection").value) {
+        if (document.getElementById("pl-selection").value 
+          && document.getElementById("select-date-from").value
+          && document.getElementById("select-date-to").value) 
+        {
           this.chargeData();
         }
       });
@@ -176,10 +183,10 @@ export default {
 
     chargeData: async function () {
       const selectedPL = document.getElementById('pl-selection').value;
-      const dateFrom = this.currentYear;
-      const dateTo = this.currentYear;
+      const dateFrom = document.getElementById('select-date-from').value;
+      const dateTo = document.getElementById('select-date-to').value;
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + dateFrom + '/' + dateTo)
+      await axios.get(urlAPI + 'UnplannedDowntimeEventsDate/' + selectedPL + '/' + dateFrom + '/' + dateTo)
           .then(response => {
             this.unplannedDowntimeEvents = response.data;
             this.createDowntimeObject();
@@ -360,9 +367,9 @@ export default {
     chartJs.setAttribute('src', 'https://cdn.jsdelivr.net/npm/chart.js');
     document.head.appendChild(chartJs);
   },
-
-
-
+  components: {
+    ProductionWindow
+  },
   watch: {
     '$i18n.locale': function() {
       for (let shtdCat of ['external', 'machines']) {
@@ -393,6 +400,7 @@ div.selection-menu {
   flex-direction: row;
   padding: 20px 0px;
   border-bottom: solid 1px;
+  justify-content: space-evenly;
 }
 
 div.site-pl-selection {

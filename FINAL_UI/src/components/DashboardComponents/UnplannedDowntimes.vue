@@ -9,12 +9,8 @@
     <div class="d-flex selection-menu">
       <!-- Site and production line selection-->
       <div class="site-pl-selection">
-        <label for="site-selection">Site: </label>
-        <select
-            id="site-selection"
-            v-on:change="productionLineSelected()"
-            v-model="site"
-        >
+        <label for="site-selection">{{$t("site")}} : </label>
+        <select id="site-selection" v-model="site">
           <option disabled selected value>-- {{ $t("select") }} --</option>
           <template v-for="site of dataWorksite">
             <option v-bind:key="site.name" v-bind:value="site.name">
@@ -23,8 +19,8 @@
           </template>
         </select>
 
-        <label for="pl-selection">{{ $t("productionLine") }} </label>
-        <select id="pl-selection" v-on:change="productionLineSelected()">
+        <label for="pl-selection">{{ $t("productionLine") }} : </label>
+        <select id="pl-selection">
           <option disabled selected value="">-- {{ $t("select") }} --</option>
           <template v-for="productionLine of dataProductionlines">
             <template v-if="productionLine.name === site">
@@ -35,6 +31,16 @@
           </template>
         </select>
       </div>
+      <div class="main-production-window">
+        <div class="d-flex title">
+          <span>{{$t("yearSelection")}}</span>
+        </div>
+        <div class="d-flex interval-selection">
+          <span>{{$t("year")}}</span>
+          <input id="year-select" type="number" min="2000" max="2099" step="1"/>
+        </div>
+      </div>
+      <button id="pl-selection-load" type="button" class="btn btn-primary" v-on:click="productionLineSelected();">{{$t("load")}}</button>
     </div>
 
     <!-- Downtime table, yearly and average information container-->
@@ -66,9 +72,6 @@
               </td>
               <template v-for="month of months">
                 <td class="table-data" :key="month">
-                  <tr style="height: 10px; background-color: white; color: white">
-                    -
-                  </tr>
                   <tr style="height: 10px; background-color: white; color: white">
                     -
                   </tr>
@@ -381,7 +384,7 @@ export default {
 
     productionLineSelected: function() {
       this.resolveAfter(300).then(() => {
-        if (document.getElementById("pl-selection").value) {
+        if (document.getElementById("pl-selection").value && document.getElementById("year-select").value) {
           this.chargeCurrentYearData();
         }
       });
@@ -413,9 +416,9 @@ export default {
 
     chargeCurrentYearData: async function () {
       const selectedPL = document.getElementById("pl-selection").value;
-      const currentYear = new Date().getFullYear().toString();
+      const selectedYear = document.getElementById("year-select").value;
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + currentYear + '/' + currentYear)
+      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear)
           .then(response => {
                 this.unplannedDowntimeEvents = response.data;
                 this.resolveAfter(1000);
@@ -631,6 +634,8 @@ export default {
     let chartJs = document.createElement("script");
     chartJs.setAttribute("src", "https://cdn.jsdelivr.net/npm/chart.js");
     document.head.appendChild(chartJs);
+
+    document.getElementById("year-select").value = new Date().getFullYear()
   },
 
 
@@ -658,7 +663,7 @@ div.main-container {
   flex-direction: column;
   background-color: white;
   padding: 20px;
-  min-width: 1000px;
+  min-width: 1200px;
   border-radius: 5px;
   margin: 20px 0px;
 }
@@ -814,5 +819,33 @@ div.seq-tables-container table {
 table.seq-cip {
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+div.main-production-window {
+  flex-direction: column;
+  border: solid 1px;
+  border-radius: 5px;
+  padding: 10px 20px;
+  height: 91px;
+}
+
+div.main-production-window > div {
+  justify-content: center;
+}
+
+div.main-production-window > div.title span {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+div.main-production-window > div.interval-selection > input {
+  margin: 0px 10px;
+  width: 35%;
+  font-size: 12px;
+}
+
+div.main-production-window > div.interval-selection > * {
+  font-size: 17px;
 }
 </style>

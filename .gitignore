@@ -1,10 +1,11 @@
 .vs/
 **/.DS_Store
-**/CortevaAppAPI/CortevaApp/appsettings.json
-**/CortevaAppAPI/CortevaApp/Properties/PublishProfiles/launchSettings.json
-**/FINAL_UI/src/variables.js
-**/CortevaAppAPI/CortevaApp/obj/Debug/
-**/CortevaAppAPI/CortevaApp/bin/
+CortevaAppAPI/CortevaApp/appsettings.json
+CortevaAppAPI/CortevaApp/Properties/PublishProfiles/launchSettings.json
+FINAL_UI/src/variables.js
+CortevaAppAPI/CortevaApp/obj/Debug/
+CortevaAppAPI/CortevaApp/bin/
 **/.idea/
 **/package-lock.json
+Corteva_docs/
 

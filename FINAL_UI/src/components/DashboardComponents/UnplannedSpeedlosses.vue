@@ -136,14 +136,14 @@ export default {
         created: false
       },
       slEvents: {
-        'Reduced Rate At Filler': {events: [], totalDuration: 0, percentage: 0},
-        'Reduced Rate At An Other Machine': {events: [], totalDuration: 0, percentage: 0},
-        'Filler Own Stoppage': {events: [], totalDuration: 0, percentage: 0},
-        'Filler Stop By Other Machine': {events: [], totalDuration: 0, percentage: 0}
+        'reducedRateAtFiller': {events: [], totalDuration: 0, percentage: 0},
+        'reducedRateAtAnOtherMachine': {events: [], totalDuration: 0, percentage: 0},
+        'fillerOwnStoppage': {events: [], totalDuration: 0, percentage: 0},
+        'fillerOwnStoppageByAnOtherMachine': {events: [], totalDuration: 0, percentage: 0}
       },
       dbNames: {
-        fillerStop: ['Filler Own Stoppage', 'Filler Stop By Other Machine'],
-        reducedRate: ['Reduced Rate At Filler', 'Reduced Rate At An Other Machine']
+        fillerStop: ['fillerOwnStoppage', 'fillerOwnStoppageByAnOtherMachine'],
+        reducedRate: ['reducedRateAtFiller', 'reducedRateAtAnOtherMachine']
       },
       slEventsByTable: {
         fillerStop: [],
@@ -190,10 +190,10 @@ export default {
               Object.keys(this.slEvents).forEach(key => this.slEvents[key].events = []);
 
               let chartData = {
-                "Filler Own Stoppage": {duration: 0, freq: 0},
-                "Filler Stop By Other Machine": {duration: 0, freq: 0},
-                "Reduced Rate At Filler": {duration: 0, freq: 0},
-                "Reduced Rate At An Other Machine": {duration: 0, freq: 0}
+                "fillerOwnStoppage": {duration: 0, freq: 0},
+                "fillerOwnStoppageByAnOtherMachine": {duration: 0, freq: 0},
+                "reducedRateAtFiller": {duration: 0, freq: 0},
+                "reducedRateAtAnOtherMachine": {duration: 0, freq: 0}
               };
 
               //Add fetched events to the slEvents variable
@@ -240,10 +240,10 @@ export default {
               });
 
               const map = {
-                'Filler Own Stoppage': 'filler-stop',
-                'Filler Stop By Other Machine': 'filler-stop',
-                'Reduced Rate At Filler': 'reduced-rate',
-                'Reduced Rate At An Other Machine': 'reduced-rate'
+                'fillerOwnStoppage': 'filler-stop',
+                'fillerOwnStoppageByAnOtherMachine': 'filler-stop',
+                'reducedRateAtFiller': 'reduced-rate',
+                'reducedRateAtAnOtherMachine': 'reduced-rate'
               }
 
               //Update charts' data

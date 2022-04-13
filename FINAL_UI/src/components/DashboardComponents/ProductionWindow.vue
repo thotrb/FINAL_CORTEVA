@@ -58,7 +58,7 @@ export default {
       const dateFrom = document.getElementById('select-date-from').value;
       document.getElementById("select-date-to").setAttribute("min",dateFrom);
       const dateTo = document.getElementById('select-date-to').value;
-      if (dateFrom && dateTo) this.yearSelectedFunction(dateFrom, dateTo);
+      if (dateFrom && dateTo && typeof yearSelectedFunction == "function") this.yearSelectedFunction(dateFrom, dateTo);
     },
 
     showMenu: function () {

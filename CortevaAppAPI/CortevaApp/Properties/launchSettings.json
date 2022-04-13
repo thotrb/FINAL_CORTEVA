@@ -20,14 +20,8 @@
     "CortevaApp": {
       "commandName": "Project",
       "launchBrowser": true,
-<<<<<<< HEAD
       "launchUrl": "weatherforecast",
-      //"applicationUrl": "http://10.41.65.100:5000",
-      "applicationUrl": "http://localhost:13197",
-=======
-      "launchUrl": "CortevaApp",
       "applicationUrl": "http://10.41.65.100:5000",
->>>>>>> 0fe4080ab4138216c6c0ba0199fc4425675281ce
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production"
       }

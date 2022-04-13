@@ -378,9 +378,162 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
 
+        [HttpGet("UnplannedDowntimeEventsDate/{productionLine}/{startDate}/{endDate}")]
+        public JsonResult GetUnplannedDowntimeEventsDate(string productionLine, string startDate, string endDate)
+        {
+            startDate += " 00:00:00.000";
+            endDate += " 23:59:59.000";
+
+            string queryCIP = @"select *
+                                from dbo.ole_unplanned_event_cips cip
+                                where cip.productionline = @productionLine
+                                and cip.created_at >= @startDate
+                                and cip.created_at <= @endDate";
+
+            string queryCOV = @"select *
+                                from dbo.ole_unplanned_event_changing_clients cov
+                                where cov.productionline = @productionLine
+                                and cov.created_at >= @startDate
+                                and cov.created_at <= @endDate";
+
+            string queryBNC = @"select *
+                                from dbo.ole_unplanned_event_changing_formats bnc
+                                where bnc.productionline = @productionLine
+                                and bnc.created_at >= @startDate
+                                and bnc.created_at <= @endDate";
+
+            string queryMachineShutdowns = @"select *
+                                            from dbo.ole_unplanned_event_unplanned_downtimes
+                                            where productionline = @productionLine
+                                            and implicated_machine != 'other'
+                                            and created_at >= @startDate
+                                            and created_at <= @endDate";
+
+            string queryExternalShutdowns = @"select *
+                                            from dbo.ole_unplanned_event_unplanned_downtimes
+                                            where productionline = @productionLine
+                                            and implicated_machine = 'other'
+                                            and created_at >= @startDate
+                                            and created_at <= @endDate";
+
+            string querySeqCips = @"select *
+                                    from dbo.ole_unplanned_event_cips cip, dbo.ole_pos pos, dbo.ole_products prod
+                                    where cip.productionline = @productionLine
+                                    and cip.created_at >= @startDate
+                                    and cip.created_at <= @endDate
+                                    and pos.number = cip.OLE
+                                    and prod.GMID = pos.GMIDCode";
 
 
+            string querySeqCovs = @"select *
+                                    from dbo.ole_unplanned_event_changing_clients cov, dbo.ole_pos pos, dbo.ole_products prod
+                                    where cov.productionline = @productionLine
+                                    and cov.created_at >= @startDate
+                                    and cov.created_at <= @endDate
+                                    and pos.number = cov.OLE
+                                    and prod.GMID = pos.GMIDCode";
 
+            DataTable CIP = new DataTable();
+            DataTable COV = new DataTable();
+            DataTable BNC = new DataTable();
+            DataTable machineShutdowns = new DataTable();
+            DataTable externalShutdowns = new DataTable();
+            DataTable seqCips = new DataTable();
+            DataTable seqCovs = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryCIP, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    CIP.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(queryCOV, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    COV.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(queryBNC, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    BNC.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(queryMachineShutdowns, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    machineShutdowns.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(queryExternalShutdowns, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    externalShutdowns.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(querySeqCips, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    seqCips.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(querySeqCovs, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@startDate", startDate);
+                    command.Parameters.AddWithValue("@endDate", endDate);
+                    reader = command.ExecuteReader();
+                    seqCovs.Load(reader);
+                    reader.Close();
+                }
+
+     
+
+                connection.Close();
+            }
+
+            IDictionary<string, DataTable> data = new Dictionary<string, DataTable>()
+            {
+                { "CIP", CIP },
+                { "COV", COV },
+                { "BNC", BNC },
+                { "machines", machineShutdowns },
+                { "external", externalShutdowns },
+                { "seqCIP", seqCips },
+                { "seqCOV", seqCovs } ,
+            };
+
+            return new JsonResult(data);
+        }
        
         [HttpGet("allevents/{site}/{productionLine}/{beginningDate}/{endingDate}")]
         public JsonResult GetAllEventsPeriod(string site, string productionLine, string beginningDate, string endingDate)
