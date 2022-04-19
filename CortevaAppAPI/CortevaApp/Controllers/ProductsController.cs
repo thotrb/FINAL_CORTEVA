@@ -23,7 +23,7 @@ namespace CortevaApp.Controllers
         }
 
         [HttpGet("netOP/{GMID}")]
-        public JsonResult GetNetOP(int GMID)
+        public JsonResult GetNetOP(string GMID)
         {
             string QueryNetOP = @"select top(1) *
                                 from dbo.ole_products

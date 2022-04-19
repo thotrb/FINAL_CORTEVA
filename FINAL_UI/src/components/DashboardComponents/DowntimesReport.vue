@@ -47,9 +47,8 @@
                 {{$t("plantOperatingTime")}} :<!-- {{ allEvents['POInfo'][0].plantOperatingTime}}--> mn
                 <br/>
                 {{$t("plannedProductionTime")}} :
-                <!--{{ allEvents['POInfo'][0].plannedProductionTime}} -->
+                {{plannedProductionTime}}
                 mn <br/>
-                {{$t("loadFactor")}} :<!-- {{ allEvents['POInfo'][0].loadFactor}}--> % <br/>
               </p>
             </div>
 
@@ -144,7 +143,7 @@
 
               </tr>
               <tr>
-                <th scope="row">2. {{$t("changeoOver")}} (COV)</th>
+                <th scope="row">2. {{$t("changeOver")}} (COV)</th>
                 <template v-if="allEvents['COV'] === 0 || allEvents['COV'][0].Duration === null">
                   <td>0 mn</td>
                   <td>0</td>
@@ -222,7 +221,7 @@
             <table class="table">
               <thead>
               <tr>
-                <th scope="col">{{$t("speedl osses")}}</th>
+                <th scope="col">{{$t("speedlosses")}}</th>
                 <th scope="col">{{$t("duration(Minutes)")}}</th>
                 <th scope="col">{{$t("numberOfEvents")}}</th>
               </tr>
@@ -487,6 +486,11 @@ export default {
       dataProductionlines : null,
       allEvents : null,
 
+      sommeWorkingTime : 0,
+
+      summIdealRate : 0,
+      quantityPerGMID : [],
+
     }
   },
 
@@ -535,12 +539,17 @@ export default {
       this.littersProduced = 0;
       this.productsName = [];
 
+      this.quantityPerGMID = [];
+      this.summIdealRate = 0;
+
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
         this.quantityArray[i] = 0;
         this.quantityPerArray[i] = 0;
       }
 
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
+
+        this.summIdealRate +=  this.allEvents['SITE'][i].idealRate;
 
         let nbBottles = this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
         this.qtyProduced += nbBottles * 1;
@@ -576,6 +585,8 @@ export default {
         this.littersProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
             * this.allEvents['SITE'][i].size;
         this.formatArray[index] = this.allEvents['SITE'][i].size;
+
+
       }
 
       console.log(this.productsName);
@@ -612,7 +623,7 @@ export default {
       var qualityControlCounter = 0;
 
       this.netOperatingTime = 0;
-      var sommeWorkingTime = 0;
+      this.sommeWorkingTime = 0;
 
       this.speedLosses = 0;
 
@@ -636,9 +647,13 @@ export default {
       }
 
 
+      console.log(this.allEvents);
+
+      var POArray = [];
+
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
 
-        sommeWorkingTime += this.allEvents['SITE'][i].workingDuration;
+        this.sommeWorkingTime += this.allEvents['SITE'][i].workingDuration;
 
 
         let PO = this.allEvents['SITE'][i];
@@ -650,47 +665,96 @@ export default {
         wieghtBoxCounter += PO.weightBoxCounter * 1;
         qualityControlCounter += PO.qualityControlCounter * 1;
 
-
-        this.netOperatingTime += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1) / this.allEvents['SITE'][i].idealRate * 1;
-        for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
-
-          if (this.allEvents['EVENTS'][j].OLE === PO.number) {
-            sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
-
-
-          }
-
+        if(!POArray.includes(PO.number)){
+          POArray.push(PO.number);
         }
 
-        for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
-          if (this.allEvents['PLANNEDEVENTS'][k].OLE === PO.number) {
-            sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
-          }
+        this.netOperatingTime += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1) / this.allEvents['SITE'][i].idealRate * 1;
+
+      }
+      for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['EVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
         }
       }
 
+      for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['UNPLANNEDEVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+        }
+      }
+
+      for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['CIPEVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+        }
+      }
+
+      for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
+        if(POArray.includes(this.allEvents['LOTCHANGING'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+        }
+      }
+
+
+      for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
+        if(POArray.includes(this.allEvents['PLANNEDEVENTS'][k].OLE )){
+          sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        }
+      }
 
       this.plannedDowntimes = sommePlannedEvents;
       this.unplannedDowntimes = sommeUnplannedEvents;
 
 
-      this.plannedProductionTime = sommeWorkingTime - sommePlannedEvents;
 
 
-      this.operatingTime = sommeWorkingTime - sommePlannedEvents - sommeUnplannedEvents;
+
       this.netOperatingTime = this.operatingTime - this.speedLosses;
+
+
       console.log('working TIME : ');
-      console.log(sommeWorkingTime);
+      console.log(this.sommeWorkingTime);
       console.log('planned TIME : ');
-      console.log(sommePlannedEvents);
+      console.log(this.plannedDowntimes);
       console.log('unplanned TIME : ');
       console.log(sommeUnplannedEvents);
       console.log('speedLosses TIME : ');
       console.log(this.speedLosses);
 
+      this.totalOperatingTime = this.totalProductionTime - this.totalUnplannedDowtimes;
 
-      this.availability = this.operatingTime / this.plannedProductionTime;
-      this.performance = this.netOperatingTime / this.operatingTime;
+
+
+      this.plannedProductionTime = this.sommeWorkingTime - sommePlannedEvents;
+      this.operatingTime = this.plannedProductionTime  - sommeUnplannedEvents;
+
+      this.availability = (this.operatingTime / this.plannedProductionTime);
+      if(this.availability > 1){
+        this.availability = 1;
+      }
+
+
+      //Calcul Performance
+      var n = 0;
+      for(var i = 0; i<this.allEvents['SITE'].length; i++)
+      {
+        if(this.quantityPerGMID.includes( this.allEvents['SITE'][i].GMID)){
+          this.quantityPerGMID[ this.allEvents['SITE'][i].GMID] += this.allEvents['SITE'][i].qtyProduced;
+        }else{
+          this.quantityPerGMID[ this.allEvents['SITE'][i].GMID] = this.allEvents['SITE'][i].qtyProduced;
+        }
+
+        n += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
+      }
+      //var numerateur = n / this.summIdealRate;
+      this.performance = n / this.operatingTime;
+
+      //=====
+      //sumQty = (2400*4 + 1600*12)
+      //idealRate = (2000*4/20 + 1600*12/40 + 1500*4/20 )  = 400 + 480 + 300
+
+
 
       console.log('net OP TIME : ');
       console.log(this.netOperatingTime);
@@ -700,25 +764,28 @@ export default {
 
       var summCompteur = 0;
       if (fillerCounter !== 0) {
-        summCompteur += (fillerCounter - sommeQtyProduced);
+        summCompteur += (fillerCounter - this.qtyProduced);
       }
       if (caperCounter !== 0) {
-        summCompteur += (caperCounter - sommeQtyProduced);
+        summCompteur += (caperCounter - this.qtyProduced);
       }
 
       if (labelerCounter !== 0) {
-        summCompteur += (labelerCounter - sommeQtyProduced);
+        summCompteur += (labelerCounter - this.qtyProduced);
       }
 
       if (qualityControlCounter !== 0) {
-        summCompteur += (qualityControlCounter - sommeQtyProduced);
+        summCompteur += (qualityControlCounter - this.qtyProduced);
       }
       if (wieghtBoxCounter !== 0) {
-        summCompteur += (wieghtBoxCounter - sommeQtyProduced);
+        summCompteur += (wieghtBoxCounter - this.qtyProduced);
       }
 
 
-      this.quality = (sommeQtyProduced) / (sommeQtyProduced + sommeRejection + summCompteur);
+      console.log('Rejection : ' + sommeRejection);
+      console.log('Compteur : ' + summCompteur);
+
+      this.quality = (this.qtyProduced) / (sommeQtyProduced + sommeRejection + summCompteur);
 
 
       if (this.operatingTime === 0) {
@@ -745,6 +812,8 @@ export default {
       console.log('NOT : ' + sommePlannedEvents);
       console.log('Availability : ' + this.availability);
       console.log('Performance : ' + this.performance);
+      console.log('Quality : ' + this.quality);
+
       console.log('Operating Time : ' + this.operatingTime);
 
 
@@ -909,7 +978,7 @@ export default {
         let deltaX = Math.cos(theta) * 1.5 * radius;
 
         if (item.name !== this.$t("nothingProduced")) {
-          txt = item.name + 'L\n';
+          txt = item.name + 'L/Kg\n';
           pct = item.nbr / totalPieChart2 * 100;
           txt = txt + ' ' + pct.toFixed(2) + '%';
         } else {

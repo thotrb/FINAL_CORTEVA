@@ -550,8 +550,10 @@ namespace CortevaApp.Controllers
 
             string startDate = beginningYear + "-" + beginningMonth + "-" + beginningDay + " 00:00:00.000";
             string endDate = endingYear + "-" + endingMonth + "-" + endingDay + " 23:59:59.000";
-
-            string QuerySites = @"select *
+            
+            string QuerySites = @"select distinct pos.number, pos.shift, pl.productionline_name, pl.worksite_name, w.name, pos.created_at, pos.updated_at, pos.GMIDCode, pos.state, totalOperatingTime, totalNetOperatingTime, Availability, Performance, Quality, OLE, qtyProduced,
+				workingDuration, product, prod.GMID,  prod.family, prod.GIFAP, prod.[bulk], prod.description, prod.formulationType, prod.size, prod.idealRate, prod.bottlesPerCase,
+				fillerCounter, caperCounter, weightBoxCounter, qualityControlCounter, labelerCounter,  fillerRejection, caperRejection, labelerRejection, weightBoxRejection, qualityControlRejection
                                 from dbo.ole_productionline pl, dbo.worksite w, dbo.ole_pos pos,
                                 dbo.ole_products prod, dbo.ole_rejection_counters rc
                                 where w.name = pl.worksite_name
@@ -810,6 +812,9 @@ namespace CortevaApp.Controllers
                         { "EVENTS", Queries[QueryChangingFormats] },
                         { "SLEVENTS", Queries[QuerySpeedLossesEvents] },
                         { "PLANNEDEVENTS", Queries[QueryPlannedEvents] },
+                        { "UNPLANNEDEVENTS", Queries[QueryUnplanned] },
+                        { "CIPEVENTS", Queries[QueryCIPBis] },
+                        { "LOTCHANGING", Queries[QueryChangingClients] },
                         { "RRFMonth", Queries[QueryRRFMonth] },
                         { "RRMMonth", Queries[QueryRRMMonth] },
                         { "FOSMonth", Queries[QueryFOSMonth] },

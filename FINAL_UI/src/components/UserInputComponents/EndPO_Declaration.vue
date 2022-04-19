@@ -657,7 +657,9 @@ export default {
         this.totalOperatingTime = this.totalProductionTime - this.totalUnplannedDowtimes;
 
         this.availability = (this.totalOperatingTime / this.totalProductionTime).toFixed(2);
-
+        if(this.availability > 1){
+          this.availability = 1;
+        }
 
         //this.$store.dispatch('getNetOPTime', this.parameters);
 
@@ -681,7 +683,9 @@ export default {
         console.log(numerateur);
         //this.performance = (this.nbBottlesFilled / this.normalRate).toFixed(2);
         this.performance = (numerateur / this.totalOperatingTime).toFixed(2);
-
+        if(this.performance > 1){
+          this.performance = 1;
+        }
 
         console.log('Perf : ' + this.performance);
 
@@ -778,6 +782,10 @@ export default {
         }else{
           this.quality = (N / (N + summRejection + summCompteur)).toFixed(2);
         }
+
+        if(this.quality > 1){
+          this.quality = 1;
+        }
       }
       this.OLE = (this.quality * this.availability * this.performance).toFixed(2);
 
@@ -818,6 +826,10 @@ export default {
 
       this.endPO = sessionStorage.getItem("pos").split(',')[this.indice];
 
+
+      console.log("TIME : " + this.totalDuration);
+      console.log("TIME : " + this.totalOperatingTime);
+      console.log("TIME : " + this.totalNetOperatingTime);
 
 
       await axios.post(urlAPI+'stopPO/'+this.endPO+'/'+this.availability+'/'+this.performance+'/'+this.quality+'/'+

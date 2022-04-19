@@ -183,7 +183,7 @@ namespace CortevaApp.Controllers
 
 
         [HttpPost("stopPO/{PO}/{availability}/{performance}/{quality}/{OLE}/{quantityProduced}/{totalDuration}/{totalOperatingTime}/{totalNetOperatingTime}/{shift}")]
-        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOT, int totalNetOT, string shift)
+        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOperatingTime, int totalNetOperatingTime, string shift)
         {
             string QueryStopPO = @"update dbo.ole_pos
                                    set state = 0,
@@ -213,8 +213,8 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@OLE", OLE);
                     command.Parameters.AddWithValue("@QuantityProduced", quantityProduced);
                     command.Parameters.AddWithValue("@TotalDuration", totalDuration);
-                    command.Parameters.AddWithValue("@totalOT", totalOT);
-                    command.Parameters.AddWithValue("@totalNetOT", totalNetOT);
+                    command.Parameters.AddWithValue("@totalOT", totalOperatingTime);
+                    command.Parameters.AddWithValue("@totalNetOT", totalNetOperatingTime);
                     command.Parameters.AddWithValue("@PO", po);
                     command.Parameters.AddWithValue("@shift", shift);
 
