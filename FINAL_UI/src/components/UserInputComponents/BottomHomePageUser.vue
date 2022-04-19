@@ -52,6 +52,9 @@ export default {
       eventsPerProductionline: [],
       eventsUser:null,
 
+      productionline: sessionStorage.getItem("productionName"),
+
+
     }
   },
 
@@ -98,7 +101,7 @@ export default {
         }
       }
 
-      if (nbSelected === 1) {
+      if (nbSelected >= 1) {
         var balise = elements[indice];
         if (balise.id === "endPO") {
           console.log(indice);
@@ -111,6 +114,8 @@ export default {
           } else {
             sessionStorage.setItem("productionName", this.productionlines[indice / this.productionlines.length]);
           }
+
+          this.productionline = this.productionlines[indice / this.productionlines.length];
 
           if (sessionStorage.getItem("GMIDCODE") === null) {
             sessionStorage.GMIDCODE = sessionStorage.GMID.split(',')[indice / this.productionlines.length];
@@ -170,23 +175,25 @@ export default {
           }
 
 
-          router.replace('/endPO/'+ this.productionlines[indice / this.productionlines.length] + '/endPO');
+          //router.replace('/endPO/'+ this.productionlines[indice / this.productionlines.length] + '/endPO');
 
 
         } else {
 
-
+          /**
           sessionStorage.setItem("crewLeader", '');
           sessionStorage.setItem("typeTeam", '');
           sessionStorage.setItem("workingEnd", '');
           sessionStorage.setItem("workingDebut", '');
           sessionStorage.setItem("site", '');
+          **/
 
-
-          router.replace('/teamInfo');
+         //router.replace('/teamInfo');
 
 
         }
+      router.replace('/endPO/'+ this.productionline + '/endPO');
+
       }
     }
   },

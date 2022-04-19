@@ -153,6 +153,8 @@ export default {
 
     console.log(this.productionlines);
 
+    console.log("TYPE TEAM " + this.typeTeam);
+
 
     if (this.PO.length > 0 && this.PO[0] !== "") {
       for (let i = 0; i < this.PO.length; i++) {

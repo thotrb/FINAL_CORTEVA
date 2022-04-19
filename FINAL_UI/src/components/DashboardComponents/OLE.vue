@@ -69,7 +69,7 @@
     <template v-if="show===1">
 
       <h1>
-        Overall Line Effectivness
+        {{$t('Overall Line Effectivness')}}
       </h1>
 
     </template>
@@ -603,16 +603,16 @@ export default {
         weightBoxCounterPerMonth[month] += PO.weightBoxCounter * 1;
 
 
-        var max = -1;
-        for (let l = 0; l < sommeWorkingTimePerMonth.length; l++) {
 
-          if (sommeWorkingTimePerMonth[l] > max) {
-            max = sommeWorkingTimePerMonth[l];
-            this.peakSeason = l;
-          }
+      }
+
+      var max = -1;
+      for (let l = 0; l < sommeWorkingTimePerMonth.length; l++) {
+
+        if (sommeWorkingTimePerMonth[l] > max) {
+          max = sommeWorkingTimePerMonth[l];
+          this.peakSeason = l;
         }
-
-
       }
 
       this.plannedDowntimesPerMonth = sumPlannedEventsPerMonth;
@@ -926,8 +926,8 @@ export default {
               type: "line",
               label: "Performance",
               showInLegend: true,
-              backgroundColor: "rgba(54,73,93,.5)",
-              borderColor: "#36495d",
+              backgroundColor: "rgba(214, 2, 2,.5)",
+              borderColor: "#FF0000",
               data: [this.PerformancePerMonth[0] * 100,
                 this.PerformancePerMonth[1] * 100,
                 this.PerformancePerMonth[2] * 100,
@@ -946,8 +946,8 @@ export default {
               type: "line",
               label: "Availability",
               showInLegend: true,
-              backgroundColor: "rgba(54,73,93,.5)",
-              borderColor: "#36495d",
+              backgroundColor: "rgba(125, 60, 152 ,.5)",
+              borderColor: "#7D3C98",
               data: [this.AvailabilityPerMonth[0] * 100,
                 this.AvailabilityPerMonth[1] * 100,
                 this.AvailabilityPerMonth[2] * 100,
@@ -966,8 +966,8 @@ export default {
               type: "line",
               label: "Quality",
               showInLegend: true,
-              backgroundColor: "rgba(54,73,93,.5)",
-              borderColor: "#36495d",
+              backgroundColor: "rgba(241, 196, 15,.5)",
+              borderColor: "#F1C40F",
               data: [this.QualityPerMonth[0] * 100,
                 this.QualityPerMonth[1] * 100,
                 this.QualityPerMonth[2] * 100,

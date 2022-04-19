@@ -201,6 +201,7 @@
   "qualityLossesMiDescription" :  "RMi, RF = Rejected Pieces at the Filler or machines Mi",
   "qualityLossesCiDescription" :  " CMi = Machine counter value at end of production run",
   "noPerformanceRegistered" : "No performance loss registered",
-  "yearSelection": "Year Selection"
+  "yearSelection": "Year Selection",
+  "Overall Line Effectivness" : "Overall Line Effectivness"
 
 }

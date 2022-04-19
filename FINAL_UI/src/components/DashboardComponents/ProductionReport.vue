@@ -555,11 +555,11 @@ export default {
       var qtyPerFormulation = [];
 
       for (let i = 0; i < this.volumes.length; i++) {
-        if (!this.formulations.includes(this.volumes[i].BULK)) {
-          this.formulations.push(this.volumes[i].BULK);
-          qtyPerFormulation[this.volumes[i].BULK] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
+        if (!this.formulations.includes(this.volumes[i].bulk)) {
+          this.formulations.push(this.volumes[i].bulk);
+          qtyPerFormulation[this.volumes[i].bulk] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
         } else {
-          qtyPerFormulation[this.volumes[i].BULK] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
+          qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
         }
       }
 
@@ -573,7 +573,7 @@ export default {
 
 
         for (let i = 0; i < this.volumes.length; i++) {
-          if (this.volumes[i].BULK === this.formulations[j]) {
+          if (this.volumes[i].bulk === this.formulations[j]) {
             var month = this.volumes[i].created_at.split('-')[1];
             console.log('MOIS : ' + month);
 

@@ -522,7 +522,7 @@ export default {
 
             this.sequencesCIP = {};
             for (let event of this.unplannedDowntimeEvents["seqCIP"]) {
-              const pair = event.previous_bulk + "/" + event.BULK;
+              const pair = event.previous_bulk + "/" + event.bulk;
               if (!this.sequencesCIP[pair]) {
                 this.sequencesCIP[pair] = {
                   totalDuration: 0,

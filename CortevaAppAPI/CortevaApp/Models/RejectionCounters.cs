@@ -17,5 +17,8 @@ namespace CortevaApp.Models
         public int labelerRejection { get; set; }
         public int weightBoxRejection { get; set; }
         public int qualityControlRejection { get; set; }
+
+        public string shift { get; set; }
+
     }
 }

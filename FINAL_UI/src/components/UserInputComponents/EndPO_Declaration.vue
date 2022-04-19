@@ -78,7 +78,7 @@
                 </thead>
                 <tbody>
                   <tr  v-for="event in speedLoss" :key="event.id">
-                    <th scope="row">{{event.reason}}</th>
+                    <th scope="row">{{$t(event.reason)}}</th>
                     <td>{{event.comment}}</td>
                   </tr>
                 </tbody>
@@ -459,7 +459,8 @@ export default {
       indice: sessionStorage.getItem("indice"),
       PO: sessionStorage.getItem("pos").split(',')[this.indice],
 
-      startPO: 0,
+      startPO:  sessionStorage.getItem("time1"),
+
 
       FillerCounter: 0,
       CaperCounter: 0,
@@ -474,7 +475,7 @@ export default {
       availability: 0,
       performance: 0,
 
-      finalQuantityProduced: 0,
+      finalQuantityProduced: sessionStorage.getItem("finalQuantityProduced"),
 
 
       nbSpeedLosses: 0,
@@ -516,7 +517,7 @@ export default {
 
       totalPOQuality: 0,
 
-      endPO: 0,
+      endPO: sessionStorage.getItem("time2"),
 
       GMID: sessionStorage.getItem("GMIDCODE"),
 
@@ -531,6 +532,10 @@ export default {
       speedLoss:null,
       netOP : null,
       performanceIndexes : null,
+
+      typeTeam : sessionStorage.getItem("typeTeam"),
+
+
 
 
     };
@@ -585,6 +590,26 @@ export default {
       console.log(document.getElementById('endingPO').value);
 
 
+      if(sessionStorage.getItem("time1") === null){
+        sessionStorage.time1 = this.startPO;
+      }else{
+        sessionStorage.setItem("time1",this.startPO);
+      }
+
+
+      if(sessionStorage.getItem("time2") === null){
+        sessionStorage.time2 = this.endPO;
+      }else{
+        sessionStorage.setItem("time2",this.endPO);
+      }
+
+      if(sessionStorage.getItem("finalQuantityProduced") === null){
+        sessionStorage.finalQuantityProduced = this.finalQuantityProduced;
+      }else{
+        sessionStorage.setItem("finalQuantityProduced",this.finalQuantityProduced);
+      }
+
+
 
       var splitted1 = this.startPO.toString().split(':');
       var splitted2 = this.endPO.toString().split(':');
@@ -617,6 +642,13 @@ export default {
 
 
       }
+
+
+
+
+
+
+
 
       if (isNaN(time1) || isNaN(time2)) {
         this.errorMessage();
@@ -805,7 +837,8 @@ export default {
         caperRejection : this.CaperRejection,
         labelerRejection : this.EtiqueteuseRejection,
         weightBoxRejection : this.WieghtBoxRejection*this.netOP[0].bottlesPerCase,
-        qualityControlRejection : this.QualityControlRejection
+        qualityControlRejection : this.QualityControlRejection,
+        shift : this.typeTeam
       });
 
       await this.resolveAfter1Second();
@@ -912,6 +945,8 @@ export default {
       this.$i18n.locale = sessionStorage.getItem("language");
     }
 
+    console.log("TEAM " + this.typeTeam)
+
     var tab = [];
     tab.push(this.productionName);
     for (let i = 0; i < this.prodlines.length; i++) {
@@ -919,6 +954,10 @@ export default {
         this.indice = i;
       }
     }
+
+    console.log('t1 = ' + this.startPO);
+    console.log('t2 = ' + this.endPO);
+
 
     console.log('INDICE = ' + this.indice);
 

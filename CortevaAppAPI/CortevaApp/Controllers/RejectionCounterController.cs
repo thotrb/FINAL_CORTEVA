@@ -28,13 +28,24 @@ namespace CortevaApp.Controllers
         [HttpPost("storeRejection")]
         public JsonResult StoreRejection(RejectionCounters rc)
         {
-            string QueryNewStoreRejection = @"insert into dbo.ole_rejection_counters (po, fillerCounter, caperCounter,
-                                              labelerCounter, weightBoxCounter, qualityControlCounter,
-                                              fillerRejection, caperRejection, labelerRejection, weightBoxRejection,
-                                              qualityControlRejection)
-                                              values (@Po, @FillerCounter, @CaperCounter, @LabelerCounter, @WeightBoxCounter,
-                                              @QualityControlCounter, @FillerRejection, @CaperRejection, @LabelerRejection,
-                                              @WeightBoxRejection, @QualityControlRejection)";
+         
+
+            string QueryNewStoreRejection = @"IF EXISTS(select * from ole_rejection_counters rc where rc.PO = @Po and rc.shift = @shift)
+                                                   update ole_rejection_counters set fillerCounter = @FillerCounter, 
+                                                          caperCounter = @CaperCounter, labelerCounter = @LabelerCounter, 
+                                                          weightBoxCounter = @WeightBoxCounter, qualityControlCounter = @QualityControlCounter,
+                                                          fillerRejection = @FillerRejection, caperRejection = @CaperRejection, 
+                                                          labelerRejection = @LabelerRejection, weightBoxRejection = @WeightBoxRejection,
+                                                          qualityControlRejection = @QualityControlRejection
+                                                    where PO = @Po and shift = @shift
+                                                ELSE
+                                                  insert into dbo.ole_rejection_counters (po, fillerCounter, caperCounter,
+                                                      labelerCounter, weightBoxCounter, qualityControlCounter,
+                                                      fillerRejection, caperRejection, labelerRejection, weightBoxRejection,
+                                                      qualityControlRejection, shift)
+                                                      values (@Po, @FillerCounter, @CaperCounter, @LabelerCounter, @WeightBoxCounter,
+                                                      @QualityControlCounter, @FillerRejection, @CaperRejection, @LabelerRejection,
+                                                      @WeightBoxRejection, @QualityControlRejection, @shift)";
 
 
             DataTable NewStoreRejection = new DataTable();
@@ -57,6 +68,8 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@LabelerRejection", rc.labelerRejection);
                     command.Parameters.AddWithValue("@WeightBoxRejection", rc.weightBoxRejection);
                     command.Parameters.AddWithValue("@QualityControlRejection", rc.qualityControlRejection);
+                    command.Parameters.AddWithValue("@shift", rc.shift);
+
                     reader = command.ExecuteReader();
                     NewStoreRejection.Load(reader);
                     reader.Close();
