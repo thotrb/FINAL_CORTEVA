@@ -190,6 +190,12 @@
               <textarea id="comments" class="form-control-plaintext rcorners2"></textarea>
             </div>
           </div>
+          <div class="form-group row">
+            <label for="comments" class="col-sm-2 rcorners1">{{$t("duration")}} (min)</label>
+            <div class="col-sm-10">
+              <input id="sl-duration" class="form-control-plaintext rcorners2" style="width: 100px;"/>
+            </div>
+          </div>
         </form>
 
         <br/>
@@ -933,6 +939,7 @@ export default {
       this.speedLossEvent.OLE = sessionStorage.getItem("pos").split(',')[this.indice];
       this.speedLossEvent.reason = reason;
       this.speedLossEvent.shift = sessionStorage.getItem("typeTeam");
+      this.speedLossEvent.duration = document.getElementById('sl-duration').value;
 
       console.log(this.speedLossEvent);
 
