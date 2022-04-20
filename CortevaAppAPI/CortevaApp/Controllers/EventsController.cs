@@ -38,7 +38,7 @@ namespace CortevaApp.Controllers
                                         where productionline = @productionLine
                                         and OLE = @po and shift = @shift";
 
-            string queryCIP = @"select total_duration, type, comment, created_at, OLE, productionline, kind
+            string queryCIP = @"select total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
                                 from dbo.ole_unplanned_event_cips
                                 where productionline = @productionLine
                                 and OLE = @po and shift = @shift";
