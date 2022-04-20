@@ -217,6 +217,7 @@ export default {
       productionline: '',
       show: 0,
 
+      allEvents2: null,
 
       OLEPerMonth: [],
       AvailabilityPerMonth: [],
@@ -277,6 +278,9 @@ export default {
         var firstDayYear = this.year + '-01-01';
         var lastDayYear = this.year + '-12-31';
 
+        var firstDayYear2 = this.year-1 + '-01-01';
+        var lastDayYear2 = this.year-1 + '-12-31';
+
         var tab = [];
         tab.push(this.site);
         tab.push(this.productionline);
@@ -287,11 +291,17 @@ export default {
         await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear + '/' + lastDayYear)
             .then(response => (this.allEvents = response.data))
 
+        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear2 + '/' + lastDayYear2)
+            .then(response => (this.allEvents2 = response.data))
 
 
         console.log(this.allEvents);
         this.loadProductionTime();
         this.loadProductionTimeThisYear();
+
+        if(this.allEvents2["SITE"].length > 0){
+          this.loadProductionTimePreviousYear();
+        }
 
 
         firstDayYear = this.year - 1 + '-01-01';
@@ -314,46 +324,105 @@ export default {
       var sommePlannedEvents = 0;
       var sommeUnplannedEvents = 0;
 
-      var sommeQtyProduced = 0;
       var sommeRejection = 0;
 
       var fillerCounter = 0;
       var caperCounter = 0;
       var labelerCounter = 0;
       var wieghtBoxCounter = 0;
+      let qualityCheckCounter = 0;
+
 
       this.netOperatingTime2 = 0;
       var sommeWorkingTime = 0;
 
-
-      for (let i = 0; i < this.allEvents['SITE'].length; i++) {
-
-        sommeWorkingTime += this.allEvents['SITE'][i].workingDuration * 1;
+      var n=0;
+      var quantityProducedForQuality = 0;
 
 
-        let PO = this.allEvents['SITE'][i];
-        sommeQtyProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1;
-        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
+      for (let i = 0; i < this.allEvents2['SITE'].length; i++) {
+
+        sommeWorkingTime += this.allEvents2['SITE'][i].workingDuration * 1;
+
+
+        let PO = this.allEvents2['SITE'][i];
+        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1 + PO.qualityControlRejection * 1;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
         labelerCounter += PO.labelerCounter * 1;
         wieghtBoxCounter += PO.weightBoxCounter * 1;
-        this.netOperatingTime2 += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1) / this.allEvents['SITE'][i].idealRate * 1;
-        for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+        qualityCheckCounter += PO.qualityControlCounter*1;
 
-          if (this.allEvents['EVENTS'][j].OLE === PO.number) {
-            sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
+        if(!(this.allEvents2['SITE'][i].labelerCounter === 0 && this.allEvents2['SITE'][i].weightBoxCounter === 0
+            && this.allEvents2['SITE'][i].qualityControlCounter === 0 && this.allEvents2['SITE'][i].caperCounter === 0
+            && this.allEvents2['SITE'][i].fillerCounter === 0)){
+
+          quantityProducedForQuality += this.allEvents2['SITE'][i].qtyProduced * this.allEvents2['SITE'][i].bottlesPerCase;
+
+        }
+        n += (this.allEvents2['SITE'][i].qtyProduced * this.allEvents2['SITE'][i].bottlesPerCase / this.allEvents2['SITE'][i].idealRate);
+
+
+        this.netOperatingTime2 += (this.allEvents2['SITE'][i].qtyProduced * this.allEvents2['SITE'][i].bottlesPerCase * 1) / this.allEvents2['SITE'][i].idealRate * 1;
+        for (let j = 0; j < this.allEvents2['EVENTS'].length; j++) {
+
+          if (this.allEvents2['EVENTS'][j].OLE === PO.number) {
+            sommeUnplannedEvents += this.allEvents2['EVENTS'][j].total_duration * 1;
 
 
           }
 
         }
+      }
 
-        for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
-          if (this.allEvents['PLANNEDEVENTS'][k].OLE === PO.number) {
-            sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
-          }
-        }
+      var summCompteur = 0;
+      if (fillerCounter !== 0) {
+        summCompteur += (fillerCounter - quantityProducedForQuality);
+
+      }
+      if (caperCounter !== 0) {
+        summCompteur += (caperCounter - quantityProducedForQuality);
+      }
+
+      if (labelerCounter !== 0) {
+        summCompteur += (labelerCounter - quantityProducedForQuality);
+      }
+
+      if (qualityCheckCounter !== 0) {
+        summCompteur += (qualityCheckCounter - quantityProducedForQuality);
+      }
+      if (wieghtBoxCounter !== 0) {
+        summCompteur += (wieghtBoxCounter - quantityProducedForQuality);
+      }
+
+      for (let j = 0; j < this.allEvents2['UNPLANNEDEVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents2['UNPLANNEDEVENTS'][j].total_duration * 1;
+      }
+
+      for (let j = 0; j < this.allEvents2['CIPEVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents2['CIPEVENTS'][j].total_duration * 1;
+
+      }
+
+      for (let j = 0; j < this.allEvents2['EVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents2['EVENTS'][j].total_duration * 1;
+
+      }
+
+      for (let j = 0; j < this.allEvents2['LOTCHANGING'].length; j++) {
+        sommeUnplannedEvents += this.allEvents2['LOTCHANGING'][j].total_duration * 1;
+      }
+
+      for (let k = 0; k < this.allEvents2['PLANNEDEVENTS'].length; k++) {
+        sommePlannedEvents += this.allEvents2['PLANNEDEVENTS'][k].duration * 1;
+      }
+
+
+      for (let k = 0; k < this.allEvents2['PLANNEDEVENTS'].length; k++) {
+          sommePlannedEvents += this.allEvents2['PLANNEDEVENTS'][k].duration * 1;
       }
 
 
@@ -372,32 +441,23 @@ export default {
       console.log(' OP TIME : ');
       console.log(this.operatingTime2);
 
-      if (sommeRejection === 0 && fillerCounter === 0 && caperCounter === 0
-          && labelerCounter === 0 && wieghtBoxCounter === 0) {
+      this.availability2 = this.operatingTime2 / this.plannedProductionTime2;
+      this.performance2 = n / this.operatingTime2;
+
+      if(quantityProducedForQuality + sommeRejection + summCompteur === 0 ){
         this.quality2 = 1;
-      } else {
-        var s = (fillerCounter - sommeQtyProduced) + (caperCounter - sommeQtyProduced)
-            + (labelerCounter - sommeQtyProduced) + (wieghtBoxCounter - sommeQtyProduced);
-        this.quality2 = ((sommeQtyProduced) / (sommeQtyProduced + sommeRejection + s));
-
+      }else{
+        this.quality2 = (quantityProducedForQuality) / (quantityProducedForQuality + sommeRejection + summCompteur);
       }
 
 
-      if (this.operatingTime2 === 0) {
-        this.availability2 = 0;
 
-      }
+      this.OLE2 = (this.availability2 * this.performance2 * this.quality2)
 
-      if (this.netOperatingTime2 === 0) {
-        this.performance2 = 0;
-        this.unplannedDowntimes2 = 1;
-      }
+      console.log("AVAILABILITY2 : " + this.availability2);
+      console.log("PERFORMANCE2 : " + this.performance2);
+      console.log("QUALITY2 : " + this.quality2);
 
-      if (this.plannedProductionTime2 === 0) {
-        this.plannedDowntimes2 = 1;
-      }
-
-      this.OLE2 = (this.availability2 * this.performance2 * this.quality2);
 
 
     },
@@ -408,13 +468,13 @@ export default {
       var sommePlannedEvents = 0;
       var sommeUnplannedEvents = 0;
 
-      var sommeQtyProduced = 0;
       var sommeRejection = 0;
 
       var fillerCounter = 0;
       var caperCounter = 0;
       var labelerCounter = 0;
       var wieghtBoxCounter = 0;
+      var qualityCheckCounter = 0;
 
       this.netOperatingTime = 0;
       var sommeWorkingTime = 0;
@@ -441,34 +501,75 @@ export default {
       }
 
 
+      var n = 0;
+      var quantityProducedForQuality = 0;
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
 
         sommeWorkingTime += this.allEvents['SITE'][i].workingDuration;
 
 
         let PO = this.allEvents['SITE'][i];
-        sommeQtyProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1;
-        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
+        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1 + PO.qualityControlRejection * 1;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
         labelerCounter += PO.labelerCounter * 1;
         wieghtBoxCounter += PO.weightBoxCounter * 1;
-        this.netOperatingTime += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1) / this.allEvents['SITE'][i].idealRate * 1;
-        for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+        qualityCheckCounter += PO.qualityControlCounter * 1;
 
-          if (this.allEvents['EVENTS'][j].OLE === PO.number) {
-            sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
+        if(!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
+            && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
+            && this.allEvents['SITE'][i].fillerCounter === 0)){
 
-
-          }
+          quantityProducedForQuality += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
 
         }
+        n += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
+      }
 
-        for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
-          if (this.allEvents['PLANNEDEVENTS'][k].OLE === PO.number) {
-            sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
-          }
-        }
+      var summCompteur = 0;
+      if (fillerCounter !== 0) {
+        summCompteur += (fillerCounter - quantityProducedForQuality);
+
+      }
+      if (caperCounter !== 0) {
+        summCompteur += (caperCounter - quantityProducedForQuality);
+      }
+
+      if (labelerCounter !== 0) {
+        summCompteur += (labelerCounter - quantityProducedForQuality);
+      }
+
+      if (qualityCheckCounter !== 0) {
+        summCompteur += (qualityCheckCounter - quantityProducedForQuality);
+      }
+      if (wieghtBoxCounter !== 0) {
+        summCompteur += (wieghtBoxCounter - quantityProducedForQuality);
+      }
+
+
+      for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+      }
+
+      for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+
+      }
+
+      for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+
+        sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
+
+      }
+
+      for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
+        sommeUnplannedEvents += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+      }
+
+      for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
+          sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
       }
 
 
@@ -492,21 +593,17 @@ export default {
 
 
       this.availability = this.operatingTime / this.plannedProductionTime;
-      this.performance = this.netOperatingTime / this.operatingTime;
+      this.performance = n / this.operatingTime;
 
       console.log('net OP TIME : ');
       console.log(this.netOperatingTime);
       console.log(' OP TIME : ');
       console.log(this.operatingTime);
 
-      if (sommeRejection === 0 && fillerCounter === 0 && caperCounter === 0
-          && labelerCounter === 0 && wieghtBoxCounter === 0) {
+      if(quantityProducedForQuality + sommeRejection + summCompteur === 0 ){
         this.quality = 1;
-      } else {
-        var s = (fillerCounter - sommeQtyProduced) + (caperCounter - sommeQtyProduced)
-            + (labelerCounter - sommeQtyProduced) + (wieghtBoxCounter - sommeQtyProduced);
-        this.quality = (sommeQtyProduced) / (sommeQtyProduced + sommeRejection + s);
-
+      }else{
+        this.quality = (quantityProducedForQuality) / (quantityProducedForQuality + sommeRejection + summCompteur);
       }
 
 
@@ -554,10 +651,15 @@ export default {
       var sumPlannedEventsPerMonth = [];
       var sumUnplannedEventsPerMonth = [];
 
+      var sommeQtyProducedPerMonthForQuality = [];
+
+      var nPerMonthForPerformance = [];
 
       for (let i = 0; i < 12; i++) {
         sommeWorkingTimePerMonth[i] = 0;
         sommeQtyProducedPerMonth[i] = 0;
+        sommeQtyProducedPerMonthForQuality[i] = 0;
+
         sommeRejectionPerMonth[i] = 0;
         fillerCounterPerMonth[i] = 0;
         caperCounterPerMonth[i] = 0;
@@ -566,6 +668,7 @@ export default {
         qualityControlCounterPerMonth[i] = 0;
         sumPlannedEventsPerMonth[i] = 0;
         sumUnplannedEventsPerMonth[i] = 0;
+        nPerMonthForPerformance[i] = 0;
         this.OLEPerMonth[i] = 0;
         this.AvailabilityPerMonth[i] = 0;
         this.PerformancePerMonth[i] = 0;
@@ -576,6 +679,8 @@ export default {
         this.plannedProductionTimePerMonth[i] = 0;
         this.operatingTimePerMonth[i] = 0;
         this.speedLossesPerMonth[i] = 0;
+
+        //var idealRatePerMonth = [];
 
 
       }
@@ -593,13 +698,14 @@ export default {
 
 
         sommeWorkingTimePerMonth[month] += PO.workingDuration * 1;
+        sommeQtyProducedPerMonth[month] += PO.qtyProduced * PO.bottlesPerCase * 1;
 
 
         if (!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
             && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
             && this.allEvents['SITE'][i].fillerCounter === 0)) {
-          
-          sommeQtyProducedPerMonth[month] += PO.qtyProduced * PO.bottlesPerCase * 1;
+
+          sommeQtyProducedPerMonthForQuality[month]+= PO.qtyProduced * PO.bottlesPerCase;
           sommeRejectionPerMonth[month] += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1 + PO.qualityControlRejection * 1;
           fillerCounterPerMonth[month] += PO.fillerCounter * 1;
           caperCounterPerMonth[month] += PO.caperCounter * 1;
@@ -607,8 +713,6 @@ export default {
           weightBoxCounterPerMonth[month] += PO.weightBoxCounter * 1;
           qualityControlCounterPerMonth[month] += PO.qualityControlCounter * 1;
         }
-
-
       }
 
       var max = -1;
@@ -623,13 +727,34 @@ export default {
       this.plannedDowntimesPerMonth = sumPlannedEventsPerMonth;
       this.unplannedDowntimesPerMonth = sumUnplannedEventsPerMonth;
       var currentMonth = 1;
+      for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+
+        currentMonth = this.allEvents['UNPLANNEDEVENTS'][j].created_at.split('-')[1] - 1;
+        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+      }
+
+      for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
+
+        currentMonth = this.allEvents['CIPEVENTS'][j].created_at.split('-')[1] - 1;
+        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+
+      }
+
+
       for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
 
         currentMonth = this.allEvents['EVENTS'][j].created_at.split('-')[1] - 1;
         sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['EVENTS'][j].total_duration * 1;
 
+      }
+
+      for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
+
+        currentMonth = this.allEvents['LOTCHANGING'][j].created_at.split('-')[1] - 1;
+        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['LOTCHANGING'][j].total_duration * 1;
 
       }
+
 
       for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
         currentMonth = this.allEvents['PLANNEDEVENTS'][k].created_at.split('-')[1] - 1;
@@ -680,23 +805,65 @@ export default {
         }
       }
 
-      for (let j = 0; j < this.PerformancePerMonth.length; j++) {
-        if (this.netOperatingTimePerMonth[j] === 0 || this.operatingTimePerMonth[j] === 0) {
-          this.PerformancePerMonth[j] = 0;
-        } else {
-          this.PerformancePerMonth[j] = this.netOperatingTimePerMonth[j] / this.operatingTimePerMonth[j];
-        }
+      var n = 0;
+      for(var i = 0; i<this.allEvents['SITE'].length; i++)
+      {
+        month = this.allEvents['SITE'][i].created_at.split('-')[1] - 1;
+        n = (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
+        nPerMonthForPerformance[month] += n;
       }
+
+      for (let j = 0; j < this.PerformancePerMonth.length; j++) {
+          this.PerformancePerMonth[j] = nPerMonthForPerformance[j] / this.operatingTimePerMonth[j];
+      }
+
+
+
+
+
 
 
       for (let j = 0; j < this.QualityPerMonth.length; j++) {
         if (sommeRejectionPerMonth[j] === 0 && fillerCounterPerMonth[j] === 0 && caperCounterPerMonth[j] === 0
-            && labelerCounterPerMonth[j] === 0 && weightBoxCounterPerMonth[j] === 0) {
+            && labelerCounterPerMonth[j] === 0 && weightBoxCounterPerMonth[j] === 0 && qualityControlCounterPerMonth[j] === 0) {
           this.QualityPerMonth[j] = 1;
         } else {
-          var s = (fillerCounterPerMonth[j] - sommeQtyProducedPerMonth[j]) + (caperCounterPerMonth[j] - sommeQtyProducedPerMonth[j])
-              + (labelerCounterPerMonth[j] - sommeQtyProducedPerMonth[j]) + (weightBoxCounterPerMonth[j] - sommeQtyProducedPerMonth[j]);
-          this.QualityPerMonth[j] = (sommeQtyProducedPerMonth[j]) / (sommeQtyProducedPerMonth[j] + sommeRejectionPerMonth[j] + s);
+          var s = 0
+
+          if (fillerCounterPerMonth[j]  !== 0) {
+            s += (fillerCounterPerMonth[j]  - sommeQtyProducedPerMonthForQuality[j]);
+          }
+
+
+          if (caperCounterPerMonth[j]  !== 0) {
+            s += (caperCounterPerMonth[j] - sommeQtyProducedPerMonthForQuality[j]);
+          }
+
+          if (labelerCounterPerMonth[j] !== 0) {
+            s += (labelerCounterPerMonth[j] - sommeQtyProducedPerMonthForQuality[j]);
+          }
+
+          if (weightBoxCounterPerMonth[j] !== 0) {
+            s += (weightBoxCounterPerMonth[j] - sommeQtyProducedPerMonthForQuality[j]);
+          }
+
+          if (qualityControlCounterPerMonth[j] !== 0) {
+            s += (qualityControlCounterPerMonth[j] - sommeQtyProducedPerMonthForQuality[j]);
+          }
+
+          if(sommeQtyProducedPerMonthForQuality[j] + sommeRejectionPerMonth[j] + s === 0 ){
+            this.QualityPerMonth[j] = 1;
+          }else{
+            this.QualityPerMonth[j] = (sommeQtyProducedPerMonthForQuality[j]) / (sommeQtyProducedPerMonthForQuality[j] + sommeRejectionPerMonth[j] + s);
+          }
+          console.log("QUALITYDATA SET : ");
+          console.log(sommeQtyProducedPerMonthForQuality[j]);
+          console.log(sommeRejectionPerMonth[j]);
+          console.log(s);
+          console.log(fillerCounterPerMonth[j]);
+          console.log(caperCounterPerMonth[j]);
+
+
 
         }
       }
