@@ -554,6 +554,9 @@ export default {
 
       var qtyPerFormulation = [];
 
+      console.log("VOLUMES : ");
+      console.log(this.volumes);
+
       for (let i = 0; i < this.volumes.length; i++) {
         if (!this.formulations.includes(this.volumes[i].bulk)) {
           this.formulations.push(this.volumes[i].bulk);

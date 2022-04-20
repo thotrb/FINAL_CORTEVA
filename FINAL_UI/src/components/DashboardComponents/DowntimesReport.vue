@@ -613,7 +613,6 @@ export default {
       var sommePlannedEvents = 0;
       var sommeUnplannedEvents = 0;
 
-      var sommeQtyProduced = 0;
       var sommeRejection = 0;
 
       var fillerCounter = 0;
@@ -657,7 +656,6 @@ export default {
 
 
         let PO = this.allEvents['SITE'][i];
-        sommeQtyProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1;
         sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
@@ -737,14 +735,20 @@ export default {
 
       //Calcul Performance
       var n = 0;
+      var quantityProducedForQuality = 0
       for(var i = 0; i<this.allEvents['SITE'].length; i++)
       {
+        if(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
+         && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
+          && this.allEvents['SITE'][i].fillerCounter === 0){
+          quantityProducedForQuality += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
+        }
+
         if(this.quantityPerGMID.includes( this.allEvents['SITE'][i].GMID)){
           this.quantityPerGMID[ this.allEvents['SITE'][i].GMID] += this.allEvents['SITE'][i].qtyProduced;
         }else{
           this.quantityPerGMID[ this.allEvents['SITE'][i].GMID] = this.allEvents['SITE'][i].qtyProduced;
         }
-
         n += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
       }
       //var numerateur = n / this.summIdealRate;
@@ -762,30 +766,61 @@ export default {
       console.log(this.operatingTime);
 
 
+      console.log('Compteur : ' + quantityProducedForQuality);
+
       var summCompteur = 0;
       if (fillerCounter !== 0) {
-        summCompteur += (fillerCounter - this.qtyProduced);
+        summCompteur += (fillerCounter - quantityProducedForQuality);
+        console.log('Compteur : ' + fillerCounter);
+
+        console.log('Compteur : ' + summCompteur);
+
       }
       if (caperCounter !== 0) {
-        summCompteur += (caperCounter - this.qtyProduced);
+        summCompteur += (caperCounter - quantityProducedForQuality);
+        console.log('Compteur : ' + caperCounter);
+
+        console.log('Compteur : ' + summCompteur);
+
       }
 
       if (labelerCounter !== 0) {
-        summCompteur += (labelerCounter - this.qtyProduced);
+        summCompteur += (labelerCounter - quantityProducedForQuality);
+        console.log('Compteur : ' + labelerCounter);
+
+        console.log('Compteur : ' + summCompteur);
+
       }
 
       if (qualityControlCounter !== 0) {
-        summCompteur += (qualityControlCounter - this.qtyProduced);
+        summCompteur += (qualityControlCounter - quantityProducedForQuality);
+        console.log('Compteur : ' + qualityControlCounter);
+
+        console.log('Compteur : ' + summCompteur);
+
       }
       if (wieghtBoxCounter !== 0) {
-        summCompteur += (wieghtBoxCounter - this.qtyProduced);
+        summCompteur += (wieghtBoxCounter - quantityProducedForQuality);
+        console.log('Compteur : ' + wieghtBoxCounter);
+
+        console.log('Compteur : ' + summCompteur);
+
       }
 
 
       console.log('Rejection : ' + sommeRejection);
       console.log('Compteur : ' + summCompteur);
 
-      this.quality = (this.qtyProduced) / (sommeQtyProduced + sommeRejection + summCompteur);
+      if(quantityProducedForQuality + sommeRejection + summCompteur === 0 ){
+        this.quality = 1;
+      }else{
+        this.quality = (quantityProducedForQuality) / (quantityProducedForQuality + sommeRejection + summCompteur);
+      }
+
+      if(this.quality > 1){
+        this.quality = 1;
+      }
+
 
 
       if (this.operatingTime === 0) {

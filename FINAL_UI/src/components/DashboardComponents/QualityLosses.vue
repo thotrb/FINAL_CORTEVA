@@ -306,14 +306,14 @@
             <tr class="labeler">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['fillerCounter'][format]}}
+                {{qtyPerMachine['labelerCounter'][format]}}
               </td>
             </tr>
 
             <tr class="labeler">
               <th scope="row">{{$t("rejectedItems")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['fillerRejection'][format]}}
+                {{qtyPerMachine['labelerRejection'][format]}}
               </td>
             </tr>
 

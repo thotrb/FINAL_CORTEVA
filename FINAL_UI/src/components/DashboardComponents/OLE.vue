@@ -550,6 +550,7 @@ export default {
       var caperCounterPerMonth = [];
       var labelerCounterPerMonth = [];
       var weightBoxCounterPerMonth = [];
+      var qualityControlCounterPerMonth = [];
       var sumPlannedEventsPerMonth = [];
       var sumUnplannedEventsPerMonth = [];
 
@@ -562,6 +563,7 @@ export default {
         caperCounterPerMonth[i] = 0;
         labelerCounterPerMonth[i] = 0;
         weightBoxCounterPerMonth[i] = 0;
+        qualityControlCounterPerMonth[i] = 0;
         sumPlannedEventsPerMonth[i] = 0;
         sumUnplannedEventsPerMonth[i] = 0;
         this.OLEPerMonth[i] = 0;
@@ -592,16 +594,19 @@ export default {
 
         sommeWorkingTimePerMonth[month] += PO.workingDuration * 1;
 
-        sommeQtyProducedPerMonth[month] += PO.qtyProduced * PO.bottlesPerCase * 1;
 
-        sommeRejectionPerMonth[month] += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
-
-
-        fillerCounterPerMonth[month] += PO.fillerCounter * 1;
-        caperCounterPerMonth[month] += PO.caperCounter * 1;
-        labelerCounterPerMonth[month] += PO.labelerCounter * 1;
-        weightBoxCounterPerMonth[month] += PO.weightBoxCounter * 1;
-
+        if (!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
+            && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
+            && this.allEvents['SITE'][i].fillerCounter === 0)) {
+          
+          sommeQtyProducedPerMonth[month] += PO.qtyProduced * PO.bottlesPerCase * 1;
+          sommeRejectionPerMonth[month] += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1 + PO.qualityControlRejection * 1;
+          fillerCounterPerMonth[month] += PO.fillerCounter * 1;
+          caperCounterPerMonth[month] += PO.caperCounter * 1;
+          labelerCounterPerMonth[month] += PO.labelerCounter * 1;
+          weightBoxCounterPerMonth[month] += PO.weightBoxCounter * 1;
+          qualityControlCounterPerMonth[month] += PO.qualityControlCounter * 1;
+        }
 
 
       }

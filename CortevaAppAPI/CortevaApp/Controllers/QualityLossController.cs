@@ -32,6 +32,7 @@ namespace CortevaApp.Controllers
                                 and rc.po = pos.number
                                 and w.name = @site
                                 and pl.productionline_name = @productionLine
+								and pos.shift = rc.shift
                                 and pos.created_at >= @beginningDate
                                 and pos.created_at <= @endingDate";
 
@@ -75,17 +76,19 @@ namespace CortevaApp.Controllers
                                                      sum(rc.caperRejection) as sumCaperRejection, sum(rc.labelerRejection) as sumLabelerRejection,
                                                      sum(rc.weightBoxRejection) as sumWeightBoxRejection, sum(qualityControlCounter) as sumQualityControlCounter,
                                                      sum(rc.qualityControlRejection) as sumQualityControlRejection
-                                                     from dbo.ole_rejection_counters rc, dbo.ole_pos pos
+                                                     from dbo.ole_rejection_counters rc, dbo.ole_pos pos,  dbo.ole_productionline prod
                                                      where pos.number = rc.po
                                                      and pos.productionline_name = @productionLineName
+                                                     and prod.worksite_name = @worksite
                                                      and rc.created_at >= @startDate
                                                      and rc.created_at <= @endDate";
 
                     string QueryFormats = @"select *
-                                            from dbo.ole_rejection_counters rc, dbo.ole_pos pos, dbo.ole_products prod
+                                            from dbo.ole_rejection_counters rc, dbo.ole_pos pos, dbo.ole_products prod, dbo.ole_productionline prodline
                                             where rc.po = pos.number
                                             and prod.GMID = pos.GMIDCode
                                             and pos.productionline_name = @productionLineName
+                                            and prodline.worksite_name = @worksite
                                             and rc.created_at >= @startDate
                                             and rc.created_at <= @endDate";
 
@@ -95,6 +98,7 @@ namespace CortevaApp.Controllers
                     using (SqlCommand command = new SqlCommand(QueryRejectionCounter, connection))
                     {
                         command.Parameters.AddWithValue("@productionLineName", productionLine);
+                        command.Parameters.AddWithValue("@worksite", site);
                         command.Parameters.AddWithValue("@startDate", beginningDate);
                         command.Parameters.AddWithValue("@endDate", endingDate);
                         reader = command.ExecuteReader();
@@ -105,6 +109,7 @@ namespace CortevaApp.Controllers
                     using (SqlCommand command = new SqlCommand(QueryFormats, connection))
                     {
                         command.Parameters.AddWithValue("@productionLineName", productionLine);
+                        command.Parameters.AddWithValue("@worksite", site);
                         command.Parameters.AddWithValue("@startDate", beginningDate);
                         command.Parameters.AddWithValue("@endDate", endingDate);
                         reader = command.ExecuteReader();
