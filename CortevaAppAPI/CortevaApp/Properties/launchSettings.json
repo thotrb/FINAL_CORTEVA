@@ -35,5 +35,15 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
+    ,
+    "Dev-Gustavo": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "CortevaApp",
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Gustavo"
+      }
+    }
   }
 }

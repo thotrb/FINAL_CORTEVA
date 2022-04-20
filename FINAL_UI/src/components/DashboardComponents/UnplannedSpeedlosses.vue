@@ -27,7 +27,7 @@
         <button id="pl-selection-load" type="button" class="btn btn-primary" v-on:click="chargeData();">{{$t("load")}}</button>
       </div>
 
-      <div class="production-window-container">
+      <div class="production-window-container" style="width: 400px;">
         <production-window :yearSelectedFunction="nullfunction" />
       </div>
     </div>

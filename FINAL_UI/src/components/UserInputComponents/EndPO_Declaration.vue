@@ -587,6 +587,7 @@ export default {
     },
 
     validateCalculation: async function () {
+      console.log("CLICK")
       console.log(document.getElementById('endingPO').value);
 
 

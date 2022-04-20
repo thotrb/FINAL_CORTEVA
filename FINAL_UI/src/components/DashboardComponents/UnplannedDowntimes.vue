@@ -131,7 +131,7 @@
             }}
             %
           </span>
-          <span>{{ $t("of") }}</span>
+          <span>{{ $t("of") }}&nbsp;</span>
           <span>{{ $t("unplannedDowntime") }}</span>
         </p>
       </div>
@@ -146,7 +146,7 @@
             }}
             %
           </span>
-          <span>{{ $t("of") }}</span>
+          <span>{{ $t("of") }}&nbsp;</span>
           <span>{{ $t("unplannedDowntime") }}</span>
         </p>
       </div>
@@ -161,7 +161,7 @@
             }}
             %
           </span>
-          <span>{{ $t("of") }}</span>
+          <span>{{ $t("of") }}&nbsp;</span>
           <span>{{ $t("unplannedDowntime") }}</span>
         </p>
       </div>
@@ -412,11 +412,30 @@ export default {
           events: []
         };
       }
+      this.downtimes.cip.general = {
+        yearlyDuration: undefined,
+        yearlyNb: undefined,
+        yearlyAvg: undefined,
+        downtimePercentage: "--"
+      };
+      this.downtimes.cov.general = {
+        yearlyDuration: undefined,
+        yearlyNb: undefined,
+        yearlyAvg: undefined,
+        downtimePercentage: "--"
+      };
+      this.downtimes.bnc.general = {
+        yearlyDuration: undefined,
+        yearlyNb: undefined,
+        yearlyAvg: undefined,
+        downtimePercentage: "--"
+      };
     },
 
     chargeCurrentYearData: async function () {
       const selectedPL = document.getElementById("pl-selection").value;
       const selectedYear = document.getElementById("year-select").value;
+      
 
       await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear)
           .then(response => {

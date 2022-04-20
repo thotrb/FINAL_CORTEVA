@@ -54,14 +54,14 @@
             <tbody>
             <template v-for="machine of Object.values(shutdowns.machines)">
               <tr class="t-row" :key="machine.id">
-                <td scope="col">{{machine.machine}}</td>
+                <td scope="col">{{$t(machine.machine)}}</td>
                 <td scope="col" class="center-text">{{machine.totalDowntime}}</td>
                 <td scope="col" class="center-text">{{machine.frequency}}</td>
                 <td scope="col"></td>
               </tr>
               <template v-for="cause of Object.values(machine.causes)">
                 <tr class="subrow" :key="cause.id">
-                  <td scope="col">&emsp;{{cause.cause}}</td>
+                  <td scope="col">&emsp;{{$t(cause.cause)}}</td>
                   <td scope="col" class="center-text">{{cause.totalDowntime}}</td>
                   <td scope="col" class="center-text">{{cause.frequency}}</td>
                   <td scope="col" class="center-text">{{cause.avgDuration}}</td>
@@ -103,7 +103,7 @@
             <tbody>
             <template v-for="external of Object.values(shutdowns.external)">
               <tr class="t-row" :key="external.id">
-                <td scope="col">{{external.cause}}</td>
+                <td scope="col">{{$t(external.cause)}}</td>
                 <td scope="col" class="center-text">{{external.totalDowntime}}</td>
                 <td scope="col" class="center-text">{{external.frequency}}</td>
                 <td scope="col" class="center-text">{{external.avgDuration}}</td>
