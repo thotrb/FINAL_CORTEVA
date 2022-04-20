@@ -86,16 +86,20 @@ namespace CortevaApp.Controllers
         }
 
         [HttpGet("getSpeedLosses/{site}/{productionLine}/{startingDate}/{endingDate}")]
-        public JsonResult GetSpeedLosses(string _, string productionLine, string startingDate, string endingDate)
+        public JsonResult GetSpeedLosses(string site, string productionLine, string startingDate, string endingDate)
         {
+            startingDate += " 00:00:00.000";
+            endingDate += " 23:59:59.999";
+
             string querySpeedLossesEvents = @"select sl.duration, sl.reason, sl.comment, pos.id, pos.qtyProduced, pos.workingDuration,
                                             prod.size, prod.idealRate
-                                            from dbo.ole_speed_losses sl, dbo.ole_pos pos, dbo.ole_products prod
+                                            from dbo.ole_speed_losses sl, dbo.ole_pos pos, dbo.ole_products prod, dbo.worksite w
                                             where sl.productionline = @productionLine
                                             and sl.OLE = pos.number
                                             and prod.GMID = pos.GMIDCode
                                             and sl.created_at >= @startingDate
-                                            and sl.created_at <= @endingDate";
+                                            and sl.created_at <= @endingDate
+                                            and w.name = @site";
 
 
             DataTable SpeedLossesEvents = new DataTable();
@@ -110,6 +114,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startingDate", startingDate);
                     command.Parameters.AddWithValue("@endingDate", endingDate);
+                    command.Parameters.AddWithValue("@site", site);
                     reader = command.ExecuteReader();
                     SpeedLossesEvents.Load(reader);
                     reader.Close();
