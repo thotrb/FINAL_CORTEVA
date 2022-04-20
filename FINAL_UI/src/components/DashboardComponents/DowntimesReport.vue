@@ -738,9 +738,9 @@ export default {
       var quantityProducedForQuality = 0
       for(var i = 0; i<this.allEvents['SITE'].length; i++)
       {
-        if(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
+        if(!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
          && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
-          && this.allEvents['SITE'][i].fillerCounter === 0){
+          && this.allEvents['SITE'][i].fillerCounter === 0)){
           quantityProducedForQuality += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
         }
 
