@@ -22,6 +22,9 @@ namespace CortevaApp.Controllers
         [HttpGet("qualityLosses/{site}/{productionLine}/{beginningDate}/{endingDate}")]
         public JsonResult getQualityLossesPeriod(string site, string productionLine, string beginningDate, string endingDate)
         {
+            beginningDate += " 00:00:00.000";
+            endingDate += " 23:59:59.999";
+
             IDictionary<string, DataTable> Results;
             string QuerySites = @"select *
                                 from dbo.ole_productionline pl, dbo.worksite w, dbo.ole_pos pos,
@@ -57,18 +60,6 @@ namespace CortevaApp.Controllers
 
                 if (Sites.Rows.Count > 0)
                 {
-                    string[] _begDate = beginningDate.Split('-');
-                    int beginningYear = Int16.Parse(_begDate[0]);
-                    int beginningMonth = Int16.Parse(_begDate[1]);
-                    int beginningDay = Int16.Parse(_begDate[2]);
-
-                    string[] _endDate = endingDate.Split('-');
-                    int endingYear = Int16.Parse(_endDate[0]);
-                    int endingMonth = Int16.Parse(_endDate[1]);
-                    int endingDay = Int16.Parse(_endDate[2]);
-
-                    string startDate = beginningYear + "-" + beginningMonth + "-" + beginningDay + " 00:00:00.000";
-                    string endDate = endingYear + "-" + endingMonth + "-" + endingDay + " 00:00:00.000";
 
                     string QueryRejectionCounter = @"select sum(rc.fillercounter) as sumFillerCounter,
                                                      sum(rc.caperCounter) as sumCaperCounter, sum(rc.labelerCounter) as sumLabelerCounter,
