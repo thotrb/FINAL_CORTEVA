@@ -663,7 +663,7 @@ export default {
         this.totalProductionTime -= (this.totalPlannedDowtimes);
         this.totalOperatingTime = this.totalProductionTime - this.totalUnplannedDowtimes;
 
-        this.availability = (this.totalOperatingTime / this.totalProductionTime).toFixed(2);
+        this.availability = (this.totalOperatingTime / this.totalProductionTime).toFixed(3);
         if(this.availability > 1){
           this.availability = 1;
         }

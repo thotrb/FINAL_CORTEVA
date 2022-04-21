@@ -22,18 +22,8 @@ namespace CortevaApp.Controllers
         [HttpGet("qualityLosses/{site}/{productionLine}/{beginningDate}/{endingDate}")]
         public JsonResult getQualityLossesPeriod(string site, string productionLine, string beginningDate, string endingDate)
         {
-            string[] _begDate = beginningDate.Split('-');
-            int beginningYear = Int16.Parse(_begDate[0]);
-            int beginningMonth = Int16.Parse(_begDate[1]);
-            int beginningDay = Int16.Parse(_begDate[2]);
-
-            string[] _endDate = endingDate.Split('-');
-            int endingYear = Int16.Parse(_endDate[0]);
-            int endingMonth = Int16.Parse(_endDate[1]);
-            int endingDay = Int16.Parse(_endDate[2]);
-
-            string startDate = beginningYear + "-" + beginningMonth + "-" + beginningDay + " 00:00:00.000";
-            string endDate = endingYear + "-" + endingMonth + "-" + endingDay + " 23:59:59.000";
+            beginningDate += " 00:00:00.000";
+            endingDate += " 23:59:59.999";
 
             IDictionary<string, DataTable> Results;
             string QuerySites = @"select *
@@ -60,8 +50,8 @@ namespace CortevaApp.Controllers
                 {
                     command.Parameters.AddWithValue("@site", site);
                     command.Parameters.AddWithValue("@productionLine", productionLine);
-                    command.Parameters.AddWithValue("@beginningDate", startDate);
-                    command.Parameters.AddWithValue("@endingDate", endDate);
+                    command.Parameters.AddWithValue("@beginningDate", beginningDate);
+                    command.Parameters.AddWithValue("@endingDate", endingDate);
                     reader = command.ExecuteReader();
                     Sites.Load(reader);
                     reader.Close();
@@ -70,7 +60,6 @@ namespace CortevaApp.Controllers
 
                 if (Sites.Rows.Count > 0)
                 {
-                    
 
                     string QueryRejectionCounter = @"select sum(rc.fillercounter) as sumFillerCounter,
                                                      sum(rc.caperCounter) as sumCaperCounter, sum(rc.labelerCounter) as sumLabelerCounter,
@@ -101,8 +90,8 @@ namespace CortevaApp.Controllers
                     {
                         command.Parameters.AddWithValue("@productionLineName", productionLine);
                         command.Parameters.AddWithValue("@worksite", site);
-                        command.Parameters.AddWithValue("@startDate", startDate);
-                        command.Parameters.AddWithValue("@endDate", endDate);
+                        command.Parameters.AddWithValue("@startDate", beginningDate);
+                        command.Parameters.AddWithValue("@endDate", endingDate);
                         reader = command.ExecuteReader();
                         RejectionCounters.Load(reader);
                         reader.Close();
@@ -112,8 +101,8 @@ namespace CortevaApp.Controllers
                     {
                         command.Parameters.AddWithValue("@productionLineName", productionLine);
                         command.Parameters.AddWithValue("@worksite", site);
-                        command.Parameters.AddWithValue("@startDate", startDate);
-                        command.Parameters.AddWithValue("@endDate", endDate);
+                        command.Parameters.AddWithValue("@startDate", beginningDate);
+                        command.Parameters.AddWithValue("@endDate", endingDate);
                         reader = command.ExecuteReader();
                         Formats.Load(reader);
                         reader.Close();

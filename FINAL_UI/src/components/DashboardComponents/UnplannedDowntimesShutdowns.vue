@@ -290,8 +290,8 @@ export default {
 
               //Insert new values
               for (let shutdownEvent of Object.values(this.shutdowns[shtdCat])) {
-                if (shtdCat === "machines") this.chartObjects[shtdCat].data.labels.push(shutdownEvent.machine);
-                else this.chartObjects[shtdCat].data.labels.push(shutdownEvent.cause);
+                if (shtdCat === "machines") this.chartObjects[shtdCat].data.labels.push(this.$t(shutdownEvent.machine));
+                else this.chartObjects[shtdCat].data.labels.push(this.$t(shutdownEvent.cause));
                 this.chartObjects[shtdCat].data.datasets[0].data.push(shutdownEvent.totalDowntime);
                 this.chartObjects[shtdCat].data.datasets[1].data.push(shutdownEvent.frequency);
               }

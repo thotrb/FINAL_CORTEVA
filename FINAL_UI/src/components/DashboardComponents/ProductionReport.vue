@@ -111,7 +111,7 @@
                 <td>{{formulationsPerMonth[index]['December']}}</td>
               </tr>
               <tr>
-                <th scope="row"></th>
+                <th scope="row">{{$t("total")}}</th>
                 <td>{{sumPerMonth['January']}}</td>
                 <td>{{sumPerMonth['February']}}</td>
                 <td>{{sumPerMonth['March']}}</td>
