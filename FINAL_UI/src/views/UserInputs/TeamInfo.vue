@@ -141,6 +141,12 @@ export default {
     console.log(this.shiftCrew);
     console.log(this.productionLParam);
 
+    if(sessionStorage.getItem("eventsPerProductionline") !== null){
+      sessionStorage.eventsPerProductionline =  null;
+    }else{
+      sessionStorage.setItem("eventsPerProductionline", null);
+    }
+
   },
 
 

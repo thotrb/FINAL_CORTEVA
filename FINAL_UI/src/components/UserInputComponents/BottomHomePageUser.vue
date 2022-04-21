@@ -102,28 +102,29 @@ export default {
       }
 
       if (nbSelected >= 1) {
-        var balise = elements[indice];
-        if (balise.id === "endPO") {
           console.log(indice);
 
+          console.log(sessionStorage.GMID);
+          console.log(this.productionlines[0]);
 
-          console.log(this.productionlines[indice / this.productionlines.length]);
 
           if (sessionStorage.getItem("productionName") === null) {
-            sessionStorage.productionName = this.productionlines[indice / this.productionlines.length];
+            sessionStorage.productionName = this.productionlines[0];
           } else {
-            sessionStorage.setItem("productionName", this.productionlines[indice / this.productionlines.length]);
+            sessionStorage.setItem("productionName", this.productionlines[0]);
           }
 
-          this.productionline = this.productionlines[indice / this.productionlines.length];
+          this.productionline = this.productionlines[0];
 
           if (sessionStorage.getItem("GMIDCODE") === null) {
-            sessionStorage.GMIDCODE = sessionStorage.GMID.split(',')[indice / this.productionlines.length];
+            sessionStorage.GMIDCODE = sessionStorage.GMID;
           } else {
-            sessionStorage.setItem("GMIDCODE", sessionStorage.GMID.split(',')[indice / this.productionlines.length]);
+            sessionStorage.setItem("GMIDCODE", sessionStorage.GMID);
           }
 
-          console.log('events1 : ' + this.productionlines[indice / this.productionlines.length]);
+
+
+          console.log('events1 : ' + this.productionlines[0]);
 
           var sommePlannedEvents = 0;
           var sommeUnplannedEvents = 0;
@@ -133,7 +134,7 @@ export default {
 
           for (let i = 0; i < this.eventsUser.length; i++) {
             for(let j=0; j<this.eventsUser[i].length; j++) {
-              if (this.eventsUser[i][j].productionline === this.productionlines[indice / this.productionlines.length]) {
+              if (this.eventsUser[i][j].productionline === this.productionlines[0]) {
                 if (this.eventsUser[i][j].kind === 0) {
                   sommePlannedEvents += this.eventsUser[i][j].total_duration;
                 } else {
@@ -144,7 +145,7 @@ export default {
           }
 
           for (let i = 0; i < this.eventsUser.length; i++) {
-            if (this.eventsUser[i].productionline === this.productionlines[indice / this.productionlines.length]) {
+            if (this.eventsUser[i].productionline === this.productionlines[0]) {
 
 
               if (this.eventsUser[i].kind === 0) {
@@ -177,21 +178,6 @@ export default {
 
           //router.replace('/endPO/'+ this.productionlines[indice / this.productionlines.length] + '/endPO');
 
-
-        } else {
-
-          /**
-          sessionStorage.setItem("crewLeader", '');
-          sessionStorage.setItem("typeTeam", '');
-          sessionStorage.setItem("workingEnd", '');
-          sessionStorage.setItem("workingDebut", '');
-          sessionStorage.setItem("site", '');
-          **/
-
-         //router.replace('/teamInfo');
-
-
-        }
       router.replace('/endPO/'+ this.productionline + '/endPO');
 
       }

@@ -168,7 +168,7 @@ export default {
             .then(response => (this.eventsUser = response.data))
 
 
-        console.log('OH');
+        console.log(this.eventsUser);
 
         this.eventsPerProductionline.push(this.productionlines[i]);
         this.eventsPerProductionline[this.eventsPerProductionline[i]] = [];
