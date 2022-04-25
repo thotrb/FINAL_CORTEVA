@@ -127,7 +127,7 @@ export default {
 
   async mounted() {
 
-    axios.get(urlAPI+'User/'+this.username)
+    axios.get(urlAPI+'user/'+this.username)
         .then(response => (this.data = response.data))
 
     await this.resolveAfter15Second();
