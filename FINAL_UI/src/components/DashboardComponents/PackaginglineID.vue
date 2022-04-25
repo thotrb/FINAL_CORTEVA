@@ -203,7 +203,7 @@ export default {
 
       if (this.productionline !== '') {
 
-        await axios.get(urlAPI + 'machines/' + index)
+        await axios.get(urlAPI + 'machines/' + index + '/'+this.site)
             .then(response => (this.machines = response.data))
 
         this.index = index;

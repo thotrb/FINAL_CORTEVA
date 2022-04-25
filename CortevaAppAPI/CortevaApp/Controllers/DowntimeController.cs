@@ -77,11 +77,11 @@ namespace CortevaApp.Controllers
         }
 
         [HttpGet("summary/{productionName}/{downtimeType}/{worksite}")]
-        public JsonResult GetSummaryWorksite(string _, string downtimeType, string worksite)
+        public JsonResult GetSummaryWorksite(string productionName, string downtimeType, string worksite)
         {
             string queryDowntimeReason = @"select *
                                           from dbo.ole_downtimeReason 
-                                          where downtimeType = @downtimeType and worksite = @worksite";
+                                          where downtimeType = @downtimeType and worksite = @worksite and production_line = @productionName";
 
             DataTable downtimeReason = new DataTable();
 
@@ -94,6 +94,8 @@ namespace CortevaApp.Controllers
                 {
                     command.Parameters.AddWithValue("@downtimeType", downtimeType);
                     command.Parameters.AddWithValue("@worksite", worksite);
+                    command.Parameters.AddWithValue("@productionName", productionName);
+
                     reader = command.ExecuteReader();
                     downtimeReason.Load(reader);
                     reader.Close();
