@@ -806,7 +806,7 @@ namespace CortevaApp.Controllers
                         { "USM", Queries[QueryUSM] },
                         { "FUS", Queries[QueryFUS] },
                         { "RRF", Queries[QueryRRF] },
-                        { "RRM", Queries[QueryRRF] },
+                        { "RRM", Queries[QueryRRM] },
                         { "FOS", Queries[QueryFOS] },
                         { "FSM", Queries[QueryFSM] },
                         { "SITE", Sites },

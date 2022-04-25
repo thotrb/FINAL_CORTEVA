@@ -689,9 +689,13 @@ export default {
         console.log(this.netOP);
         console.log(numerateur);
         //this.performance = (this.nbBottlesFilled / this.normalRate).toFixed(2);
-        this.performance = (numerateur / this.totalOperatingTime).toFixed(2);
-        if(this.performance > 1){
-          this.performance = 1;
+        if(this.finalQuantityProduced === '0' ||this.finalQuantityProduced === 0 ){
+          this.performance = 0;
+        }else{
+          this.performance = (numerateur / this.totalOperatingTime).toFixed(2);
+          if(this.performance > 1){
+            this.performance = 1;
+          }
         }
 
         console.log('Perf : ' + this.performance);

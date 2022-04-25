@@ -8,7 +8,7 @@
             <form>
               <label class="" for="site">{{$t("site")}} : </label>
               <select name="site" id="site" class="form-select" v-model="site">
-                  <option  v-for="site in dataWorksite" :key="site.id" v-bind:value="site.name">
+                  <option  v-for="site in dataWorksite" :key="site.name" v-bind:value="site.name">
                     {{site.name}}
                   </option>
               </select>
@@ -22,9 +22,9 @@
                       v-model="productionline">
                 <template v-for="productionline in dataProductionlines">
                   <template v-if="productionline.name === site">
-                    <option v-bind:key="productionline.id" v-bind:value="productionline.productionline_name">
-                      {{productionline.productionline_name}}
-                    </option>
+                    <option v-bind:key="productionline.productionline_name" v-bind:value="productionline.productionline_name">
+                        {{productionline.productionline_name}}
+                      </option>
                   </template>
                 </template>
               </select>
@@ -491,6 +491,8 @@ export default {
       summIdealRate : 0,
       quantityPerGMID : [],
 
+
+
     }
   },
 
@@ -569,8 +571,7 @@ export default {
         }
 
         let indexSize = this.formatArray.indexOf(this.allEvents['SITE'][i].size);
-        this.quantityArray[indexSize] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
-            * this.allEvents['SITE'][i].size;
+        this.quantityArray[indexSize] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
 
 
         if (!this.productsName.includes(this.allEvents['SITE'][i].product)) {
@@ -578,9 +579,6 @@ export default {
         }
 
         let index = this.productsName.indexOf(this.allEvents['SITE'][i].product);
-
-        this.quantityArray[index] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
-            * this.allEvents['SITE'][i].size;
 
         this.littersProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
             * this.allEvents['SITE'][i].size;
@@ -636,14 +634,13 @@ export default {
 
       if (this.allEvents['FOS'][0].nbEvents > 0) {
         this.speedLosses += this.allEvents['FOS'][0].Duration * 1;
-
-
       }
 
       if (this.allEvents['FSM'][0].nbEvents > 0) {
         this.speedLosses += this.allEvents['FSM'][0].Duration * 1;
-
       }
+
+
 
 
       console.log(this.allEvents);
@@ -708,9 +705,6 @@ export default {
 
 
 
-      this.netOperatingTime = this.operatingTime - this.speedLosses;
-
-
       console.log('working TIME : ');
       console.log(this.sommeWorkingTime);
       console.log('planned TIME : ');
@@ -726,6 +720,11 @@ export default {
 
       this.plannedProductionTime = this.sommeWorkingTime - sommePlannedEvents;
       this.operatingTime = this.plannedProductionTime  - sommeUnplannedEvents;
+
+
+
+      this.netOperatingTime = this.operatingTime - this.speedLosses;
+
 
       this.availability = (this.operatingTime / this.plannedProductionTime);
       if(this.availability > 1){
@@ -860,12 +859,14 @@ export default {
       var data = [];
       var totalPieChart1 = 0;
       for (let j = 0; j < this.formulationArray.length; j++) {
-        obj = {
-          name: this.formulationArray[j],
-          nbr: this.quantityPerArray[j]
-        };
-        data.push(obj);
-        totalPieChart1 += this.quantityPerArray[j];
+        if(this.quantityPerArray[j] > 0 ){
+          obj = {
+            name: this.formulationArray[j],
+            nbr: this.quantityPerArray[j]
+          };
+          data.push(obj);
+          totalPieChart1 += this.quantityPerArray[j];
+        }
       }
       console.log('DATA');
 
@@ -948,12 +949,14 @@ export default {
       data = [];
       var totalPieChart2 = 0;
       for (let j = 0; j < this.formatArray.length; j++) {
-        obj = {
-          name: this.formatArray[j],
-          nbr: this.quantityArray[j],
-        };
-        data.push(obj);
-        totalPieChart2 += this.quantityArray[j];
+        if(this.quantityArray[j]>0){
+          obj = {
+            name: this.formatArray[j],
+            nbr: this.quantityArray[j],
+          };
+          data.push(obj);
+          totalPieChart2 += this.quantityArray[j];
+        }
       }
 
       if (data.length === 0) {
@@ -1130,9 +1133,16 @@ export default {
     //sites[0] = sites
     //sites[1] = lignes de production de ce site
 
-    await axios.get(urlAPI + 'sites')
-        .then(response => (this.dataSite = response.data))
+    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+      await axios.get(urlAPI + 'sites/'+this.username)
+          .then(response => (this.dataSite = response.data))
+    }else{
+      await axios.get(urlAPI + 'sites')
+          .then(response => (this.dataSite = response.data))
+    }
 
+
+    console.log(this.dataSite);
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
 

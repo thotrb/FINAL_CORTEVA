@@ -11,6 +11,11 @@
           </button>
       </div>
 
+      <div class="col">
+        <button  class="btn btn-primary" v-on:click="loginChoice('administrator')">{{ $t("choiceLoginAdministrator") }}
+        </button>
+      </div>
+
       <!--
       <div class="col">
         <router-link to="/login">

@@ -408,6 +408,8 @@ export default {
       dataProductionlines : null,
       allEvents : null,
       qualityLosses : null,
+      username: localStorage.getItem("username"),
+
     }
   },
 
@@ -521,7 +523,6 @@ export default {
 
 
         let PO = this.allEvents['SITE'][i];
-        sommeQtyProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1;
         sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
@@ -529,8 +530,13 @@ export default {
         wieghtBoxCounter += PO.weightBoxCounter * 1;
         qualityControlCounter += PO.qualityControlCounter * 1;
 
-      }
+        if (!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
+            && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
+            && this.allEvents['SITE'][i].fillerCounter === 0)) {
+          sommeQtyProduced += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1;
+        }
 
+      }
 
       var summCompteur = 0;
       if (fillerCounter !== 0) {
@@ -552,7 +558,16 @@ export default {
       }
 
 
-      this.quality = (sommeQtyProduced) / (sommeQtyProduced + sommeRejection + summCompteur);
+      if(sommeQtyProduced + sommeRejection + summCompteur === 0 ){
+        this.quality = 1;
+      }else{
+        this.quality = (sommeQtyProduced) / (sommeQtyProduced + sommeRejection + summCompteur);
+      }
+
+      if(this.quality > 1){
+        this.quality = 1;
+      }
+
 
     },
 
@@ -792,8 +807,13 @@ export default {
       this.$i18n.locale = sessionStorage.getItem("language");
     }
 
-    await axios.get(urlAPI + 'sites')
-        .then(response => (this.dataSite = response.data))
+    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+      await axios.get(urlAPI + 'sites/'+this.username)
+          .then(response => (this.dataSite = response.data))
+    }else{
+      await axios.get(urlAPI + 'sites')
+          .then(response => (this.dataSite = response.data))
+    }
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];

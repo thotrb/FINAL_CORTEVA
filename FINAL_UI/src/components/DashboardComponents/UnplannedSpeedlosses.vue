@@ -122,6 +122,7 @@ export default {
   data() {
 
     var data = {
+      username: localStorage.getItem("username"),
 
       currentYear: (new Date()).getFullYear(),
       site: '',
@@ -331,8 +332,13 @@ export default {
     if (sessionStorage.getItem("language") !== null) {
       this.$i18n.locale = sessionStorage.getItem("language");
     }
-    await axios.get(urlAPI + 'sites')
-        .then(response => (this.dataSite = response.data))
+    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+      await axios.get(urlAPI + 'sites/'+this.username)
+          .then(response => (this.dataSite = response.data))
+    }else{
+      await axios.get(urlAPI + 'sites')
+          .then(response => (this.dataSite = response.data))
+    }
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];

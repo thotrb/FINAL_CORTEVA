@@ -48,7 +48,7 @@ export default {
 
 
       axios.post(urlAPI + "login", logData).then((resp) => {
-        if (resp.status == 200 && resp.data.token) {
+        if (resp.status === 200 && resp.data.token) {
           const tokenDecoded = jwt_decode(resp.data.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`;
           const user = tokenDecoded.login;
@@ -58,7 +58,9 @@ export default {
             localStorage.setItem("auth-token", resp.data.token);
             if (userCredential == 0) {
               router.replace('/teamInfo');
-            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "supervisor") {
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == 'supervisor') {
+              router.replace('/Dashboard/downtimesReport');
+            } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "administrator") {
               router.replace('/Dashboard/downtimesReport');
             } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "operator") {
               router.replace('/teamInfo');

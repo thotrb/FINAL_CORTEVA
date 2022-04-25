@@ -262,6 +262,8 @@ export default {
       availability2: 0,
       quality2: 0,
       OLE2: 0,
+      username: localStorage.getItem("username"),
+
 
       lo: this.$t("load"),
 
@@ -814,7 +816,12 @@ export default {
       }
 
       for (let j = 0; j < this.PerformancePerMonth.length; j++) {
+        if( this.operatingTimePerMonth[j] === 0 ){
+          this.PerformancePerMonth[j] = 0;
+        }else{
           this.PerformancePerMonth[j] = nPerMonthForPerformance[j] / this.operatingTimePerMonth[j];
+
+        }
       }
 
 
@@ -1291,8 +1298,13 @@ export default {
       this.$i18n.locale = sessionStorage.getItem("language");
     }
 
-    await axios.get(urlAPI + 'sites')
-        .then(response => (this.dataSite = response.data))
+    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+      await axios.get(urlAPI + 'sites/'+this.username)
+          .then(response => (this.dataSite = response.data))
+    }else{
+      await axios.get(urlAPI + 'sites')
+          .then(response => (this.dataSite = response.data))
+    }
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];

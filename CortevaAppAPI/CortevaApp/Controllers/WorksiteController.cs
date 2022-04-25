@@ -23,6 +23,45 @@ namespace CortevaApp.Controllers
             _configuration = configuration;
         }
 
+        [HttpGet("sites/{username}")]
+        public JsonResult getSitesUser(string username)
+        {
+            string querySites = @"select worksite_name as name from dbo.users where login=@username";
+            string queryProductionLines = @"select distinct pl.id, pl.productionline_name, users.worksite_name as name
+                                            from dbo.ole_productionline pl, users, worksite w
+                                            where users.worksite_name = pl.worksite_name and users.login = @username";
+
+            DataTable sites = new DataTable();
+            DataTable productionLines = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(querySites, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    reader = command.ExecuteReader();
+                    sites.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(queryProductionLines, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    reader = command.ExecuteReader();
+                    productionLines.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            DataTable[] data = { sites, productionLines };
+
+            return new JsonResult(data);
+        }
+
         [HttpGet("sites")]
         public JsonResult getSites()
         {
