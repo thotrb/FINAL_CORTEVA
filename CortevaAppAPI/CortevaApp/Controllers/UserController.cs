@@ -38,7 +38,11 @@ namespace CortevaApp.Controllers
                                       from dbo.users u, dbo.worksite w
                                       where u.worksite_name = w.name and u.status = 1 and u.worksite_name = (Select worksite_name
                                                                                                               from dbo.users u2, dbo.worksite w2
-                                                                                                                where u2.worksite_name = w2.name and u2.login = @username )";
+                                                                                                                where u2.worksite_name = w2.name and u2.login = @username )
+                                            and u.productionline = (Select u2.productionline
+                                                                      from dbo.users u2, dbo.worksite w2
+                                                                      where u2.worksite_name = w2.name and u2.login = @username)";
+                                            
 
             string shiftsQuery = @"select *
                                  from dbo.users u, dbo.teamInfo ti, dbo.worksite w
