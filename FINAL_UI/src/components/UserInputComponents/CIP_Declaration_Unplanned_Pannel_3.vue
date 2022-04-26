@@ -175,16 +175,19 @@ export default {
   },
 
   mounted() {
-
     if(sessionStorage.getItem("language") !== null){
       this.$i18n.locale = sessionStorage.getItem("language");
     }
 
-
+    let PONumber = sessionStorage.getItem("poNumber");
+    let productionLine = sessionStorage.getItem("productionName");
+    let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber;
+    axios.get(APIAddress).then(response => {
+      if (response.data[0] && response.data[0].bulk) {
+        document.getElementById("previousBulk").value = response.data[0].bulk;
+      }
+    });
   },
-
-
-
 }
 </script>
 

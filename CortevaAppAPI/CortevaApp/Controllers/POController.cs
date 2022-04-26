@@ -86,6 +86,37 @@ namespace CortevaApp.Controllers
             return new JsonResult(pos);
         }
 
+        [HttpGet("previousBulk/{productionline}/{ponumber}")]
+        public JsonResult getPreviousBulk(string site, string productionLine, string ponumber)
+        {
+            string queryPreviousBulk = @"select top 1 prod.""bulk""
+                                        from dbo.ole_pos pos, dbo.ole_products prod
+                                        where pos.GMIDCode = prod.GMID
+                                        and pos.productionline_name = @productionLine
+                                        and pos.created_at < (select top 1 p2.created_at from dbo.ole_pos p2 where p2.number = @ponumber)
+                                        order by pos.created_at desc";
+
+            DataTable pos = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryPreviousBulk, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@ponumber", ponumber);
+                    reader = command.ExecuteReader();
+                    pos.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(pos);
+        }
+
         [HttpGet("countassignation/{username}/{po}/{productionline}")]
         public JsonResult isAssignantionPossible(string username, string po, int productionLine)
         {
