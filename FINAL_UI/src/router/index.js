@@ -26,6 +26,12 @@ import OLE_Dashboard from "@/views/Dashboards/OLE_Dashboard";
 import UnplannedDowtimes_Dashboard from "@/views/Dashboards/UnplannedDowtimes_Dashboard";
 import UnplannedDowntimes_Shutdowns_Dashboard from "@/views/Dashboards/UnplannedDowntimes_Shutdowns_Dashboard";
 import axios from 'axios'
+import MainPage from "@/views/AdministratorInputs/MainPage";
+import Add_Machine_Page from "@/views/AdministratorInputs/Add_Machine_Page";
+import Add_DowntimeReason_Page from "@/views/AdministratorInputs/Add_DowntimeReason_Page";
+import Add_Format_Page from "@/views/AdministratorInputs/Add_Format_Page";
+import Add_Product_Page from "@/views/AdministratorInputs/Add_Product_Page";
+import Add_MachineComponent_Page from "@/views/AdministratorInputs/Add_MachineComponent_Page";
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
 axios.interceptors.response.use(response => response, error => {
@@ -199,7 +205,54 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: UnplannedSpeedlosses_Dashboard
   },
-
+  {
+    path: '/mainPageAdministrator',
+    name: 'mainPageAdministrator',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: MainPage
+  },
+  {
+    path: '/addData/machines',
+    name: 'Add_Machine_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_Machine_Page
+  },
+  {
+    path: '/addData/downtimeReason',
+    name: 'Add_DowntimeReason_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_DowntimeReason_Page
+  },
+  {
+    path: '/addData/formats',
+    name: 'Add_Format_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_Format_Page
+  },
+  {
+    path: '/addData/products',
+    name: 'Add_Product_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_Product_Page
+  },
+  {
+    path: '/addData/machinesComponent',
+    name: 'Add_MachineComponent_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_MachineComponent_Page
+  },
 ]
 
 const router = new VueRouter({

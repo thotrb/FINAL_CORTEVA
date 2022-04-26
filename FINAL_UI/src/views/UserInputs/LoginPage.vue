@@ -56,15 +56,28 @@ export default {
           setTimeout(() => {
             localStorage.setItem("username", user);
             localStorage.setItem("auth-token", resp.data.token);
+            sessionStorage.setItem("user-status", userCredential);
+
+            console.log(sessionStorage.getItem("loginChoice"))
+            console.log(userCredential)
+            if(sessionStorage.getItem("loginChoice") == 'operator'){
+              router.replace('/teamInfo');
+            }else if(sessionStorage.getItem("loginChoice") == 'supervisor' && (userCredential == 1 || userCredential == 2)){
+              router.replace('/Dashboard/downtimesReport');
+            }else if(sessionStorage.getItem("loginChoice") == 'administrator'  && (userCredential == 2)){
+              router.replace('/mainPageAdministrator');
+            }
+            /**
             if (userCredential == 0) {
               router.replace('/teamInfo');
             } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == 'supervisor') {
               router.replace('/Dashboard/downtimesReport');
             } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "administrator") {
-              router.replace('/Dashboard/downtimesReport');
+              router.replace('/mainPageAdministrator');
             } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == "operator") {
               router.replace('/teamInfo');
             }
+             **/
           }, 1000);  
         } else {
           localStorage.removeItem("username");

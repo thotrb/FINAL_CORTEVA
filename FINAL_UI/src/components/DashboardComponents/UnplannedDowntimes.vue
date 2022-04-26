@@ -644,13 +644,14 @@ export default {
     if (sessionStorage.getItem("language") !== null) {
       this.$i18n.locale = sessionStorage.getItem("language");
     }
-    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+    if(sessionStorage.getItem("user-status") == 1){
       await axios.get(urlAPI + 'sites/'+this.username)
           .then(response => (this.dataSite = response.data))
     }else{
       await axios.get(urlAPI + 'sites')
           .then(response => (this.dataSite = response.data))
     }
+
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];

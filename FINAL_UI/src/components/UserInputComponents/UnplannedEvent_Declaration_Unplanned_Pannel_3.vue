@@ -361,7 +361,7 @@ export default {
       this.title = this.$t("unplannedDowntime");
     }
 
-    await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/filler/'+sessionStorage.getItem("worksite"))
+    await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/filler/'+sessionStorage.getItem("worksite")+'/'+this.productionName)
         .then(response => (this.machineIssue = response.data))
 
 

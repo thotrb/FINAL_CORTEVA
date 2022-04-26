@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using CortevaApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -145,13 +146,13 @@ namespace CortevaApp.Controllers
             return new JsonResult(Issues);
         }
 
-        [HttpGet("unplannedDowntime/unplannedDowntime/{machineName}/{worksite}")]
-        public JsonResult GetUnplannedDowntimeMachineIssue(string machineName, string worksite)
+        [HttpGet("unplannedDowntime/unplannedDowntime/{machineName}/{worksite}/{productionline}")]
+        public JsonResult GetUnplannedDowntimeMachineIssue(string machineName, string worksite, string productionline)
         {
             string queryIssues = @"select mc.name as component, m.name, other_machine, mc.worksite
                                    from dbo.ole_machines m, dbo.machine_component mc
                                    where m.name = mc.machineName
-                                   and m.name = @machineName and mc.worksite = @worksite";
+                                   and m.name = @machineName and mc.worksite = @worksite and mc.productionLine = @productionline";
 
             DataTable Issues = new DataTable();
 
@@ -164,6 +165,7 @@ namespace CortevaApp.Controllers
                 {
                     command.Parameters.AddWithValue("@machineName", machineName);
                     command.Parameters.AddWithValue("@worksite", worksite);
+                    command.Parameters.AddWithValue("@productionline", productionline);
 
                     reader = command.ExecuteReader();
                     Issues.Load(reader);
@@ -174,5 +176,73 @@ namespace CortevaApp.Controllers
 
             return new JsonResult(Issues);
         }
+
+        [HttpGet("administratorMachine/{worksite}")]
+        public JsonResult GetAdministratorMachine(string worksite)
+        {
+            string queryIssues = @"select *
+                                   from dbo.ole_machines m
+                                   where m.worksite = @worksite order by productionline_name, ordre ASC";
+
+            DataTable Issues = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryIssues, connection))
+                {
+                    command.Parameters.AddWithValue("@worksite", worksite);
+
+                    reader = command.ExecuteReader();
+                    Issues.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(Issues);
+        }
+
+        [HttpPut("insertMachine")]
+        public JsonResult CreateNewMachine(Machine machine)
+        {
+            string QueryNewPO = @"insert into dbo.ole_machines (name, operation, fabricant, modele, productionline_name, denomination_ordre, ordre, rejection, worksite)
+                                  values (@name, @operation, @fabricant, @modele, @productionline_name, @denomination_ordre, @ordre, @rejection, @worksite)";
+
+
+            DataTable NewMachine = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
+                {
+                    command.Parameters.AddWithValue("@name", machine.name);
+                    command.Parameters.AddWithValue("@operation", machine.operation);
+                    command.Parameters.AddWithValue("@fabricant", machine.fabricant);
+                    command.Parameters.AddWithValue("@modele", machine.modele);
+                    command.Parameters.AddWithValue("@productionline_name", machine.productionline_name);
+                    command.Parameters.AddWithValue("@denomination_ordre", machine.denomination_ordre);
+                    command.Parameters.AddWithValue("@ordre", machine.ordre);
+                    command.Parameters.AddWithValue("@rejection", machine.rejection);
+                    command.Parameters.AddWithValue("@worksite", machine.worksite);
+
+                    reader = command.ExecuteReader();
+                    NewMachine.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NewMachine);
+        }
+
+
     }
+
+
 }

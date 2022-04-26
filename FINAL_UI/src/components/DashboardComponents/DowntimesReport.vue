@@ -1133,7 +1133,8 @@ export default {
     //sites[0] = sites
     //sites[1] = lignes de production de ce site
 
-    if(sessionStorage.getItem("loginChoice") == "supervisor"){
+    console.log(sessionStorage.getItem("user-status"));
+    if(sessionStorage.getItem("user-status") == 1){
       await axios.get(urlAPI + 'sites/'+this.username)
           .then(response => (this.dataSite = response.data))
     }else{

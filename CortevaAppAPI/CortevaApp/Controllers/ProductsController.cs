@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using CortevaApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,72 @@ namespace CortevaApp.Controllers
             }
 
             return new JsonResult(NetOP);
+        }
+
+        [HttpGet("AdministratorProducts")]
+        public JsonResult GetProductsAdministrator()
+        {
+            string QueryNetOP = @"select *
+                                from dbo.ole_products
+                                order by product, formulationType, size ASC";
+
+
+            DataTable NetOP = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNetOP, connection))
+                {
+                    reader = command.ExecuteReader();
+                    NetOP.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NetOP);
+        }
+
+        [HttpPut("insertProduct")]
+        public JsonResult CreateNewMachine(Product product)
+        {
+            string QueryNewPO = @"insert into dbo.ole_products ( product, GMID , [bulk] ,family ,GIFAP,description ,
+formulationType ,size ,idealRate, bottlesPerCase)
+                                 values (@product, @GMID ,@bulk,@family ,@GIFAP,@description ,
+@formulationType ,@size ,@idealRate, @bottlesPerCase)";
+
+
+            DataTable NewMachine = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
+                {
+                    command.Parameters.AddWithValue("@product", product.product);
+                    command.Parameters.AddWithValue("@GMID", product.GMID);
+                    command.Parameters.AddWithValue("@bulk", product.bulk);
+                    command.Parameters.AddWithValue("@family", product.family);
+                    command.Parameters.AddWithValue("@GIFAP", product.GIFAP);
+                    command.Parameters.AddWithValue("@description", product.description); 
+                    command.Parameters.AddWithValue("@formulationType", product.formulationType);
+                    command.Parameters.AddWithValue("@size", product.size);
+                    command.Parameters.AddWithValue("@idealRate", product.idealRate);
+                    command.Parameters.AddWithValue("@bottlesPerCase", product.bottlesPerCase);
+
+                    reader = command.ExecuteReader();
+                    NewMachine.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NewMachine);
         }
     }
 }

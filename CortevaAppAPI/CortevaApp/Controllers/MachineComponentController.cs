@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CortevaApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     [Authorize]
     public class MachineComponentController : ControllerBase
@@ -27,7 +27,7 @@ namespace CortevaApp.Controllers
         [HttpGet("machine_component/{worksite}")]
         public JsonResult GetWorksite(string worksite)
         {
-            string query = @"select * from dbo.machine_component where worksite = @worksite";
+            string query = @"select * from dbo.machine_component where worksite = @worksite order by productionLine, name ASC";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -68,11 +68,11 @@ namespace CortevaApp.Controllers
             return new JsonResult(table);
         }
 
-        [HttpPost]
+        [HttpPost("insertMachineComponent")]
         public JsonResult Post(MachineComponent mc)
         {
-            string query = @"insert into dbo.machine_component (id, name, machineName, other_machine)
-                            values (@id, @name, @machineName, @otherMachine)";
+            string query = @"insert into dbo.machine_component (name, machineName, other_machine, worksite, productionLine)
+                            values (@name, @machineName, @otherMachine, @worksite, @productionLine)";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -81,10 +81,12 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@id", mc.id);
                     command.Parameters.AddWithValue("@name", mc.name);
                     command.Parameters.AddWithValue("@machineName", mc.machineName);
                     command.Parameters.AddWithValue("@otherMachine", mc.other_machine);
+                    command.Parameters.AddWithValue("@worksite", mc.worksite);
+                    command.Parameters.AddWithValue("@productionLine", mc.productionLine);
+
                     reader = command.ExecuteReader();
                     table.Load(reader);
                     reader.Close();

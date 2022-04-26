@@ -10,6 +10,7 @@ namespace CortevaApp.Models
         public string modele { get; set; }
         public string productionline_name { get; set; }
         public string denomination_ordre { get; set; }
+        public string worksite { get; set; }
         public int ordre { get; set; }
         public int rejection { get; set; }
     }

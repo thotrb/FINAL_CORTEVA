@@ -38,32 +38,7 @@ export default {
       sessionStorage.setItem("loginChoice", choice);
       router.replace('/login');
     },
-    /**
 
-    displayLoginPage: function (loginPage) {
-
-      if (sessionStorage.getItem("loginType") === null) {
-        sessionStorage.loginType = loginPage;
-      } else {
-        sessionStorage.setItem("loginType", loginPage);
-      }
-
-      let currentLink = window.location.href;
-
-      switch (loginPage) {
-        case 'op' :
-          window.location.href = currentLink + 'login/operator';
-          break;
-
-        case 'admin' :
-          window.location.href = currentLink + 'login/administrator';
-          break;
-
-        case 'sup' :
-          window.location.href = currentLink + 'login/supervisor';
-          break;
-
-      } */
     },
 
 }

@@ -50,5 +50,32 @@ namespace CortevaApp.Controllers
 
             return new JsonResult(ProductionLineID);
         }
+
+        [HttpGet("getProductionLines/{worksite}")]
+        public JsonResult GetProductionLineAdministrator(string worksite)
+        {
+            string QueryProductionLineID = @"select *
+                                           from dbo.ole_productionline
+                                           where worksite_name = @worksite";
+
+            DataTable ProductionLineID = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryProductionLineID, connection))
+                {
+                    command.Parameters.AddWithValue("@worksite", worksite);
+                    reader = command.ExecuteReader();
+                    ProductionLineID.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(ProductionLineID);
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace CortevaApp.Models
         public string machineName { get; set; }
         public int other_machine { get; set; }
         public string worksite { get; set; }
+        public string productionLine { get; set; }
 
     }
 }

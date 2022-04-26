@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using CortevaApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -131,6 +132,64 @@ namespace CortevaApp.Controllers
             }
 
             return new JsonResult(downtimeReason);
+        }
+
+        [HttpGet("administratorDowntimeReason/{worksite}")]
+        public JsonResult GetDowntimesAdministrator(string worksite)
+        {
+            string queryDowntimeReason = @"select *
+                                          from dbo.ole_downtimeReason 
+                                          where worksite = @worksite order by production_line, downtimeType, reason ASC";
+
+            DataTable downtimeReason = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDowntimeReason, connection))
+                {
+                    command.Parameters.AddWithValue("@worksite", worksite);
+                    reader = command.ExecuteReader();
+                    downtimeReason.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(downtimeReason);
+        }
+
+        [HttpPut("insertDowntimeReason")]
+        public JsonResult CreateNewMachine(DowntimeReason downtimeReason)
+        {
+            string QueryNewPO = @"insert into dbo.ole_downtimeReason (reason, downtimeType, worksite, production_line)
+                                  values (@reason, @downtimeType, @worksite, @production_line)";
+
+
+            DataTable NewMachine = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
+                {
+                    command.Parameters.AddWithValue("@reason", downtimeReason.reason);
+                    command.Parameters.AddWithValue("@downtimeType", downtimeReason.downtimeType);
+                    command.Parameters.AddWithValue("@production_line", downtimeReason.production_line);
+                    command.Parameters.AddWithValue("@worksite", downtimeReason.worksite);
+
+                    reader = command.ExecuteReader();
+                    NewMachine.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NewMachine);
         }
     }
 }
