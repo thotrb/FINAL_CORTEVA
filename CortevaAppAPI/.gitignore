@@ -1,2 +1,3 @@
 CortevaApp/bin/
 CortevaApp/appsettings.Development.json
+CortevaApp/run_dev.sh
