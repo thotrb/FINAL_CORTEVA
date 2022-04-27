@@ -7,6 +7,20 @@
     <br/>
     <br/>
 
+
+    <div>
+      <label for="csv">{{$t('select.csvFileToUse')}}</label>
+      <input type="file" id="csv" name="profile_pic"
+             accept=".csv">
+      <p id="fileDisplayArea"></p>
+      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+
+    </div>
+
+    <br/>
+    <br/>
+
+
     <form id="needs-validation" novalidate>
       <div class="row">
         <div class="col">
@@ -154,30 +168,88 @@ export default {
       });
     },
 
-    addMachine : function () {
-      var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+    readFile : function () {
+      var textType = /.csv/;
+      var doc = document.getElementById("csv").files[0];
 
-          }else {
+      if (doc.type.match(textType)) {
 
-            console.log("OK");
-            console.log(this.product);
+        //console.log(doc);
+        var reader = new FileReader();
+        reader.readAsText(doc);
+        reader.onload = function (e) {
+          var rows = e.target.result.split('\n');
+          var rowsSplited = null;
 
+          var i;
+          var product2 = {
+                product : null,
+                GMID : null,
+                bulk : null,
+                family : null,
+                GIFAP : null,
+                description : null,
+                formulationType : null,
+                size : null,
+                idealRate : null,
+                bottlesPerCase : null,
+          };
+          var effective;
+          for (i = 1; i < rows.length - 1; i++) {
+            rowsSplited = rows[i].split('\r')[0].split(',');
+            if(rowsSplited.length === 10){
+              product2.product = rowsSplited[0];
+              product2.GMID = rowsSplited[1];
+              product2.bulk = rowsSplited[2];
+              product2.family = rowsSplited[3];
+              product2.GIFAP = rowsSplited[4];
+              product2.description = rowsSplited[5];
+              product2.formulationType = rowsSplited[6];
+              product2.size = rowsSplited[7];
+              product2.idealRate = rowsSplited[8];
+              product2.bottlesPerCase = rowsSplited[9];
+              console.log(product2);
 
-            axios.put(urlAPI + 'insertProduct', this.product)
-                .then(response => (this.effective = response))
-
-            console.log('Effectif : ' + this.effective);
-            location.reload();
-
+              axios.put(urlAPI + 'insertProduct', product2)
+                  .then(response => (effective = response))
+              console.log(effective)
+            }
           }
+          location.reload();
+
+        }
+      }else{
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        fileDisplayArea.innerText = this.$t('fileNotSupported');
+      }
+    },
 
 
+    addMachine : async function () {
+      var form = document.getElementById('needs-validation');
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          form.classList.add('was-validated');
+      } else {
+
+        console.log("OK");
+        console.log(this.product);
+
+
+        axios.put(urlAPI + 'insertProduct', this.product)
+            .then(response => (this.effective = response))
+
+        console.log('Effectif : ' + this.effective);
+        await this.resolveAfter15Second();
+
+        location.reload();
+
+      }
+
+
+      form.classList.add('was-validated');
     },
 
 

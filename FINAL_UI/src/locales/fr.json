@@ -232,5 +232,10 @@
   "liquid" : "Liquide",
   "sparkling" : "Gazeux",
   "team" : "Équipe",
-  "allTeams" : "Toutes les équipes"
+  "allTeams" : "Toutes les équipes",
+  "addMachineComponent" : "Ajouter un composant de machine",
+  "machineName" : "Nom de machine",
+  "select.csvFileToUse" : "Sélectionnez un fichier .csv à utiliser",
+  "fileNotSupported" : "Fichier non supporté!",
+  "affiliatedMachine" :  "Machine affiliée"
 }

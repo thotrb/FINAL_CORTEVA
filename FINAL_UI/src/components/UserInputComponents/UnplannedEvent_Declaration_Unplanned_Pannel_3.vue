@@ -58,7 +58,7 @@
         <div class="col-sm-4" v-for="issue in issueOtherMachine" :key="issue.id">
           <button
               class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-              type="button" @click.prevent="addComments(title)">
+              type="button" @click.prevent="addComments(title, issue.component)">
             {{$t(issue.component)}}
           </button>
 
@@ -228,7 +228,7 @@ export default {
     },
 
     addReasonOtherMachine : async function (machineImplicated) {
-      await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/filler/' + sessionStorage.getItem("worksite") + '/0')
+      await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/'+machineImplicated+'/'+ sessionStorage.getItem("worksite") + '/0')
          .then(response => (this.issueOtherMachine = response.data));
       this.machineImplicated = machineImplicated;
       this.printedStep = 3;
@@ -239,10 +239,11 @@ export default {
       this.title = machineImplicated;
     },
 
-    addComments: function (machineImplicated) {
+    addComments: function (machineImplicated, issueComponent) {
 
       this.machineImplicated = machineImplicated;
       this.printedStep = 2;
+      this.componentName = issueComponent;
 
       this.previousTitle = this.title;
 

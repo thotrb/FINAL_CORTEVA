@@ -7,21 +7,43 @@
     <br/>
     <br/>
 
-    <form id="needs-validation" novalidate>
-      <div class="form-group">
-        <label for="inputEmail4">{{$t('name')}}</label>
-        <input type="text" class="form-control" id="inputEmail4" v-model="machineComponent.name"   required>
-      </div>
-      <div class="form-group">
-        <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
-          <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
-            {{line.productionline_name}}
-          </option>
-        </select>
-      </div>
+    <div>
+      <label for="csv">{{$t('select.csvFileToUse')}}</label>
+      <input type="file" id="csv" name="profile_pic"
+             accept=".csv">
+      <p id="fileDisplayArea"></p>
+      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
 
-      <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
+    </div>
+
+    <br/>
+    <br/>
+
+    <form id="needs-validation" novalidate>
+        <div class="form-group">
+          <label for="inputEmail4">{{$t('name')}}</label>
+          <input type="text" class="form-control" id="inputEmail4" v-model="machineComponent.name"   required>
+        </div>
+
+        <div class="form-group">
+          <label for="li">{{$t("affiliatedMachine")}}</label>
+          <select name="m" id="li" class="form-select" v-model="machineComponent.machineName">
+            <option  v-for="machine in machinesAvailable" :key="machine.id" v-bind:value="machine.name">
+              {{$t(machine.name)}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="l">{{$t("productionLine")}}</label>
+          <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
+            <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
+              {{line.productionline_name}}
+            </option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
     </form>
 
     <br/>
@@ -75,6 +97,7 @@ export default {
       userWorksite : null,
       effective : null,
       machineComponents : [],
+      machinesAvailable : null,
       machineComponent: {
         name : null,
         machineName : 'filler',
@@ -82,6 +105,8 @@ export default {
         other_machine : 0,
         productionLine : null,
       },
+
+
     }
   },
   methods : {
@@ -91,6 +116,54 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    readFile : function () {
+      var textType = /.csv/;
+      var doc = document.getElementById("csv").files[0];
+
+      if (doc.type.match(textType)) {
+
+        //console.log(doc);
+        var reader = new FileReader();
+        reader.readAsText(doc);
+        reader.onload = function (e) {
+          var rows = e.target.result.split('\n');
+          var rowsSplited = null;
+
+          var i;
+          var machineComponent2 = {
+            name: '',
+            machineName: '',
+            worksite: '',
+            other_machine: 0,
+            productionLine: '',
+          };
+          var effective;
+          for (i = 1; i < rows.length - 1; i++) {
+            rowsSplited = rows[i].split('\r')[0].split(',');
+            if(rowsSplited.length === 5){
+              machineComponent2.name = rowsSplited[0];
+              machineComponent2.machineName = rowsSplited[1];
+              machineComponent2.other_machine = rowsSplited[2];
+              machineComponent2.worksite = rowsSplited[3];
+              machineComponent2.productionLine = rowsSplited[4];
+              console.log(machineComponent2);
+
+              axios.post(urlAPI + 'insertMachineComponent', machineComponent2)
+                  .then(response => (effective = response))
+              console.log(effective)
+            }
+          }
+          location.reload();
+
+        }
+      }else{
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        fileDisplayArea.innerText = this.$t('fileNotSupported');
+
+      }
+
     },
 
     addMachine : function () {
@@ -133,7 +206,10 @@ export default {
     axios.get(urlAPI+'getProductionLines/' + this.userWorksite)
         .then(response => (this.productionlines = response.data))
 
+    axios.get(urlAPI+'administratorMachine/' + this.userWorksite)
+        .then(response => (this.machinesAvailable = response.data))
 
+    console.log(this.machinesAvailable)
     axios.get(urlAPI+'machine_component/' + this.userWorksite)
           .then(response => (this.machineComponents = response.data))
 
