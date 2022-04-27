@@ -237,5 +237,6 @@
   "machineName" : "Nom de machine",
   "select.csvFileToUse" : "Sélectionnez un fichier .csv à utiliser",
   "fileNotSupported" : "Fichier non supporté!",
-  "affiliatedMachine" :  "Machine affiliée"
+  "affiliatedMachine" :  "Machine affiliée",
+  "completed" : "Terminé"
 }

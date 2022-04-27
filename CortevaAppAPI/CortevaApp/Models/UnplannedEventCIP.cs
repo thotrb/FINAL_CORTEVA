@@ -16,5 +16,7 @@ namespace CortevaApp.Models
         public string shift { get; set; }
 
         public int kind { get; set; }
+
+        public bool finished { get; set; }
     }
 }

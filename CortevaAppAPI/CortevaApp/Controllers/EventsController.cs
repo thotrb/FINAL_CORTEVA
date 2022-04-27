@@ -24,6 +24,77 @@ namespace CortevaApp.Controllers
             _configuration = configuration;
         }
 
+        [HttpDelete("deleteCIP/{id}")]
+        public JsonResult deleteCIP(int id)
+        {
+
+            string QueryDeleteCIP = @"delete from dbo.ole_unplanned_event_cips where id = @id";
+
+            DataTable DeleteCIP = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryDeleteCIP, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    DeleteCIP.Load(reader);
+                    reader.Close();
+                }
+
+
+                connection.Close();
+            }
+            return new JsonResult(DeleteCIP);
+        }
+
+        [HttpGet("getOverlappedCIP/{productionLine}/{date}/{OLE}")]
+        public JsonResult getOverlappedCIP(string productionLine, string date, string OLE)
+        {
+
+            string[] _date = date.Split('-');
+            int beginningYear = Int16.Parse(_date[0]);
+            int beginningMonth = Int16.Parse(_date[1]);
+            int beginningDay = Int16.Parse(_date[2]);
+            DateTime cipDateMin = new DateTime(beginningYear, beginningMonth, beginningDay);
+            cipDateMin.AddDays(-2);
+            string dateString = cipDateMin.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+            string QueryOverlappingCIP = @"select * 
+                                        from dbo.ole_unplanned_event_cips
+                                        where productionline = @productionLine
+                                        and created_at >= @minDate
+                                        and OLE = @OLE
+                                        and finished = 0";
+
+
+            DataTable OverlappingCIP = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryOverlappingCIP, connection))
+                {
+                    command.Parameters.AddWithValue("@productionLine", productionLine);
+                    command.Parameters.AddWithValue("@minDate", dateString);
+                    command.Parameters.AddWithValue("@OLE", OLE);
+                    reader = command.ExecuteReader();
+                    OverlappingCIP.Load(reader);
+                    reader.Close();
+                }
+
+
+                connection.Close();
+            }
+
+            return new JsonResult(OverlappingCIP);
+        }
+
         [HttpGet("events/{po}/{productionLine}/{shift}")]
         public JsonResult GetEventsShift(string po, string productionLine, string shift)
         {
@@ -1134,8 +1205,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveUnplannedEventCIP(UnplannedEventCIP ue)
         {
             string QuerySaveUECIP = @"insert into dbo.ole_unplanned_event_cips
-                                   (OLE, productionline, predicted_duration, total_duration, comment, previous_bulk, shift)
-                                   values (@OLE, @PL, @PD, @TD, @C, @PB, @shift)";
+                                   (OLE, productionline, predicted_duration, total_duration, comment, previous_bulk, shift, finished)
+                                   values (@OLE, @PL, @PD, @TD, @C, @PB, @shift, @finished)";
 
 
             DataTable SaveUECIP = new DataTable();
@@ -1154,6 +1225,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@C", ue.comment);
                     command.Parameters.AddWithValue("@PB", ue.previous_bulk);
                     command.Parameters.AddWithValue("@shift", ue.shift);
+                    command.Parameters.AddWithValue("@finished", ue.finished);
                     reader = command.ExecuteReader();
                     SaveUECIP.Load(reader);
                     reader.Close();

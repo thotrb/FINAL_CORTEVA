@@ -112,11 +112,11 @@ INSERT INTO [ole_unplanned_event_changing_clients] (created_at, updated_at, OLE,
 INSERT INTO [ole_unplanned_event_changing_formats] (created_at, updated_at, OLE, productionline, predicted_duration, total_duration, comment, type, kind, shift) VALUES
 ('2021-11-03 16:38:10', '2021-11-03 16:38:10', 'testMedanLigne1', 'Medan1', 60, 10, NULL, 'Changement de format', 1, 'Medan');
 
-INSERT INTO [ole_unplanned_event_cips] (created_at, updated_at, OLE, previous_bulk, predicted_duration, total_duration, comment, productionline, type, kind, shift) VALUES
-('2021-11-03 15:47:20', '2021-11-03 15:47:20', 'testMedanLigne1', 'prevBulk', 5, 35, 'CIP', 'Medan1', 'CIP', 1, 'Medan'),
-('2021-11-03 16:12:48', '2021-11-03 16:12:48', 'testMedanLigne1', 'PREV', 5, 10, NULL, 'Medan1', 'CIP', 1, 'Medan'),
-('2021-11-03 16:21:41', '2021-11-03 16:21:41', 'testMedanLigne1', 'PREVIOUSBULK', 5, 30, NULL, 'Medan1', 'CIP', 1, 'Medan'),
-('2021-11-17 14:58:47', '2021-11-17 14:58:47', 'titi', 'PreviousBULKTEST', 5, 30, 'J''ai été lent.', 'F52', 'CIP', 1, 'Cernay');
+INSERT INTO [ole_unplanned_event_cips] (created_at, updated_at, OLE, previous_bulk, predicted_duration, total_duration, comment, productionline, type, kind, shift, finished) VALUES
+('2021-11-03 15:47:20', '2021-11-03 15:47:20', 'testMedanLigne1', 'prevBulk', 5, 35, 'CIP', 'Medan1', 'CIP', 1, 'Medan',1),
+('2021-11-03 16:12:48', '2021-11-03 16:12:48', 'testMedanLigne1', 'PREV', 5, 10, NULL, 'Medan1', 'CIP', 1, 'Medan',1),
+('2021-11-03 16:21:41', '2021-11-03 16:21:41', 'testMedanLigne1', 'PREVIOUSBULK', 5, 30, NULL, 'Medan1', 'CIP', 1, 'Medan',1),
+('2021-11-17 14:58:47', '2021-11-17 14:58:47', 'titi', 'PreviousBULKTEST', 5, 30, 'J''ai été lent.', 'F52', 'CIP', 1, 'Cernay',1);
 
 INSERT INTO [ole_unplanned_event_unplanned_downtimes] (created_at, updated_at, OLE, productionline, implicated_machine, component, total_duration, comment, type, kind, shift) VALUES
 ('2021-11-19 15:54:29', '2021-10-26 12:28:35', 'testPOMedan1', 'Medan1', 'Autres', 'Autres', 20, 'Labelling Box Manual', 'unplannedDowntime', 1, 'Medan'),

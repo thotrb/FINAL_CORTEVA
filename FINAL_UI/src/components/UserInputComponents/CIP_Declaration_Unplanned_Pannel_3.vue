@@ -16,7 +16,6 @@
         </div>
       </div>
 
-
       <div class="form-group row">
         <label class="col-sm-2 col-form-label rcorners1" for="expectedDuration">{{$t("expectedDuration(Minutes)")}}</label>
         <div class="col-sm-10">
@@ -25,7 +24,7 @@
       </div>
 
 
-      <div class="form-group row">
+      <div class="form-group row cip-hidden" >
         <label class="col-sm-2 col-form-label rcorners1" for="totalDuration">{{$t("totalDuration(Minutes)")}}</label>
         <div class="col-sm-10">
           <input type="number" id="totalDuration" class="form-control-plaintext rcorners2"  v-model="CIP_Event.total_duration">
@@ -33,6 +32,11 @@
       </div>
 
       <div class="form-group row">
+        <label class="col-sm-2 col-form-label rcorners1" for="completed">{{$t("completed")}}</label>
+        <input type="checkbox" id="completed" style="margin-top: 20px; width: 50px;" checked v-model="CIP_Event.finished">
+      </div>
+
+      <div class="form-group row cip-hidden">
         <label for="comments" class="col-sm-2 rcorners1">{{$t("comments")}}</label>
         <div class="col-sm-10">
           <textarea id="comments" class="form-control-plaintext rcorners2" v-model="CIP_Event.comment"></textarea>
@@ -100,6 +104,7 @@ export default {
 
         //commentaire
         comment :'',
+        finished: true,
       },
 
 
@@ -115,15 +120,25 @@ export default {
 
       console.log(this.CIP_Event);
 
-      if(this.CIP_Event.previous_bulk !== null && this.CIP_Event.total_duration > 0){
+      let currentDate = new Date();
+      let dateString = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
+      axios.get(urlAPI + "getOverlappedCIP/" + this.CIP_Event.productionline + "/" + dateString + "/" + this.CIP_Event.OLE).then(response => {
+        console.log("OVERLAPPED")
+        console.log(response.data);
+        if (response.data.length > 0) {
+          let id = response.data[0].id;
+          axios.delete(urlAPI + "deleteCIP/" + id);
+          this.CIP_Event.total_duration = parseInt(this.CIP_Event.total_duration) + parseInt(response.data[0].total_duration);
+        }
+      }).then(() => {
+        if(this.CIP_Event.previous_bulk !== null && this.CIP_Event.total_duration !== null){
+          axios.post(urlAPI + "unplannedEvent/CIP", this.CIP_Event);
+          this.backOrigin();
 
-        axios.post(urlAPI + "unplannedEvent/CIP", this.CIP_Event);
-
-        this.backOrigin();
-
-      }else{
-        this.errorMessage();
-      }
+        }else{
+          this.errorMessage();
+        }
+      });
 
     },
 
@@ -185,7 +200,7 @@ export default {
     let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber + "/" + currentGMID;
     axios.get(APIAddress).then(response => {
       if (response.data[0] && response.data[0].bulk) {
-        document.getElementById("previousBulk").value = response.data[0].bulk;
+        this.CIP_Event.previous_bulk = response.data[0].bulk;
       }
     });
   },
@@ -195,7 +210,9 @@ export default {
 
 <style scoped>
 
-
+input#endTime:hover {
+  cursor: not-allowed;
+}
 .productionName {
   left: 0;
   top: 0;
