@@ -8,6 +8,19 @@
     <br/>
     <br/>
 
+    <div>
+      <label for="csv">{{$t('select.csvFileToUse')}}</label>
+      <input type="file" id="csv" name="profile_pic"
+             accept=".csv">
+      <p id="fileDisplayArea"></p>
+      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+
+    </div>
+
+    <br/>
+    <br/>
+
+
     <form id="needs-validation" novalidate>
       <div class="form-row">
         <div class="form-group col-md-6">
@@ -131,6 +144,64 @@ export default {
         }, 1500);
       });
     },
+
+
+    readFile : function () {
+      var textType = /.csv/;
+      var doc = document.getElementById("csv").files[0];
+
+      if (doc.type.match(textType)) {
+
+        //console.log(doc);
+        var reader = new FileReader();
+        reader.readAsText(doc);
+        reader.onload = function (e) {
+          var rows = e.target.result.split('\n');
+          var rowsSplited = null;
+
+          var i;
+          var machine2 =  {
+                name : null,
+                operation : null,
+                fabricant : null,
+                modele : null,
+                productionline_name : null,
+                denomination_ordre : null,
+                ordre : null,
+                rejection : null,
+                worksite : null,
+          };
+          var effective;
+          for (i = 1; i < rows.length - 1; i++) {
+            rowsSplited = rows[i].split('\r')[0].split(',');
+            if(rowsSplited.length === 9){
+              machine2.name = rowsSplited[0];
+              machine2.operation = rowsSplited[1];
+              machine2.fabricant = rowsSplited[2];
+              machine2.modele = rowsSplited[3];
+              machine2.productionline_name = rowsSplited[4];
+              machine2.denomination_ordre = rowsSplited[5];
+              machine2.ordre = rowsSplited[6];
+              machine2.rejection = rowsSplited[7];
+              machine2.worksite = rowsSplited[8];
+              console.log(machine2);
+
+              axios.put(urlAPI + 'insertMachine', machine2)
+                  .then(response => (effective = response))
+              console.log(effective)
+            }
+          }
+          location.reload();
+
+        }
+      }else{
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        fileDisplayArea.innerText = this.$t('fileNotSupported');
+
+      }
+
+    },
+
 
     addMachine : function () {
       var form = document.getElementById('needs-validation');

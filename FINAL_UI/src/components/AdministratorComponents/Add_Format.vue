@@ -7,6 +7,19 @@
     <br/>
     <br/>
 
+
+    <div>
+      <label for="csv">{{$t('select.csvFileToUse')}}</label>
+      <input type="file" id="csv" name="profile_pic"
+             accept=".csv">
+      <p id="fileDisplayArea"></p>
+      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+
+    </div>
+
+    <br/>
+    <br/>
+
     <form id="needs-validation" novalidate>
       <div class="form-group">
         <label for="inputEmail4">{{$t('format')}} (L) </label>
@@ -121,6 +134,59 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    readFile : function () {
+      var textType = /.csv/;
+      var doc = document.getElementById("csv").files[0];
+
+      if (doc.type.match(textType)) {
+
+        //console.log(doc);
+        var reader = new FileReader();
+        reader.readAsText(doc);
+        reader.onload = function (e) {
+          var rows = e.target.result.split('\n');
+          var rowsSplited = null;
+
+          var i;
+          var format2 = {
+                format : null,
+                shape : null,
+                mat1 : 'None',
+                mat2 : 'None',
+                mat3 : 'None',
+                design_rate : null,
+                productionlineName : null,
+
+          };
+          var effective;
+          for (i = 1; i < rows.length - 1; i++) {
+            rowsSplited = rows[i].split('\r')[0].split(',');
+            if(rowsSplited.length === 7){
+              format2.format = rowsSplited[0];
+              format2.shape = rowsSplited[1];
+              format2.mat1 = rowsSplited[2];
+              format2.mat2 = rowsSplited[3];
+              format2.mat3 = rowsSplited[4];
+              format2.design_rate = rowsSplited[5];
+              format2.productionlineName = rowsSplited[6];
+              console.log(format2);
+
+              axios.put(urlAPI + 'insertFormat', format2)
+                  .then(response => (effective = response))
+              console.log(effective)
+            }
+          }
+          location.reload();
+
+        }
+      }else{
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        fileDisplayArea.innerText = this.$t('fileNotSupported');
+
+      }
+
     },
 
     addMachine : function () {

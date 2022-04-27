@@ -230,7 +230,13 @@
   "idealRate" : "Taux idéal",
   "solid" :  "Solide",
   "liquid" : "Liquide",
-  "sparkling" : "Gazeux"
+  "sparkling" : "Gazeux",
+  "addMachineComponent" : "Ajouter un composant de machine",
+  "machineName" : "Nom de machine",
+  "select.csvFileToUse" : "Sélectionnez un fichier .csv à utiliser",
+  "fileNotSupported" : "Fichier non supporté!"
+
+
 
 
 }

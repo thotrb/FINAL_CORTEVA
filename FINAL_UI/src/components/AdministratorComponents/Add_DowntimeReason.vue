@@ -7,6 +7,19 @@
     <br/>
     <br/>
 
+    <div>
+      <label for="csv">{{$t('select.csvFileToUse')}}</label>
+      <input type="file" id="csv" name="profile_pic"
+             accept=".csv">
+      <p id="fileDisplayArea"></p>
+      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+
+    </div>
+
+    <br/>
+    <br/>
+
+
     <form id="needs-validation" novalidate>
       <div class="form-group">
         <label for="inputEmail4">{{$t('reason')}}</label>
@@ -94,6 +107,53 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    readFile : function () {
+      var textType = /.csv/;
+      var doc = document.getElementById("csv").files[0];
+
+      if (doc.type.match(textType)) {
+
+        //console.log(doc);
+        var reader = new FileReader();
+        reader.readAsText(doc);
+        reader.onload = function (e) {
+          var rows = e.target.result.split('\n');
+          var rowsSplited = null;
+
+          var i;
+          var downtimeReason2 = {
+            reason: '',
+            downtimeType: '',
+            worksite: '',
+            production_line: '',
+          };
+          var effective;
+          for (i = 1; i < rows.length - 1; i++) {
+            rowsSplited = rows[i].split('\r')[0].split(',');
+            if(rowsSplited.length === 4){
+              downtimeReason2.reason = rowsSplited[0];
+              downtimeReason2.downtimeType = rowsSplited[1];
+              downtimeReason2.worksite = rowsSplited[2];
+              downtimeReason2.production_line = rowsSplited[3];
+              console.log(downtimeReason2);
+
+              axios.put(urlAPI + 'insertDowntimeReason', downtimeReason2)
+                  .then(response => (effective = response))
+              console.log(effective)
+            }
+          }
+          location.reload();
+
+        }
+      }else{
+        var fileDisplayArea = document.getElementById('fileDisplayArea');
+        fileDisplayArea.innerText = this.$t('fileNotSupported');
+
+
+      }
+
     },
 
     addMachine : function () {

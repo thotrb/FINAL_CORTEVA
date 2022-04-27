@@ -231,6 +231,11 @@
   "idealRate" : "Ideal Rate",
   "solid" :  "Solid",
   "liquid" : "Liquid",
-  "sparkling" : "Sparkle"
+  "sparkling" : "Sparkle",
+  "addMachineComponent" : "Add a machine component",
+  "machineName" : "Machine name",
+  "select.csvFileToUse" : "Select .csv file to use",
+  "fileNotSupported" : "File not supported!"
+
 
 }
