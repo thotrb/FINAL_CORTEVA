@@ -232,6 +232,7 @@ export default {
       show: 0,
 
       allEvents2: null,
+      dataTeams : null,
 
       OLEPerMonth: [],
       AvailabilityPerMonth: [],
@@ -266,6 +267,7 @@ export default {
       availability: 0,
       quality: 0,
       OLE: 0,
+      chartFinal : null,
 
       plannedDowntimes2: 0,
       unplannedDowntimes2: 0,
@@ -1089,7 +1091,6 @@ export default {
 
     graph2: function () {
       var chart = document.getElementById("myChart4").getContext('2d');
-
       var chartMaison = {
         type: "bar",
         data: {
@@ -1195,8 +1196,10 @@ export default {
           }
         }
       };
-
-      new Chart(chart, chartMaison);
+      if(this.chartFinal instanceof Chart){
+        this.chartFinal.destroy();
+      }
+      this.chartFinal = new Chart(chart, chartMaison);
 
 /**
       chart = chart.Chart("chartContainer", {
