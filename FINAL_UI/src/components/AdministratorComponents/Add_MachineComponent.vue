@@ -20,20 +20,30 @@
     <br/>
 
     <form id="needs-validation" novalidate>
-      <div class="form-group">
-        <label for="inputEmail4">{{$t('name')}}</label>
-        <input type="text" class="form-control" id="inputEmail4" v-model="machineComponent.name"   required>
-      </div>
-      <div class="form-group">
-        <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
-          <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
-            {{line.productionline_name}}
-          </option>
-        </select>
-      </div>
+        <div class="form-group">
+          <label for="inputEmail4">{{$t('name')}}</label>
+          <input type="text" class="form-control" id="inputEmail4" v-model="machineComponent.name"   required>
+        </div>
 
-      <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
+        <div class="form-group">
+          <label for="li">{{$t("affiliatedMachine")}}</label>
+          <select name="m" id="li" class="form-select" v-model="machineComponent.machineName">
+            <option  v-for="machine in machinesAvailable" :key="machine.id" v-bind:value="machine.name">
+              {{$t(machine.name)}}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="l">{{$t("productionLine")}}</label>
+          <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
+            <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
+              {{line.productionline_name}}
+            </option>
+          </select>
+        </div>
+
+        <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
     </form>
 
     <br/>
@@ -87,6 +97,7 @@ export default {
       userWorksite : null,
       effective : null,
       machineComponents : [],
+      machinesAvailable : null,
       machineComponent: {
         name : null,
         machineName : 'filler',
@@ -195,7 +206,10 @@ export default {
     axios.get(urlAPI+'getProductionLines/' + this.userWorksite)
         .then(response => (this.productionlines = response.data))
 
+    axios.get(urlAPI+'administratorMachine/' + this.userWorksite)
+        .then(response => (this.machinesAvailable = response.data))
 
+    console.log(this.machinesAvailable)
     axios.get(urlAPI+'machine_component/' + this.userWorksite)
           .then(response => (this.machineComponents = response.data))
 

@@ -235,7 +235,8 @@
   "addMachineComponent" : "Add a machine component",
   "machineName" : "Machine name",
   "select.csvFileToUse" : "Select .csv file to use",
-  "fileNotSupported" : "File not supported!"
+  "fileNotSupported" : "File not supported!",
+  "affiliatedMachine" :  "Affiliated machine"
 
 
 }
