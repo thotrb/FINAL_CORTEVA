@@ -181,7 +181,8 @@ export default {
 
     let PONumber = sessionStorage.getItem("poNumber");
     let productionLine = sessionStorage.getItem("productionName");
-    let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber;
+    let currentGMID = sessionStorage.getItem("GMID");
+    let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber + "/" + currentGMID;
     axios.get(APIAddress).then(response => {
       if (response.data[0] && response.data[0].bulk) {
         document.getElementById("previousBulk").value = response.data[0].bulk;
