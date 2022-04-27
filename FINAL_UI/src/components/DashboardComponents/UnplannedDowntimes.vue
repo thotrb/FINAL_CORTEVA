@@ -731,6 +731,10 @@ div.selection-menu {
   justify-content: space-evenly;
 }
 
+div.site-pl-selection {
+  min-width: 200px;
+}
+
 div.site-pl-selection > div {
   align-items: center;
 }
@@ -740,7 +744,7 @@ div.site-pl-selection select {
 }
 
 div.site-pl-selection label {
-  margin: 0px 10px 0px 0px;
+  margin: 10px 0px 0px 0px;
 }
 
 div.table-ya-container {
