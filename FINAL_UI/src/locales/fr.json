@@ -230,7 +230,7 @@
   "idealRate" : "Taux idéal",
   "solid" :  "Solide",
   "liquid" : "Liquide",
-  "sparkling" : "Gazeux"
-
-
+  "sparkling" : "Gazeux",
+  "team" : "Équipe",
+  "allTeams" : "Toutes les équipes"
 }

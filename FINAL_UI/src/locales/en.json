@@ -231,6 +231,8 @@
   "idealRate" : "Ideal Rate",
   "solid" :  "Solid",
   "liquid" : "Liquid",
-  "sparkling" : "Sparkle"
+  "sparkling" : "Sparkle",
+  "team" : "Team",
+  "allTeams" : "All Teams"
 
 }

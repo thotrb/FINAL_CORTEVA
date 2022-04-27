@@ -24,6 +24,18 @@
           </template>
         </select>
 
+        <!-- Team selection -->
+          <label for="team">{{$t("team")}}: </label>
+          <select name="team" id="team-selection" class="form-select">
+            <option disabled selected value="">-- {{ $t("select") }} --</option>
+            <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+            <template v-for="team in dataTeams">
+              <template v-if="team.worksite_name === site">
+                <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+              </template>
+            </template> 
+          </select>
+
         <button id="pl-selection-load" type="button" class="btn btn-primary" v-on:click="chargeData();">{{$t("load")}}</button>
       </div>
 
@@ -153,6 +165,7 @@ export default {
       dataWorksite : null,
       dataProductionlines : null,
       getSpeedLosses : null,
+      dataTeams: null
     }
 
     return data;
@@ -174,12 +187,13 @@ export default {
       const selectedPL = document.getElementById('pl-selection').value;
       const begDate = document.getElementById('select-date-from').value;
       const endDate = document.getElementById('select-date-to').value;
+      const team = document.getElementById('team-selection').value;
 
       if (site && selectedPL && begDate && endDate) {
 
 
 
-        await axios.get(urlAPI + 'getSpeedLosses/'+site+'/'+selectedPL+'/'+begDate+'/'+endDate)
+        await axios.get(urlAPI + 'getSpeedLosses/'+site+'/'+selectedPL+'/'+begDate+'/'+endDate+'/'+team)
             .then(response => {
                 this.getSpeedLosses = response.data;
 
@@ -343,6 +357,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
 
     //Load chart.js into vue component
@@ -391,7 +406,7 @@ div.main-container {
   flex-direction: column;
   background-color: white;
   padding: 20px;
-  min-width: 1000px;
+  min-width: 1200px;
   border-radius: 5px;
   margin: 20px 0px;
 }
@@ -400,7 +415,7 @@ div.selection-menu {
   flex-direction: row;
   padding: 20px 0px;
   border-bottom: solid 1px;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 div.site-pl-selection {

@@ -85,8 +85,8 @@ namespace CortevaApp.Controllers
             return new JsonResult(speedLosses);
         }
 
-        [HttpGet("getSpeedLosses/{site}/{productionLine}/{startingDate}/{endingDate}")]
-        public JsonResult GetSpeedLosses(string site, string productionLine, string startingDate, string endingDate)
+        [HttpGet("getSpeedLosses/{site}/{productionLine}/{startingDate}/{endingDate}/{shift}")]
+        public JsonResult GetSpeedLosses(string site, string productionLine, string startingDate, string endingDate, string shift)
         {
             startingDate += " 00:00:00.000";
             endingDate += " 23:59:59.999";
@@ -101,6 +101,9 @@ namespace CortevaApp.Controllers
                                             and sl.created_at <= @endingDate
                                             and w.name = @site";
 
+            if (shift != "allTeams") {
+                querySpeedLossesEvents += " and sl.shift = @shift";
+            }
 
             DataTable SpeedLossesEvents = new DataTable();
 
@@ -115,6 +118,9 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@startingDate", startingDate);
                     command.Parameters.AddWithValue("@endingDate", endingDate);
                     command.Parameters.AddWithValue("@site", site);
+                    if (shift != "allTeams") {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     SpeedLossesEvents.Load(reader);
                     reader.Close();

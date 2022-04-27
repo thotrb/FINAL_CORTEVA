@@ -5,7 +5,8 @@
     <div class="d-flex selection-menu">
       <!-- Site and production line selection-->
       <div class="d-flex site-pl-selection">
-        <div class="d-flex">
+        <div class="d-flex" style="flex-direction: column;">
+        
           <label for="site-selection">Site: </label>
           <select id="site-selection" v-model="site">
             <option disabled selected value>-- Select --</option>
@@ -13,8 +14,7 @@
               <option v-bind:key="site.name" v-bind:value="site.name">{{site.name}}</option>
             </template>
           </select>
-        </div>
-        <div class="d-flex">
+     
           <label for="pl-selection">{{$t("productionLine")}}: </label>
           <select id="pl-selection">
             <option disabled selected value>-- Select --</option>
@@ -26,7 +26,19 @@
               </template>
             </template>
           </select>
-        </div>
+        
+          <!-- Team selection -->
+          <label for="team">{{$t("team")}}: </label>
+          <select name="team" id="team-selection" class="form-select">
+            <option disabled selected value="">-- {{ $t("select") }} --</option>
+            <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+            <template v-for="team in dataTeams">
+              <template v-if="team.worksite_name === site">
+                <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+              </template>
+            </template> 
+          </select>
+          </div>
       </div>
       <production-window style="width: 400px;"/>
       <button id="pl-selection-load" type="button" class="btn btn-primary" v-on:click="productionLineSelected();" style="height: 50%; align-self: center;">{{$t("load")}}</button>
@@ -156,6 +168,7 @@ export default {
       dataWorksite : null,
       dataProductionlines : null,
       unplannedDowntimeEvents : null,
+      dataTeams: null
     }
 
     return data;
@@ -187,8 +200,9 @@ export default {
       const selectedPL = document.getElementById('pl-selection').value;
       const dateFrom = document.getElementById('select-date-from').value;
       const dateTo = document.getElementById('select-date-to').value;
+      const team = document.getElementById('team-selection').value;
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEventsDate/' + selectedPL + '/' + dateFrom + '/' + dateTo)
+      await axios.get(urlAPI + 'UnplannedDowntimeEventsDate/' + selectedPL + '/' + dateFrom + '/' + dateTo + '/' + team)
           .then(response => {
             this.unplannedDowntimeEvents = response.data;
             this.createDowntimeObject();
@@ -369,6 +383,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
     //Load chart.js into vue component
     let chartJs = document.createElement('script');

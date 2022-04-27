@@ -7,7 +7,7 @@
 
             <form>
               <label class="" for="site">{{$t("site")}} : </label>
-              <select name="site" id="site" class="form-select" v-model="site">
+              <select name="site" id="site" class="form-select" v-model="site" @change="team = ''">
                 <template v-for="site in dataWorksite">
                   <option v-bind:value="site.name" v-bind:key="site.id">
                     {{site.name}}
@@ -20,7 +20,7 @@
             <form>
               <label class="" for="productionline">{{$t("productionLine")}} : </label>
               <select name="productionline" id="productionline" class="form-select"
-                      v-model="productionline">
+                      v-model="productionline" @change="team = 'allTeams'">
                 <template v-for="productionline in dataProductionlines">
                   <template v-if="productionline.name === site">
                     <option v-bind:value="productionline.productionline_name" v-bind:key="productionline.id">
@@ -30,6 +30,19 @@
 
                 </template>
 
+              </select>
+            </form>
+          </div>
+          <div>
+            <form>
+              <label for="team">{{$t("team")}}: </label>
+              <select name="team" id="team-select" class="form-select" v-model="team">
+                <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+                <template v-for="team in dataTeams">
+                  <template v-if="team.worksite_name === site">
+                    <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+                  </template>
+                </template> 
               </select>
             </form>
           </div>
@@ -406,10 +419,11 @@ export default {
       quality: 0,
       dataWorksite : null,
       dataProductionlines : null,
+      dataTeams: null,
       allEvents : null,
       qualityLosses : null,
       username: localStorage.getItem("username"),
-
+      team: ""
     }
   },
 
@@ -432,23 +446,19 @@ export default {
 
     load: async function () {
 
-      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '') {
+      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '' && this.team !== '') {
         var tab = [];
         tab.push(this.site);
         tab.push(this.productionline);
         tab.push(this.beginningDate);
         tab.push(this.endingDate);
 
-
-        console.log(this.beginningDate);
-        console.log(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate);
-
-        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate)
+        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate + '/' + this.team)
             .then(response => (this.allEvents = response.data))
 
         console.log(this.allEvents);
 
-        await axios.get(urlAPI + 'qualityLosses/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate)
+        await axios.get(urlAPI + 'qualityLosses/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate + '/' + this.team)
             .then(response => (this.qualityLosses = response.data))
 
         console.log(this.qualityLosses);
@@ -818,6 +828,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
 
     var today = new Date();

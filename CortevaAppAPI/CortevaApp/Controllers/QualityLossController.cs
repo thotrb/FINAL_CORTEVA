@@ -19,8 +19,8 @@ namespace CortevaApp.Controllers
         private readonly IConfiguration _configuration;
         public QualityLossController(IConfiguration configuration) => _configuration = configuration;
 
-        [HttpGet("qualityLosses/{site}/{productionLine}/{beginningDate}/{endingDate}")]
-        public JsonResult getQualityLossesPeriod(string site, string productionLine, string beginningDate, string endingDate)
+        [HttpGet("qualityLosses/{site}/{productionLine}/{beginningDate}/{endingDate}/{shift}")]
+        public JsonResult getQualityLossesPeriod(string site, string productionLine, string beginningDate, string endingDate, string shift)
         {
             beginningDate += " 00:00:00.000";
             endingDate += " 23:59:59.999";
@@ -38,6 +38,11 @@ namespace CortevaApp.Controllers
 								and pos.shift = rc.shift
                                 and pos.created_at >= @beginningDate
                                 and pos.created_at <= @endingDate";
+            
+            if (shift != "allTeams")
+            {
+                QuerySites += " and pos.shift = @shift";
+            }
 
             DataTable Sites = new DataTable();
 
@@ -52,6 +57,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@beginningDate", beginningDate);
                     command.Parameters.AddWithValue("@endingDate", endingDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     Sites.Load(reader);
                     reader.Close();
@@ -83,6 +92,12 @@ namespace CortevaApp.Controllers
                                             and rc.created_at >= @startDate
                                             and rc.created_at <= @endDate";
 
+                    if (shift != "allTeams")
+                    {
+                        QueryRejectionCounter += " and pos.shift = @shift";
+                        QueryFormats += " and pos.shift = @shift";
+                    }
+
                     DataTable RejectionCounters = new DataTable();
                     DataTable Formats = new DataTable();
 
@@ -92,6 +107,10 @@ namespace CortevaApp.Controllers
                         command.Parameters.AddWithValue("@worksite", site);
                         command.Parameters.AddWithValue("@startDate", beginningDate);
                         command.Parameters.AddWithValue("@endDate", endingDate);
+                        if (shift != "allTeams")
+                        {
+                            command.Parameters.AddWithValue("@shift", shift);
+                        }
                         reader = command.ExecuteReader();
                         RejectionCounters.Load(reader);
                         reader.Close();
@@ -103,6 +122,10 @@ namespace CortevaApp.Controllers
                         command.Parameters.AddWithValue("@worksite", site);
                         command.Parameters.AddWithValue("@startDate", beginningDate);
                         command.Parameters.AddWithValue("@endDate", endingDate);
+                        if (shift != "allTeams")
+                        {
+                            command.Parameters.AddWithValue("@shift", shift);
+                        }
                         reader = command.ExecuteReader();
                         Formats.Load(reader);
                         reader.Close();

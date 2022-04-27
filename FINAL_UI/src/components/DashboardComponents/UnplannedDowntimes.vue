@@ -7,7 +7,7 @@
 
     <!-- Interval, site and production line selection menu -->
     <div class="d-flex selection-menu">
-      <!-- Site and production line selection-->
+      <!-- Site selection-->
       <div class="site-pl-selection">
         <label for="site-selection">{{$t("site")}} : </label>
         <select id="site-selection" v-model="site">
@@ -19,6 +19,7 @@
           </template>
         </select>
 
+        <!-- Production line selection -->
         <label for="pl-selection">{{ $t("productionLine") }} : </label>
         <select id="pl-selection">
           <option disabled selected value="">-- {{ $t("select") }} --</option>
@@ -29,6 +30,18 @@
               </option>
             </template>
           </template>
+        </select>
+
+        <!-- Team selection -->
+        <label for="team">{{$t("team")}}: </label>
+        <select name="team" id="team-selection" class="form-select">
+          <option disabled selected value="">-- {{ $t("select") }} --</option>
+          <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+          <template v-for="team in dataTeams">
+            <template v-if="team.worksite_name === site">
+              <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+            </template>
+          </template> 
         </select>
       </div>
       <div class="main-production-window">
@@ -326,10 +339,12 @@ export default {
       },
       site: "",
       productionLine: "",
+      team: "",
       sequencesCIP: {},
       sequencesCOV: {},
       dataWorksite : null,
       dataProductionlines : null,
+      dataTeams : null
     };
 
     //Populate downtimes array
@@ -437,9 +452,10 @@ export default {
     chargeCurrentYearData: async function () {
       const selectedPL = document.getElementById("pl-selection").value;
       const selectedYear = document.getElementById("year-select").value;
+      const team = document.getElementById("team-selection").value;
       
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear)
+      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear + '/' + team)
           .then(response => {
                 this.unplannedDowntimeEvents = response.data;
                 this.resolveAfter(1000);
@@ -528,8 +544,9 @@ export default {
       const selectedPL = document.getElementById("pl-selection").value;
       const dateFrom = document.getElementById("select-date-from").value.split('-')[0];
       const dateTo = document.getElementById("select-date-to").value.split('-')[0];
+      const team = document.getElementById("team-selection").value || "allTeams";
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + dateFrom + '/' + dateTo)
+      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + dateFrom + '/' + dateTo + '/' + team)
           .then(response => {
             this.unplannedDowntimeEvents = response.data;
             for (let cat of ["cip", "cov", "bnc"]) {
@@ -655,6 +672,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
 
     //Load chart.js into vue component
@@ -874,5 +892,9 @@ div.main-production-window > div.interval-selection > input {
 
 div.main-production-window > div.interval-selection > * {
   font-size: 17px;
+}
+
+div.main-production-window input#year-select {
+  min-width: 60px;
 }
 </style>

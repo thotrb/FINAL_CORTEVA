@@ -35,6 +35,19 @@
             </form>
           </div>
           <div>
+            <form>
+              <label for="team">{{$t("team")}}: </label>
+              <select name="team" id="team-select" class="form-select" v-model="team">
+                <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+                <template v-for="team in dataTeams">
+                  <template v-if="team.worksite_name === site">
+                    <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+                  </template>
+                </template> 
+              </select>
+            </form>
+          </div>
+          <div>
             <input v-on:click="load()" type="button" class="btn btn-outline-info" v-bind:value="lo">
           </div>
 
@@ -281,23 +294,25 @@ export default {
       packsizePerMonth: [],
       dataWorksite : null,
       dataProductionlines : null,
+      dataTeams : null,
       username: localStorage.getItem("username"),
 
       volumes : null,
+      team : ''
     }
   },
 
   methods: {
     load: async function () {
 
-      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '') {
+      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '' && this.team !== '') {
         var tab = [];
         tab.push(this.site);
         tab.push(this.productionline);
         tab.push(this.beginningDate);
         tab.push(this.endingDate);
 
-        await axios.get(urlAPI + 'allEvents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate)
+        await axios.get(urlAPI + 'allEvents/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate + '/' + this.team)
             .then(response => (this.volumes = response.data["SITE"]))
 
         this.makeCalculationFormulation();
@@ -682,6 +697,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
 
     let chartJs = document.createElement('script');

@@ -7,7 +7,7 @@
 
             <form>
               <label class="" for="site">{{$t("site")}} : </label>
-              <select name="site" id="site" class="form-select" v-model="site">
+              <select name="site" id="site" class="form-select" v-model="site" @change="team = ''">
                   <option  v-for="site in dataWorksite" :key="site.name" v-bind:value="site.name">
                     {{site.name}}
                   </option>
@@ -19,7 +19,7 @@
             <form>
               <label class="" for="productionline">{{$t("productionLine")}} : </label>
               <select name="productionline" id="productionline" class="form-select"
-                      v-model="productionline">
+                      v-model="productionline" @change="team = 'allTeams'">
                 <template v-for="productionline in dataProductionlines">
                   <template v-if="productionline.name === site">
                     <option v-bind:key="productionline.productionline_name" v-bind:value="productionline.productionline_name">
@@ -29,6 +29,20 @@
                 </template>
               </select>
             </form>
+            </div>
+            <div>
+            <form>
+              <label for="team">{{$t("team")}}: </label>
+              <select name="team" id="team-select" class="form-select" v-model="team">
+                <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+                <template v-for="team in dataTeams">
+                  <template v-if="team.worksite_name === site">
+                    <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+                  </template>
+                </template> 
+              </select>
+            </form>
+  
             </div>
           <div>
             <input v-on:click="load()" type="button" class="btn btn-outline-info" v-bind:value="lo">
@@ -455,6 +469,7 @@ export default {
       tool: '',
       beginningDate: '',
       endingDate: '',
+      team: '',
       username: localStorage.getItem("username"),
       index: -1,
       show: 0,
@@ -484,6 +499,7 @@ export default {
       dataSite: null,
       dataWorksite : null,
       dataProductionlines : null,
+      dataTeams: null,
       allEvents : null,
 
       sommeWorkingTime : 0,
@@ -500,7 +516,7 @@ export default {
     load: async function () {
 
 
-      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '') {
+      if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '' && this.team !== '') {
         var tab = [];
         tab.push(this.site);
         tab.push(this.productionline);
@@ -508,7 +524,7 @@ export default {
         tab.push(this.endingDate);
 
 
-        await axios.get(urlAPI + 'allevents/'+this.site+'/'+this.productionline+'/'+this.beginningDate+'/'+this.endingDate)
+        await axios.get(urlAPI + 'allevents/'+this.site+'/'+this.productionline+'/'+this.beginningDate+'/'+this.endingDate+'/'+this.team)
             .then(response => (this.allEvents = response.data))
 
 
@@ -1132,21 +1148,20 @@ export default {
     //récupère les sites et les lignes de production
     //sites[0] = sites
     //sites[1] = lignes de production de ce site
+    //sites[2] = teams
 
     console.log(sessionStorage.getItem("user-status"));
     if(sessionStorage.getItem("user-status") == 1){
       await axios.get(urlAPI + 'sites/'+this.username)
           .then(response => (this.dataSite = response.data))
-    }else{
+    } else {
       await axios.get(urlAPI + 'sites')
           .then(response => (this.dataSite = response.data))
     }
 
-
-    console.log(this.dataSite);
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
-
+    this.dataTeams = this.dataSite[2];
 
     var today = new Date();
     var dd = today.getDate();

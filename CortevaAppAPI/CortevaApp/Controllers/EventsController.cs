@@ -224,8 +224,8 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
 
-        [HttpGet("UnplannedDowntimeEvents/{productionLine}/{startYear}/{endYear}")]
-        public JsonResult GetUnplannedDowntimeEvents(string productionLine, int startYear, int endYear)
+        [HttpGet("UnplannedDowntimeEvents/{productionLine}/{startYear}/{endYear}/{shift}")]
+        public JsonResult GetUnplannedDowntimeEvents(string productionLine, int startYear, int endYear, string shift)
         {
             string queryCIP = @"select *
                                 from dbo.ole_unplanned_event_cips cip
@@ -276,6 +276,17 @@ namespace CortevaApp.Controllers
                                     and pos.number = cov.OLE
                                     and prod.GMID = pos.GMIDCode";
 
+            if (shift != "allTeams")
+            {
+                queryCIP += " and cip.shift = @shift";
+                queryCOV += " and cov.shift = @shift";
+                queryBNC += " and bnc.shift = @shift";
+                queryMachineShutdowns += " and shift = @shift";
+                queryExternalShutdowns += " and shift = @shift";
+                querySeqCips += " and cip.shift = @shift";
+                querySeqCovs += " and cov.shift = @shift";
+            }
+
             DataTable CIP = new DataTable();
             DataTable COV = new DataTable();
             DataTable BNC = new DataTable();
@@ -294,6 +305,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     CIP.Load(reader);
                     reader.Close();
@@ -304,6 +319,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     COV.Load(reader);
                     reader.Close();
@@ -314,6 +333,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     BNC.Load(reader);
                     reader.Close();
@@ -324,6 +347,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     machineShutdowns.Load(reader);
                     reader.Close();
@@ -334,6 +361,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     externalShutdowns.Load(reader);
                     reader.Close();
@@ -344,6 +375,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     seqCips.Load(reader);
                     reader.Close();
@@ -354,6 +389,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startYear", startYear);
                     command.Parameters.AddWithValue("@endYear", endYear);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     seqCovs.Load(reader);
                     reader.Close();
@@ -378,8 +417,8 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
 
-        [HttpGet("UnplannedDowntimeEventsDate/{productionLine}/{startDate}/{endDate}")]
-        public JsonResult GetUnplannedDowntimeEventsDate(string productionLine, string startDate, string endDate)
+        [HttpGet("UnplannedDowntimeEventsDate/{productionLine}/{startDate}/{endDate}/{shift}")]
+        public JsonResult GetUnplannedDowntimeEventsDate(string productionLine, string startDate, string endDate, string shift)
         {
             startDate += " 00:00:00.000";
             endDate += " 23:59:59.000";
@@ -433,6 +472,17 @@ namespace CortevaApp.Controllers
                                     and pos.number = cov.OLE
                                     and prod.GMID = pos.GMIDCode";
 
+            if (shift != "allTeams")
+            {
+                queryCIP += " and cip.shift = @shift";
+                queryCOV += " and cov.shift = @shift";
+                queryBNC += " and bnc.shift = @shift";
+                queryMachineShutdowns += " and shift = @shift";
+                queryExternalShutdowns += " and shift = @shift";
+                querySeqCips += " and cip.shift = @shift";
+                querySeqCovs += " and cov.shift = @shift";
+            }
+
             DataTable CIP = new DataTable();
             DataTable COV = new DataTable();
             DataTable BNC = new DataTable();
@@ -451,6 +501,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     CIP.Load(reader);
                     reader.Close();
@@ -461,6 +515,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     COV.Load(reader);
                     reader.Close();
@@ -471,6 +529,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     BNC.Load(reader);
                     reader.Close();
@@ -481,6 +543,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     machineShutdowns.Load(reader);
                     reader.Close();
@@ -491,6 +557,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     externalShutdowns.Load(reader);
                     reader.Close();
@@ -501,6 +571,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     seqCips.Load(reader);
                     reader.Close();
@@ -511,6 +585,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@startDate", startDate);
                     command.Parameters.AddWithValue("@endDate", endDate);
+                    if (shift != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@shift", shift);
+                    }
                     reader = command.ExecuteReader();
                     seqCovs.Load(reader);
                     reader.Close();
@@ -535,8 +613,8 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
        
-        [HttpGet("allevents/{site}/{productionLine}/{beginningDate}/{endingDate}")]
-        public JsonResult GetAllEventsPeriod(string site, string productionLine, string beginningDate, string endingDate)
+        [HttpGet("allevents/{site}/{productionLine}/{beginningDate}/{endingDate}/{team}")]
+        public JsonResult GetAllEventsPeriod(string site, string productionLine, string beginningDate, string endingDate, string team)
         {
             string[] _begDate = beginningDate.Split('-');
             int beginningYear = Int16.Parse(_begDate[0]);
@@ -563,7 +641,12 @@ namespace CortevaApp.Controllers
                                 and pos.created_at >= @beginningDate
                                 and pos.created_at <= @endingDate
                                 and pos.shift = rc.shift";
+        
 
+            if (team != "allTeams")
+            {
+                QuerySites += " and pos.shift = @team";
+            }
 
 
             DataTable Sites = new DataTable();
@@ -579,6 +662,10 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@productionLine", productionLine);
                     command.Parameters.AddWithValue("@beginningDate", startDate);
                     command.Parameters.AddWithValue("@endingDate", endDate);
+                    if (team != "allTeams")
+                    {
+                        command.Parameters.AddWithValue("@team", team);
+                    }
                     reader = command.ExecuteReader();
                     Sites.Load(reader);
                     reader.Close();
@@ -750,6 +837,32 @@ namespace CortevaApp.Controllers
                                                    and bnc.created_at >= @startDate
                                                    and bnc.created_at <= @endDate";
 
+                    if (team != "allTeams") {
+                        QuerySpeedLossesEvents += " and sl.shift = @team";
+                        QueryBM += " and pe.shift = @team";
+                        QueryCP += " and pe.shift = @team";
+                        QueryPM += " and pe.shift = @team";
+                        QueryPP += " and pe.shift = @team";
+                        QueryCIP += " and cip.shift = @team";
+                        QueryCOV += " and cov.shift = @team";
+                        QueryBNC += " and bnc.shift = @team";
+                        QueryUEE += " and ud.shift = @team";
+                        QueryUSM += " and ud.shift = @team";
+                        QueryFUS += " and ud.shift = @team";
+                        QueryRRF += " and sl.shift = @team";
+                        QueryRRFMonth += " and sl.shift = @team";
+                        QueryRRMMonth += " and sl.shift = @team";
+                        QueryFOSMonth += " and sl.shift = @team";
+                        QueryFSMMonth += " and sl.shift = @team";
+                        QueryRRM += " and sl.shift = @team";
+                        QueryFOS += " and sl.shift = @team";
+                        QueryFSM += " and sl.shift = @team";
+                        QueryPlannedEvents += " and pe.shift = @team";
+                        QueryChangingClients += " and cov.shift = @team";
+                        QueryCIPBis += " and cip.shift = @team";
+                        QueryUnplanned += " and ud.shift = @team";
+                        QueryChangingFormats += " and bnc.shift = @team";
+                    }
 
                     IDictionary<string, DataTable> Queries = new Dictionary<string, DataTable>()
                     {
@@ -786,6 +899,10 @@ namespace CortevaApp.Controllers
                             command.Parameters.AddWithValue("@productionlineName", productionLine);
                             command.Parameters.AddWithValue("@startDate", startDate);
                             command.Parameters.AddWithValue("@endDate", endDate);
+                            if (team != "allTeams")
+                            {
+                                command.Parameters.AddWithValue("@team", team);
+                            }
                             reader = command.ExecuteReader();
                             Entry.Value.Load(reader);
                             reader.Close();

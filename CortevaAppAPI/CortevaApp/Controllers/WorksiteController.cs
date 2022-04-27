@@ -30,9 +30,14 @@ namespace CortevaApp.Controllers
             string queryProductionLines = @"select distinct pl.id, pl.productionline_name, users.worksite_name as name
                                             from dbo.ole_productionline pl, users, worksite w
                                             where users.worksite_name = pl.worksite_name and users.login = @username";
+            string queryTeams = @"select ti.type, ti.worksite_name
+                                from dbo.teamInfo ti, users u
+                                where u.login = @username 
+                                and u.worksite_name = ti.worksite_name";
 
             DataTable sites = new DataTable();
             DataTable productionLines = new DataTable();
+            DataTable teams = new DataTable();
 
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -54,10 +59,18 @@ namespace CortevaApp.Controllers
                     productionLines.Load(reader);
                     reader.Close();
                 }
+
+                using (SqlCommand command = new SqlCommand(queryTeams, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    reader = command.ExecuteReader();
+                    teams.Load(reader);
+                    reader.Close();
+                }
                 connection.Close();
             }
 
-            DataTable[] data = { sites, productionLines };
+            DataTable[] data = { sites, productionLines, teams };
 
             return new JsonResult(data);
         }
@@ -69,9 +82,13 @@ namespace CortevaApp.Controllers
             string queryProductionLines  = @"select pl.id, pl.productionline_name, w.id, w.name
                                             from dbo.ole_productionline pl, dbo.worksite w
                                             where w.name = pl.worksite_name";
+            string queryTeams = @"select type, worksite_name
+                                from dbo.teamInfo";
+                    
 
             DataTable sites = new DataTable();
             DataTable productionLines = new DataTable();
+            DataTable teams = new DataTable();
 
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -91,10 +108,17 @@ namespace CortevaApp.Controllers
                     productionLines.Load(reader);
                     reader.Close();
                 }
+
+                using (SqlCommand command = new SqlCommand(queryTeams, connection))
+                {
+                    reader = command.ExecuteReader();
+                    teams.Load(reader);
+                    reader.Close();
+                }
                 connection.Close();
             }
 
-            DataTable[] data = { sites, productionLines }; 
+            DataTable[] data = { sites, productionLines, teams }; 
 
             return new JsonResult(data);
         }

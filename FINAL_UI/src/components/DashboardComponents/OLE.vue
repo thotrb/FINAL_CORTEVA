@@ -7,7 +7,7 @@
 
           <form>
             <label class="" for="site">{{$t("site")}} : </label>
-            <select name="site" id="site" class="form-select" v-model="site">
+            <select name="site" id="site" class="form-select" v-model="site" @change="team=''">
               <template v-for="site in dataWorksite">
                 <option v-bind:value="site.name" v-bind:key="site.id">
                   {{site.name}}
@@ -20,7 +20,7 @@
           <form>
             <label class="" for="productionline">{{$t("productionLine")}} : </label>
             <select name="productionline" id="productionline" class="form-select"
-                    v-model="productionline">
+                    v-model="productionline" @change="team='allTeams'">
               <template v-for="productionline in dataProductionlines">
                 <template v-if="productionline.name === site">
                   <option v-bind:value="productionline.productionline_name" v-bind:key="productionline.id">
@@ -33,6 +33,19 @@
             </select>
           </form>
         </div>
+        <div>
+            <form>
+              <label for="team">{{$t("team")}}: </label>
+              <select name="team" id="team-select" class="form-select" v-model="team">
+                <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
+                <template v-for="team in dataTeams">
+                  <template v-if="team.worksite_name === site">
+                    <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
+                  </template>
+                </template> 
+              </select>
+            </form>
+          </div>
         <div>
           <input v-on:click="load()" type="button" class="btn btn-outline-info" v-bind:value="lo">
         </div>
@@ -215,6 +228,7 @@ export default {
       startYear: 2015,
       site: '',
       productionline: '',
+      team: '',
       show: 0,
 
       allEvents2: null,
@@ -269,6 +283,7 @@ export default {
 
       dataWorksite : null,
       dataProductionlines : null,
+      teamData : null,
       allEvents : null,
     }
   },
@@ -276,7 +291,7 @@ export default {
   methods: {
 
     load: async function () {
-      if (this.productionline !== '' && this.year !== '') {
+      if (this.productionline !== '' && this.year !== '' && this.team !== '') {
         var firstDayYear = this.year + '-01-01';
         var lastDayYear = this.year + '-12-31';
 
@@ -290,10 +305,10 @@ export default {
         tab.push(lastDayYear);
 
 
-        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear + '/' + lastDayYear)
+        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear + '/' + lastDayYear + '/' + this.team)
             .then(response => (this.allEvents = response.data))
 
-        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear2 + '/' + lastDayYear2)
+        await axios.get(urlAPI + 'allevents/' + this.site + '/' + this.productionline + '/' + firstDayYear2 + '/' + lastDayYear2 + '/' + this.team)
             .then(response => (this.allEvents2 = response.data))
 
 
@@ -1309,6 +1324,7 @@ export default {
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
+    this.dataTeams = this.dataSite[2];
 
     let externalScript = document.createElement('script');
     externalScript.setAttribute('src', 'https://canvasjs.com/assets/script/canvasjs.min.js');
