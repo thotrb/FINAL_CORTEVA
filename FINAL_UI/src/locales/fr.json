@@ -251,7 +251,6 @@
   "administrator" : "Administrateur",
   "supervisor" : "Superviseur",
   "operator" : "Operateur",
-  "addWorksite" : "Ajouter une usine"
-
-
+  "addWorksite" : "Ajouter une usine",
+  "completed" : "Terminé"
 }

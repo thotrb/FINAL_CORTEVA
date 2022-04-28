@@ -252,8 +252,7 @@
   "administrator" : "Administrator",
   "supervisor" : "Supervisor",
   "operator" : "Operator",
-  "addWorksite" : "Add worksite"
-
-
+  "addWorksite" : "Add worksite",
+  "completed": "Completed"
 
 }
