@@ -27,7 +27,7 @@ namespace CortevaApp.Controllers
         [HttpGet("machine_component/{worksite}")]
         public JsonResult GetWorksite(string worksite)
         {
-            string query = @"select * from dbo.machine_component where worksite = @worksite order by productionLine, name ASC";
+            string query = @"select * from dbo.machine_component order by worksite,productionLine, name ASC";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -36,7 +36,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(query, connection))
                 {
-                    command.Parameters.AddWithValue("@worksite", worksite);
+                    //command.Parameters.AddWithValue("@worksite", worksite);
                     reader = command.ExecuteReader();
                     table.Load(reader);
                     reader.Close();

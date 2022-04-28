@@ -15,23 +15,23 @@ namespace CortevaApp.Controllers
     [Route("api")]
     [ApiController]
     [Authorize]
-    public class FormatController : ControllerBase
+    public class TeamInfoController : ControllerBase
     {
 
         private readonly IConfiguration _configuration;
-        public FormatController(IConfiguration configuration)
+        public TeamInfoController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        [HttpGet("administratorFormat/{worksite}")]
-        public JsonResult GetFormatAdministrator(string worksite)
+  
+
+        [HttpGet("administratorTeamInfo/{worksite}")]
+        public JsonResult GetTeamInfosAdministrator(string worksite)
         {
-            string queryDowntimeReason = @"select * 
-                                           from ole_formats, ole_productionline 
-                                            where ole_formats.productionlineName = ole_productionline.productionline_name 
-                                            order by worksite_name, productionlineName ASC, [format] DESC 
-";
+            string queryDowntimeReason = @"select *
+                                          from dbo.teamInfo 
+                                          order by worksite_name, type, workingDebut ASC";
 
             DataTable downtimeReason = new DataTable();
 
@@ -53,14 +53,14 @@ namespace CortevaApp.Controllers
             return new JsonResult(downtimeReason);
         }
 
-        [HttpPut("insertFormat")]
-        public JsonResult InsertFormatAdministrator(Format format)
+        [HttpPut("insertTeamInfo")]
+        public JsonResult CreateNewMachine(TeamInfo teamInfo)
         {
-            string QueryNewPO = @"insert into dbo.ole_formats (format, shape, mat1, mat2, mat3, design_rate, productionlineName)
-                                  values (@format, @shape, @mat1, @mat2, @mat3, @design_rate, @productionlineName)";
+            string QueryNewPO = @"insert into dbo.teamInfo (workingDebut, workingEnd, type, worksite_name, state)
+                                  values (@workingDebut, @workingEnd, @type, @worksite_name, @state)";
 
 
-            DataTable NewFormat = new DataTable();
+            DataTable NewMachine = new DataTable();
 
             string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
             SqlDataReader reader;
@@ -69,23 +69,20 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
                 {
-                    command.Parameters.AddWithValue("@format", format.format);
-                    command.Parameters.AddWithValue("@shape", format.shape);
-                    command.Parameters.AddWithValue("@mat1", format.mat1);
-                    command.Parameters.AddWithValue("@mat2", format.mat2);
-                    command.Parameters.AddWithValue("@mat3", format.mat3);
-                    command.Parameters.AddWithValue("@design_rate", format.design_rate);
-                    command.Parameters.AddWithValue("@productionlineName", format.productionlineName);
+                    command.Parameters.AddWithValue("@workingDebut", teamInfo.workingDebut);
+                    command.Parameters.AddWithValue("@workingEnd", teamInfo.workingEnd);
+                    command.Parameters.AddWithValue("@type", teamInfo.type);
+                    command.Parameters.AddWithValue("@worksite_name", teamInfo.worksite_name);
+                    command.Parameters.AddWithValue("@state", teamInfo.state);
 
                     reader = command.ExecuteReader();
-                    NewFormat.Load(reader);
+                    NewMachine.Load(reader);
                     reader.Close();
                 }
                 connection.Close();
             }
 
-            return new JsonResult(NewFormat);
+            return new JsonResult(NewMachine);
         }
-
     }
 }

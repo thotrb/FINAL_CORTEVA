@@ -41,12 +41,25 @@
         <input type="text" class="form-control" id="inputAddress2"  v-model="machine.modele" required>
       </div>
       <div class="form-group">
-          <label for="l">{{$t("productionLine")}}</label>
+        <label for="w">{{$t("worksite")}}</label>
+        <select name="m" id="w" class="form-select" v-model="machine.worksite">
+          <option  v-for="w in worksites" :key="w.id" v-bind:value="w.name">
+            {{w.name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="l">{{$t("productionLine")}}</label>
         <select name="line" id="l" class="form-select" v-model="machine.productionline_name">
-            <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
-              {{line.productionline_name}}
-            </option>
-          </select>
+          <template v-for="line in productionlines">
+            <template v-if="line.name === machine.worksite">
+              <option v-bind:key="line.id" v-bind:value="line.productionline_name">
+                {{line.productionline_name}}
+              </option>
+            </template>
+          </template>
+        </select>
       </div>
         <div class="form-group">
           <label for="inputAddress2">{{$t("denominationOrder")}}</label>
@@ -118,6 +131,7 @@ export default {
     return {
       username: localStorage.getItem("username"),
       data : null,
+      worksites : null,
       productionlines : null,
       userWorksite : null,
       effective : null,
@@ -211,7 +225,6 @@ export default {
             console.log("PAS OK");
 
           }else {
-            this.machine.worksite = this.userWorksite;
             console.log("OK");
             console.log(this.machine);
 
@@ -239,9 +252,11 @@ export default {
     this.userWorksite  = this.data[0][0].worksite_name;
 
 
-    axios.get(urlAPI+'getProductionLines/' + this.userWorksite)
+    await axios.get(urlAPI+'sites')
         .then(response => (this.productionlines = response.data))
-
+    this.worksites = this.productionlines[0];
+    this.productionlines = this.productionlines[1];
+    console.log(this.productionlines);
 
     axios.get(urlAPI+'administratorMachine/' + this.userWorksite)
           .then(response => (this.machines = response.data))

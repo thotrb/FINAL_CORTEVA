@@ -32,6 +32,10 @@ import Add_DowntimeReason_Page from "@/views/AdministratorInputs/Add_DowntimeRea
 import Add_Format_Page from "@/views/AdministratorInputs/Add_Format_Page";
 import Add_Product_Page from "@/views/AdministratorInputs/Add_Product_Page";
 import Add_MachineComponent_Page from "@/views/AdministratorInputs/Add_MachineComponent_Page";
+import Add_Productionline_Page from "@/views/AdministratorInputs/Add_Productionline_Page";
+import Add_TeamInfo_Page from "@/views/AdministratorInputs/Add_TeamInfo_Page";
+import Add_User_Page from "@/views/AdministratorInputs/Add_User_Page";
+import Add_Worksite_Page from "@/views/AdministratorInputs/Add_Worksite_Page";
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
 axios.interceptors.response.use(response => response, error => {
@@ -253,6 +257,42 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: Add_MachineComponent_Page
   },
+
+  {
+    path: '/addData/productionlines',
+    name: 'Add_Productionline_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_Productionline_Page
+  },
+
+  {
+    path: '/addData/teamInfo',
+    name: 'Add_TeamInfo_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_TeamInfo_Page
+  },
+
+  {
+    path: '/addData/user',
+    name: 'Add_User_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_User_Page
+  },
+  {
+    path: '/addData/worksite',
+    name: 'Add_Worksite_Page',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: Add_Worksite_Page
+  },
+
 ]
 
 const router = new VueRouter({

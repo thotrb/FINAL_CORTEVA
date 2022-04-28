@@ -139,7 +139,7 @@ namespace CortevaApp.Controllers
         {
             string queryDowntimeReason = @"select *
                                           from dbo.ole_downtimeReason 
-                                          where worksite = @worksite order by production_line, downtimeType, reason ASC";
+                                          order by worksite, production_line, downtimeType, reason ASC";
 
             DataTable downtimeReason = new DataTable();
 
@@ -150,7 +150,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(queryDowntimeReason, connection))
                 {
-                    command.Parameters.AddWithValue("@worksite", worksite);
+                    //command.Parameters.AddWithValue("@worksite", worksite);
                     reader = command.ExecuteReader();
                     downtimeReason.Load(reader);
                     reader.Close();

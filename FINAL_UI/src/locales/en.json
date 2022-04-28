@@ -238,7 +238,22 @@
   "machineName" : "Machine name",
   "select.csvFileToUse" : "Select .csv file to use",
   "fileNotSupported" : "File not supported!",
-  "affiliatedMachine" :  "Affiliated machine"
+  "affiliatedMachine" :  "Affiliated machine",
+  "addProductionline" : "Add productionlines",
+  "addTeamInfo" : "Add team",
+  "workingDebut" : "Working Debut",
+  "workingEnd" : "Working End",
+  "teamInfo" : "Team information",
+  "addUser" : "Add users",
+  "login" : "Login",
+  "lastName" : "Lastname",
+  "firstName" : "Firstname",
+  "status" : "Status",
+  "administrator" : "Administrator",
+  "supervisor" : "Supervisor",
+  "operator" : "Operator",
+  "addWorksite" : "Add worksite"
+
 
 
 }

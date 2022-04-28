@@ -34,12 +34,25 @@
           </select>
         </div>
 
+      <div class="form-group">
+        <label for="w">{{$t("worksite")}}</label>
+        <select name="m" id="w" class="form-select" v-model="machineComponent.worksite">
+          <option  v-for="w in worksites" :key="w.id" v-bind:value="w.name">
+            {{w.name}}
+          </option>
+        </select>
+      </div>
+
         <div class="form-group">
           <label for="l">{{$t("productionLine")}}</label>
           <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
-            <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
-              {{line.productionline_name}}
-            </option>
+            <template v-for="line in productionlines">
+              <template v-if="line.name === machineComponent.worksite">
+                <option v-bind:key="line.id" v-bind:value="line.productionline_name">
+                  {{line.productionline_name}}
+                </option>
+              </template>
+            </template>
           </select>
         </div>
 
@@ -97,6 +110,7 @@ export default {
       userWorksite : null,
       effective : null,
       machineComponents : [],
+      worksites : null,
       machinesAvailable : null,
       machineComponent: {
         name : null,
@@ -174,7 +188,6 @@ export default {
             console.log("PAS OK");
 
           }else {
-            this.machineComponent.worksite = this.userWorksite;
 
             console.log("OK");
             console.log(this.machineComponent);
@@ -203,14 +216,16 @@ export default {
 
     this.userWorksite  = this.data[0][0].worksite_name;
 
-    axios.get(urlAPI+'getProductionLines/' + this.userWorksite)
+    await axios.get(urlAPI+'sites')
         .then(response => (this.productionlines = response.data))
-
-    axios.get(urlAPI+'administratorMachine/' + this.userWorksite)
+    this.worksites = this.productionlines[0];
+    this.productionlines = this.productionlines[1];
+    console.log(this.productionlines);
+    await axios.get(urlAPI+'administratorMachine/' + this.userWorksite)
         .then(response => (this.machinesAvailable = response.data))
 
     console.log(this.machinesAvailable)
-    axios.get(urlAPI+'machine_component/' + this.userWorksite)
+    await axios.get(urlAPI+'machine_component/' + this.userWorksite)
           .then(response => (this.machineComponents = response.data))
 
 

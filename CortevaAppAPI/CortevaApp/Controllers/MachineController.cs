@@ -182,7 +182,7 @@ namespace CortevaApp.Controllers
         {
             string queryIssues = @"select *
                                    from dbo.ole_machines m
-                                   where m.worksite = @worksite order by productionline_name, ordre ASC";
+                                   order by worksite, productionline_name, ordre ASC";
 
             DataTable Issues = new DataTable();
 
@@ -193,7 +193,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(queryIssues, connection))
                 {
-                    command.Parameters.AddWithValue("@worksite", worksite);
+                    //command.Parameters.AddWithValue("@worksite", worksite);
 
                     reader = command.ExecuteReader();
                     Issues.Load(reader);

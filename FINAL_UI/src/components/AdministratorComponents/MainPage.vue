@@ -2,17 +2,6 @@
 <div id="pa">
 
     <div class="col">
-      <button
-          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-          type="button" @click.prevent="goTo('machines')">
-        {{$t("machines")}}
-      </button>
-
-      <button
-          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-          type="button" @click.prevent="goTo('machinesComponent')">
-        {{$t("machinesComponent")}}
-      </button>
 
       <button
           class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
@@ -28,8 +17,48 @@
 
       <button
           class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('machines')">
+        {{$t("machines")}}
+      </button>
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('machinesComponent')">
+        {{$t("machinesComponent")}}
+      </button>
+
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
           type="button" @click.prevent="goTo('products')">
         {{$t("products")}}
+      </button>
+
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('productionlines')">
+        {{$t("productionLine")}}
+      </button>
+
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('teamInfo')">
+        {{$t("teamInfo")}}
+      </button>
+
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('user')">
+        {{$t("user")}}
+      </button>
+
+      <button
+          class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
+          type="button" @click.prevent="goTo('worksite')">
+        {{$t("worksite")}}
       </button>
 
     </div>

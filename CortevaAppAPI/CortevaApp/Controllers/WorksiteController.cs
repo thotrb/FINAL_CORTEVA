@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using CortevaApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -81,7 +82,7 @@ namespace CortevaApp.Controllers
             string querySites = @"select * from dbo.worksite";
             string queryProductionLines  = @"select pl.id, pl.productionline_name, w.id, w.name
                                             from dbo.ole_productionline pl, dbo.worksite w
-                                            where w.name = pl.worksite_name";
+                                            where w.name = pl.worksite_name order by w.name, pl.productionline_name";
             string queryTeams = @"select type, worksite_name
                                 from dbo.teamInfo";
                     
@@ -148,6 +149,35 @@ namespace CortevaApp.Controllers
             }
 
             return new JsonResult(WorksiteID);
+        }
+
+        [HttpPut("insertWorksite")]
+        public JsonResult CreateNewUser(Worksite worksite)
+        {
+            string QueryNewPO = @"insert into dbo.worksite (name)
+                                  values (@name)";
+
+
+            DataTable NewMachine = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
+                {
+                    command.Parameters.AddWithValue("@name", worksite.name);
+       
+
+                    reader = command.ExecuteReader();
+                    NewMachine.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NewMachine);
         }
     }
 }

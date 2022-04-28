@@ -109,6 +109,67 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
 
+        [HttpGet("administratorUsers/{worksite}")]
+        public JsonResult GetUsersAdministrator(string worksite)
+        {
+            string queryDowntimeReason = @"select *
+                                          from dbo.users 
+                                          order by worksite_name, productionline, login, lastname ASC";
+
+            DataTable downtimeReason = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDowntimeReason, connection))
+                {
+                    //command.Parameters.AddWithValue("@worksite", worksite);
+                    reader = command.ExecuteReader();
+                    downtimeReason.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(downtimeReason);
+        }
+
+        [HttpPut("insertUser")]
+        public JsonResult CreateNewUser(User user)
+        {
+            string QueryNewPO = @"insert into dbo.users (login, password, worksite_name, lastname, firstname, status, productionline)
+                                  values (@login, @password, @worksite_name, @lastname, @firstname, @status, @productionline)";
+
+
+            DataTable NewMachine = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(QueryNewPO, connection))
+                {
+                    command.Parameters.AddWithValue("@login", user.login);
+                    command.Parameters.AddWithValue("@password", user.password);
+                    command.Parameters.AddWithValue("@worksite_name", user.worksite_name);
+                    command.Parameters.AddWithValue("@lastname", user.lastname);
+                    command.Parameters.AddWithValue("@firstname", user.firstname);
+                    command.Parameters.AddWithValue("@status", user.status);
+                    command.Parameters.AddWithValue("@productionline", user.productionline);
+
+                    reader = command.ExecuteReader();
+                    NewMachine.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(NewMachine);
+        }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login(User user)

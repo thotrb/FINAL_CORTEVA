@@ -1,7 +1,7 @@
 <template>
   <div align="center">
     <div align="center" class="col productionName rcorners2">
-      {{$t("addFormat")}}
+      {{$t("addUser")}}
     </div>
 
     <br/>
@@ -22,40 +22,58 @@
 
     <form id="needs-validation" novalidate>
       <div class="form-group">
-        <label for="inputEmail4">{{$t('format')}} (L) </label>
-        <input type="number" step=".01" class="form-control" id="inputEmail4" v-model="format.format"   required>
+        <label for="inputEmail4">{{$t('login')}} </label>
+        <input type="text" class="form-control" id="inputEmail4" v-model="user.login"   required>
       </div>
+
       <div class="form-group">
-        <label for="d">{{$t("shape")}}</label>
-        <select name="line" id="d" class="form-select" v-model="format.shape">
-          <option value="round">{{ $t('round') }}</option>
-          <option value="square">{{ $t('square') }}</option>
+        <label for="inputEmail">{{$t('password')}} </label>
+        <input type="text" class="form-control" id="inputEmail" v-model="user.password"   required>
+      </div>
+
+
+      <div class="form-group">
+        <label for="inpu">{{$t('lastName')}} </label>
+        <input type="text" class="form-control" id="inpu" v-model="user.lastname"   required>
+      </div>
+
+      <div class="form-group">
+        <label for="inp">{{$t('firstName')}} </label>
+        <input type="text" class="form-control" id="inp" v-model="user.firstname"   required>
+      </div>
+
+      <div class="form-group">
+        <label for="d">{{$t("status")}}</label>
+        <select name="line" id="d" class="form-select" v-model="user.status">
+          <option value="0">{{ $t('operator') }}</option>
+          <option value="1">{{ $t('supervisor') }}</option>
+          <option value="2">{{ $t('administrator') }}</option>
         </select>
       </div>
+
+
       <div class="form-group">
-        <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="format.productionlineName">
-          <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
-            {{line.productionline_name}}
+        <label for="w">{{$t("worksite")}}</label>
+        <select name="m" id="w" class="form-select" v-model="user.worksite_name">
+          <option  v-for="w in worksites" :key="w.id" v-bind:value="w.name">
+            {{w.name}}
           </option>
         </select>
       </div>
+
       <div class="form-group">
-        <label for="inputEmail">{{$t('mat1')}}</label>
-        <input type="text" class="form-control" id="inputEmail" v-model="format.mat1">
+        <label for="l">{{$t("productionLine")}}</label>
+        <select name="line" id="l" class="form-select" v-model="user.productionline">
+          <template v-for="line in productionlines">
+            <template v-if="line.name === user.worksite_name">
+              <option v-bind:key="line.id" v-bind:value="line.productionline_name">
+                {{line.productionline_name}}
+              </option>
+            </template>
+          </template>
+        </select>
       </div>
-      <div class="form-group">
-        <label for="inputEmail1">{{$t('mat2')}}</label>
-        <input type="text" class="form-control" id="inputEmail1" v-model="format.mat2">
-      </div>
-      <div class="form-group">
-        <label for="inputEmail2">{{$t('mat3')}}</label>
-        <input type="text" class="form-control" id="inputEmail2" v-model="format.mat3">
-      </div>
-      <div class="form-group">
-        <label for="inputEmai">{{$t('designRate')}}</label>
-        <input type="number" class="form-control" id="inputEmai" v-model="format.design_rate"   required>
-      </div>
+
       <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
     </form>
 
@@ -63,31 +81,28 @@
     <br/>
 
 
-    <template v-if="formats.length > 0">
+    <template v-if="users.length > 0">
 
       <table class="table">
         <thead class="thead-dark">
         <tr>
+          <th scope="col">{{ $t('login') }}</th>
+          <th scope="col">{{ $t('firstName') }}</th>
+          <th scope="col">{{ $t('lastName') }}</th>
+          <th scope="col">{{ $t('status') }}</th>
+          <th scope="col">{{ $t('worksite') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
-          <th scope="col">{{ $t('format') }}</th>
-          <th scope="col">{{ $t('shape') }}</th>
-          <th scope="col">{{ $t('mat1') }}</th>
-          <th scope="col">{{ $t('mat2') }}</th>
-          <th scope="col">{{ $t('mat3') }}</th>
-          <th scope="col">{{ $t('designRate') }}</th>
 
         </tr>
         </thead>
         <tbody>
-            <tr v-for="d in formats" :key="d.id">
-              <th scope="row">{{d.productionlineName}}</th>
-              <td>{{d.format}}</td>
-              <td>{{d.shape}}</td>
-              <td>{{d.mat1}}</td>
-              <td>{{d.mat2}}</td>
-              <td>{{d.mat3}}</td>
-              <td>{{d.design_rate}}</td>
-
+            <tr v-for="d in users" :key="d.id">
+              <th scope="row">{{d.login}}</th>
+              <td>{{d.firstname}}</td>
+              <td>{{d.lastname}}</td>
+              <td>{{d.status}}</td>
+              <td>{{d.worksite_name}}</td>
+              <td>{{d.productionline}}</td>
             </tr>
         </tbody>
       </table>
@@ -105,7 +120,7 @@ import axios from "axios";
 import {urlAPI} from "@/variables";
 
 export default {
-  name: "Add_Format",
+  name: "Add_User",
 
   data() {
     return {
@@ -115,15 +130,15 @@ export default {
       productionlines : null,
       userWorksite : null,
       effective : null,
-      formats : [],
-      format: {
-        format : null,
-        shape : null,
-        mat1 : 'None',
-        mat2 : 'None',
-        mat3 : 'None',
-        design_rate : null,
-        productionlineName : null,
+      users : [],
+      user: {
+        login : null,
+        password : null,
+        worksite_name : null,
+        lastname : null,
+        firstname : null ,
+        status : null,
+        productionline : null,
 
       },
     }
@@ -151,30 +166,30 @@ export default {
           var rowsSplited = null;
 
           var i;
-          var format2 = {
-                format : null,
-                shape : null,
-                mat1 : 'None',
-                mat2 : 'None',
-                mat3 : 'None',
-                design_rate : null,
-                productionlineName : null,
+          var user2 = {
+            login : null,
+            password : null,
+            worksite_name : null,
+            lastname : null,
+            firstname : null ,
+            status : null,
+            productionline : null,
 
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
             if(rowsSplited.length === 7){
-              format2.format = rowsSplited[0];
-              format2.shape = rowsSplited[1];
-              format2.mat1 = rowsSplited[2];
-              format2.mat2 = rowsSplited[3];
-              format2.mat3 = rowsSplited[4];
-              format2.design_rate = rowsSplited[5];
-              format2.productionlineName = rowsSplited[6];
-              console.log(format2);
+              user2.login = rowsSplited[0];
+              user2.password = rowsSplited[1];
+              user2.worksite_name = rowsSplited[2];
+              user2.lastname = rowsSplited[3];
+              user2.firstname = rowsSplited[4];
+              user2.status = rowsSplited[5];
+              user2.productionline = rowsSplited[6];
+              console.log(user2);
 
-              axios.put(urlAPI + 'insertFormat', format2)
+              axios.put(urlAPI + 'insertUser', user2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -198,21 +213,12 @@ export default {
             console.log("PAS OK");
 
           }else {
-            this.format.format = this.format.format + 'L';
-            if(this.format.mat1 === ''){
-              this.format.mat1 = 'None';
-            }
-            if(this.format.mat2 === ''){
-              this.format.mat2 = 'None';
-            }
-            if(this.format.mat3 === ''){
-              this.format.mat3 = 'None';
-            }
+
             console.log("OK");
-            console.log(this.format);
+            console.log(this.user);
 
 
-            axios.put(urlAPI + 'insertFormat', this.format)
+            axios.put(urlAPI + 'insertUser', this.user)
                 .then(response => (this.effective = response))
 
             console.log('Effectif : ' + this.effective);
@@ -243,8 +249,8 @@ export default {
     console.log(this.productionlines);
 
 
-    axios.get(urlAPI+'administratorFormat/' + this.userWorksite)
-          .then(response => (this.formats = response.data))
+    axios.get(urlAPI+'administratorUsers/' + this.userWorksite)
+          .then(response => (this.users = response.data))
 
 
   }

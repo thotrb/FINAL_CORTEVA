@@ -237,5 +237,21 @@
   "machineName" : "Nom de machine",
   "select.csvFileToUse" : "Sélectionnez un fichier .csv à utiliser",
   "fileNotSupported" : "Fichier non supporté!",
-  "affiliatedMachine" :  "Machine affiliée"
+  "affiliatedMachine" :  "Machine affiliée",
+  "addProductionline" : "Ajouter une ligne de production",
+  "addTeamInfo" : "Ajouter une équipe",
+  "workingDebut" : "Heure de début",
+  "workingEnd" : "Heure de fin",
+  "teamInfo" : "Information de l'équipe",
+  "addUser" : "Ajouter un utilisateur",
+  "login" : "Login",
+  "lastName" : "Nom",
+  "firstName" : "Prénom",
+  "status" : "Statut",
+  "administrator" : "Administrateur",
+  "supervisor" : "Superviseur",
+  "operator" : "Operateur",
+  "addWorksite" : "Ajouter une usine"
+
+
 }
