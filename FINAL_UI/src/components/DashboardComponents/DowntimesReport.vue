@@ -58,7 +58,7 @@
 
             <div class="col-sm">
               <p>
-                {{$t("plantOperatingTime")}} :<!-- {{ allEvents['POInfo'][0].plantOperatingTime}}--> mn
+                {{$t("plantOperatingTime")}} : {{sommeWorkingTime}}<!-- {{ allEvents['POInfo'][0].plantOperatingTime}}--> mn
                 <br/>
                 {{$t("plannedProductionTime")}} :
                 {{plannedProductionTime}}
@@ -119,12 +119,7 @@
               </tr>
               <tr>
                 <th scope="row">4. {{$t("breaksMeetingShiftChange")}} (BM)</th>
-                <template v-if="allEvents['BM'] === 0 || allEvents['BM'][0].Duration === null">
-                  <td>0 mn</td>
-                </template>
-                <template v-else>
-                  <td>{{allEvents['BM'][0].Duration}} mn</td>
-                </template>
+                  <td>{{plannedDowntimes}} mn</td>
               </tr>
 
               </tbody>
@@ -329,12 +324,12 @@
             <div class="row">
               <div class="col-sm">
                 <canvas id="can" width="100" height="100"/>
-                <h5>{{$t("formVolumeSplit")}}</h5>
+                <h5>{{$t("packSizeSplit")}}</h5>
               </div>
 
               <div class="col-sm">
                 <canvas id="can2" width="100" height="100"/>
-                <h5>{{$t("packSizeSplit")}}</h5>
+                <h5>{{$t("formVolumeSplit")}}</h5>
               </div>
 
             </div>
@@ -355,7 +350,7 @@
               </p>
               <p v-else>
 
-                {{(plannedDowntimes / plannedProductionTime * 100).toFixed(2)}}%
+                {{(plannedDowntimes / sommeWorkingTime * 100).toFixed(2)}}%
               </p>
             </div>
 
@@ -371,7 +366,7 @@
                 0.00%
               </p>
               <p v-else>
-                {{(unplannedDowntimes / operatingTime * 100).toFixed(2)}}%
+                {{(unplannedDowntimes / sommeWorkingTime * 100).toFixed(2)}}%
               </p>
             </div>
 
@@ -387,7 +382,7 @@
                 0.00%
               </p>
               <p v-else>
-                {{((speedLosses / netOperatingTime) * 100).toFixed(2)}}%
+                {{((speedLosses / sommeWorkingTime) * 100).toFixed(2)}}%
               </p>
             </div>
 
@@ -399,7 +394,7 @@
                 {{$t("qualityLosses")}} (QL)
               </p>
               <p>
-                {{(quality* 100).toFixed(2)}}%
+                {{(this.QL / this.sommeWorkingTime* 100).toFixed(2)}}%
               </p>
             </div>
 
@@ -460,6 +455,7 @@ export default {
 
   data() {
     return {
+      QL : 0,
       lo: this.$t("load"),
       site: '',
       productionline: '',
@@ -493,7 +489,7 @@ export default {
       availability: 0,
       quality: 0,
       OLE: 0,
-
+      sommeRejection : 0,
       speedLosses: 0,
 
       dataSite: null,
@@ -579,7 +575,7 @@ export default {
         let indexFormulation = this.formulationArray.indexOf(this.allEvents['SITE'][i].GIFAP);
 
         this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
-            * this.allEvents['SITE'][i].size;
+            ;
 
 
         if (!this.formatArray.includes(this.allEvents['SITE'][i].size)) {
@@ -587,7 +583,7 @@ export default {
         }
 
         let indexSize = this.formatArray.indexOf(this.allEvents['SITE'][i].size);
-        this.quantityArray[indexSize] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
+        this.quantityArray[indexSize] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase*this.allEvents['SITE'][i].size;
 
 
         if (!this.productsName.includes(this.allEvents['SITE'][i].product)) {
@@ -607,6 +603,9 @@ export default {
       console.log(this.quantityArray);
       console.log(this.formatArray);
       console.log(this.quantityPerArray);
+
+      console.log("SPEEDLOSSES");
+      console.log(this.speedLosses);
       console.log("formulations : ");
 
       console.log(this.formulationArray);
@@ -627,7 +626,8 @@ export default {
       var sommePlannedEvents = 0;
       var sommeUnplannedEvents = 0;
 
-      var sommeRejection = 0;
+      this.sommeRejection = 0;
+
 
       var fillerCounter = 0;
       var caperCounter = 0;
@@ -640,21 +640,13 @@ export default {
 
       this.speedLosses = 0;
 
-      if (this.allEvents['RRF'][0].nbEvents > 0) {
-        this.speedLosses += this.allEvents['RRF'][0].Duration * 1;
+      for (let i = 0; i < this.allEvents['SLEVENTS'].length; i++){
+        this.speedLosses += this.allEvents['SLEVENTS'][i].duration;
+
+
       }
 
-      if (this.allEvents['RRM'][0].nbEvents > 0) {
-        this.speedLosses += this.allEvents['RRM'][0].Duration * 1;
-      }
 
-      if (this.allEvents['FOS'][0].nbEvents > 0) {
-        this.speedLosses += this.allEvents['FOS'][0].Duration * 1;
-      }
-
-      if (this.allEvents['FSM'][0].nbEvents > 0) {
-        this.speedLosses += this.allEvents['FSM'][0].Duration * 1;
-      }
 
 
 
@@ -662,14 +654,14 @@ export default {
       console.log(this.allEvents);
 
       var POArray = [];
-
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
 
         this.sommeWorkingTime += this.allEvents['SITE'][i].workingDuration;
 
-
         let PO = this.allEvents['SITE'][i];
-        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
+        this.sommeRejection += (PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1);
+
+        this.QL += ((PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1))/ PO.idealRate;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
         labelerCounter += PO.labelerCounter * 1;
@@ -750,6 +742,7 @@ export default {
 
       //Calcul Performance
       var n = 0;
+      //var idealPerf = 0;
       var quantityProducedForQuality = 0
       for(var i = 0; i<this.allEvents['SITE'].length; i++)
       {
@@ -765,6 +758,7 @@ export default {
           this.quantityPerGMID[ this.allEvents['SITE'][i].GMID] = this.allEvents['SITE'][i].qtyProduced;
         }
         n += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
+        //idealPerf += this.allEvents['SITE'][i].idealRate;
       }
       //var numerateur = n / this.summIdealRate;
       this.performance = n / this.operatingTime;
@@ -786,50 +780,33 @@ export default {
       var summCompteur = 0;
       if (fillerCounter !== 0) {
         summCompteur += (fillerCounter - quantityProducedForQuality);
-        console.log('Compteur : ' + fillerCounter);
-
-        console.log('Compteur : ' + summCompteur);
 
       }
       if (caperCounter !== 0) {
         summCompteur += (caperCounter - quantityProducedForQuality);
-        console.log('Compteur : ' + caperCounter);
-
-        console.log('Compteur : ' + summCompteur);
-
       }
 
       if (labelerCounter !== 0) {
         summCompteur += (labelerCounter - quantityProducedForQuality);
-        console.log('Compteur : ' + labelerCounter);
-
-        console.log('Compteur : ' + summCompteur);
-
       }
 
       if (qualityControlCounter !== 0) {
         summCompteur += (qualityControlCounter - quantityProducedForQuality);
-        console.log('Compteur : ' + qualityControlCounter);
-
-        console.log('Compteur : ' + summCompteur);
 
       }
       if (wieghtBoxCounter !== 0) {
         summCompteur += (wieghtBoxCounter - quantityProducedForQuality);
-        console.log('Compteur : ' + wieghtBoxCounter);
-
-        console.log('Compteur : ' + summCompteur);
-
       }
 
-
-      console.log('Rejection : ' + sommeRejection);
+      console.log('DATA FOR QUALITY');
+      console.log('QTY PRODUCED : ' + quantityProducedForQuality);
+      console.log('Rejection : ' + this.sommeRejection);
       console.log('Compteur : ' + summCompteur);
 
-      if(quantityProducedForQuality + sommeRejection + summCompteur === 0 ){
+      if(quantityProducedForQuality + this.sommeRejection + summCompteur === 0 ){
         this.quality = 1;
       }else{
-        this.quality = (quantityProducedForQuality) / (quantityProducedForQuality + sommeRejection + summCompteur);
+        this.quality = (quantityProducedForQuality) / (quantityProducedForQuality + this.sommeRejection + summCompteur);
       }
 
       if(this.quality > 1){

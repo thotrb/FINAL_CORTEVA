@@ -538,9 +538,7 @@ export default {
         if(!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
             && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
             && this.allEvents['SITE'][i].fillerCounter === 0)){
-
           quantityProducedForQuality += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
-
         }
         n += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
       }
@@ -622,6 +620,10 @@ export default {
       if(quantityProducedForQuality + sommeRejection + summCompteur === 0 ){
         this.quality = 1;
       }else{
+        console.log('DATA FOR QUALITY');
+        console.log('QTY PRODUCED : ' + quantityProducedForQuality);
+        console.log('Rejection : ' + sommeRejection);
+        console.log('Compteur : ' + summCompteur);
         this.quality = (quantityProducedForQuality) / (quantityProducedForQuality + sommeRejection + summCompteur);
       }
 

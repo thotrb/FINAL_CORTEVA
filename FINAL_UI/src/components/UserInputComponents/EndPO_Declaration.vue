@@ -855,12 +855,12 @@ export default {
         caperCounter: this.CaperCounter,
         labelerCounter: this.EtiqueteuseCounter,
         weightBoxCounter: this.WieghtBoxCounter*this.netOP[0].bottlesPerCase,
-        qualityControlCounter : this.QualityControlCounter,
+        qualityControlCounter : this.QualityControlCounter*this.netOP[0].bottlesPerCase,
         fillerRejection : this.FillerRejection,
         caperRejection : this.CaperRejection,
         labelerRejection : this.EtiqueteuseRejection,
         weightBoxRejection : this.WieghtBoxRejection*this.netOP[0].bottlesPerCase,
-        qualityControlRejection : this.QualityControlRejection,
+        qualityControlRejection : this.QualityControlRejection*this.netOP[0].bottlesPerCase,
         shift : this.typeTeam
       });
 

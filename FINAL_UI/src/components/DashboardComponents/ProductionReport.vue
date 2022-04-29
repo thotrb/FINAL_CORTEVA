@@ -501,7 +501,7 @@ export default {
         };
         data.push(obj);
       }
-      console.log('DATA');
+      console.log('DATA PIE CHARTS 2');
 
       console.log(data);
 
@@ -576,9 +576,9 @@ export default {
       for (let i = 0; i < this.volumes.length; i++) {
         if (!this.formulations.includes(this.volumes[i].bulk)) {
           this.formulations.push(this.volumes[i].bulk);
-          qtyPerFormulation[this.volumes[i].bulk] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
+          qtyPerFormulation[this.volumes[i].bulk] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
         } else {
-          qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
+          qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1;
         }
       }
 
@@ -597,7 +597,7 @@ export default {
             console.log('MOIS : ' + month);
 
             var correspondingMonth = tableauFormulation[month - 1];
-            tableauFormulationValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size * 1;
+            tableauFormulationValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1;
           }
         }
 
@@ -630,7 +630,7 @@ export default {
       for (let i = 0; i < this.volumes.length; i++) {
         if (!this.packsizes.includes(this.volumes[i].size)) {
           this.packsizes.push(this.volumes[i].size);
-          qtyPerPacksize[this.volumes[i].size] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
+          qtyPerPacksize[this.volumes[i].size] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size* 1;
         } else {
           qtyPerPacksize[this.volumes[i].size] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
         }
