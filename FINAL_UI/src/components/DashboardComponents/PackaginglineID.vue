@@ -1,6 +1,10 @@
 <template>
   <div>
 
+    <div id="imageArrow">
+    </div>
+
+
     <div class="row dataInput">
       <div class="col-sm">
         <div class="data">
@@ -149,14 +153,17 @@
     </div>
 
 
+
   </div>
 
 </template>
 
 <script>
+
+
 import axios from "axios";
 import {urlAPI} from "@/variables";
-import LeaderLine from 'leader-line-new';
+//import ArrowHorizontale from "@/components/DashboardComponents/ArrowHorizontale";
 
 
 export default {
@@ -189,9 +196,10 @@ export default {
       });
     },
 
+
     load: async function () {
       var index = 0;
-      var tableauMachine = [];
+      //var tableauMachine = [];
 
       for (let i = 0; i < this.dataProductionlines.length; i++) {
 
@@ -210,7 +218,47 @@ export default {
 
       }
 
+
       await this.resolveAfter15Second();
+
+      /**
+      var bigDiv2 = null;
+      var machine2 = null;
+      var row2 = null;
+      var title2 = null;
+      var rej2 = null;
+      var insert = document.getElementById("flowDiagram");
+      for (let i = 0; i < this.machines[0].length; i++) {
+        machine2 = this.machines[0][i];
+        row2 = document.createElement("div");
+        row2.setAttribute("class", "row");
+        row2.setAttribute("style", "margin: 30px;height: 50px;");
+        row2.setAttribute("class", "machine col-sm");
+        row2.setAttribute("style", "color:white; background-color: lightblue; height: 50px; margin-bottom: 30px;");
+        row2.setAttribute("align", "center");
+        title2 = document.createElement("h1");
+        title2.innerHTML = machine2.name;
+        row2.appendChild(title2);
+        if(machine2.rejection === 1){
+          console.log('je passe');
+          rej2 = document.createElement("h1");
+          rej2.innerHTML = "R";
+          var img2 = document.createElement("img");
+          img2.src = 'http://www.google.com/intl/en_com/images/logo_plain.png';
+          row2.appendChild(img2);
+          row2.appendChild(rej2)
+        }
+        insert.append(row2);
+      }
+**/
+
+
+
+
+
+      var rejection = null;
+      var R = null;
+
 
       var row = document.createElement("div");
       row.setAttribute("class", "row");
@@ -232,19 +280,21 @@ export default {
 
 
       if (previousMachine.rejection === 1) {
-        var rejection = document.createElement("div");
-        var R = document.createElement("h5");
+        rejection = document.createElement("div");
+        R = document.createElement("h5");
         R.innerHTML = "R";
         R.setAttribute("style", "padding-top:15px;");
-        //R.setAttribute("id", "rejection_" + previousMachine.name);
-
+        R.setAttribute("id", "rejection_" + previousMachine.name);
 
         rejection.append(R);
         rejection.setAttribute("id", "rejection_" + previousMachine.name);
         rejection.setAttribute("style", "color:red;");
         rejection.setAttribute("align", "center");
         rejection.setAttribute("class", "col-sm");
-
+        //var img2 = document.createElement('img');
+        //img2.src = require('../../assets/arrowHorizontale.png');
+        //var img2  = require('../../assets/arrowHorizontale.png');
+        //row.appendChild(img2);
         row.appendChild(rejection);
 
       }
@@ -252,20 +302,15 @@ export default {
 
       row.appendChild(div);
       insert.appendChild(row);
-      if (previousMachine.rejection === 1) {
-        new LeaderLine(
-            document.getElementById(previousMachine.name),
-            document.getElementById("rejection_" + previousMachine.name),
-            {color: 'red'}
-        );
-      }
+      //var arrowVerticale = document.createElement("img");
+      //arrowVerticale.src = '../../assets/arrowVerticale.png';
 
-      tableauMachine.push(previousMachine.ordre);
+      //insert.appendChild(arrowVerticale);
+      var machine = null;
 
       for (let i = 1; i < this.machines[0].length; i++) {
 
-        var machine = this.machines[0][i];
-        tableauMachine.push(machine.ordre);
+        machine = this.machines[0][i];
 
         row = document.createElement("div");
         row.setAttribute("class", "row");
@@ -287,8 +332,10 @@ export default {
         row.appendChild(div);
 
 
+
         if (machine.rejection === 1) {
           rejection = document.createElement("div");
+
           R = document.createElement("h5");
           R.innerHTML = "R";
           R.setAttribute("style", "padding-top:15px;");
@@ -298,15 +345,22 @@ export default {
           rejection.setAttribute("style", "color:red;");
           rejection.setAttribute("align", "center");
           rejection.setAttribute("class", "col-sm");
+          //var img = document.createElement("img");
+          //img.src = '../../assets/arrowHorizontale.png';
 
+
+          //row.appendChild(img);
           row.appendChild(rejection);
-
-
 
         }
 
         insert.appendChild(row);
+        //var arrowVerticale2 = document.createElement("img");
+        //arrowVerticale2.src = '../../assets/arrowVerticale.png';
 
+        //insert.appendChild(arrowVerticale2)
+
+        /**
         new LeaderLine(
             document.getElementById(previousMachine.name),
             document.getElementById(machine.name),
@@ -320,14 +374,17 @@ export default {
               {color: 'red'}
           );
         }
+         **/
+
+
 
         previousMachine = machine;
 
 
       }
 
+
       this.show = 1;
-      console.log(tableauMachine);
 
     },
   },

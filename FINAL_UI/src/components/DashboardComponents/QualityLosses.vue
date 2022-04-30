@@ -90,7 +90,7 @@
       <div class="col-sm  border border-primary">
         <h3 style="padding-top : 55px;">
           <template v-if="show === 1">
-            QL = 100 %
+            QL = {{quality.toFixed(4)*100}} %
           </template>
         </h3>
       </div>
@@ -153,94 +153,94 @@
 
             <tr class="filler mainLine">
               <th scope="row">{{$t("filler")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumFillerCounter*1 +
-              qualityLosses['rejectionCounter'][0].sumFillerRejection*1}}
+              <td>{{productionPerMachineToShow["fillerCounter"] +
+              productionPerMachineToShow["fillerRejection"]}}
               </td>
             </tr>
 
             <tr class="filler">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumFillerCounter}}</td>
+              <td>{{productionPerMachineToShow["fillerCounter"]}}</td>
             </tr>
 
             <tr class="filler">
               <th scope="row">{{$t("rejectedItems")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumFillerRejection}}</td>
+              <td>{{productionPerMachineToShow["fillerRejection"]}}</td>
             </tr>
 
 
             <tr class="caper mainLine">
               <th scope="row">{{$t("caper")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumCaperCounter*1 +
-              qualityLosses['rejectionCounter'][0].sumCaperRejection*1}}
+              <td>{{productionPerMachineToShow["caperCounter"] +
+              productionPerMachineToShow["caperRejection"]}}
               </td>
             </tr>
 
             <tr class="caper">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumCaperCounter}}</td>
+              <td>{{productionPerMachineToShow["caperCounter"]}}</td>
             </tr>
 
             <tr class="caper">
               <th scope="row">{{$t("rejectedItems")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumCaperRejection}}</td>
+              <td>{{productionPerMachineToShow["caperRejection"]}}</td>
             </tr>
 
 
             <tr class="labeler mainLine">
               <th scope="row">{{$t("labeler")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumLabelerCounter*1 +
-              qualityLosses['rejectionCounter'][0].sumLabelerRejection*1}}
+              <td>{{productionPerMachineToShow["labelerCounter"] +
+              productionPerMachineToShow["labelerRejection"]}}
               </td>
             </tr>
 
             <tr class="labeler">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumLabelerCounter}}</td>
+              <td>{{productionPerMachineToShow["labelerCounter"]}}</td>
             </tr>
 
             <tr class="labeler">
               <th scope="row">{{$t("rejectedItems")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumLabelerRejection}}</td>
+              <td>{{productionPerMachineToShow["labelerRejection"]}}</td>
             </tr>
 
             <tr class="boxWeigher mainLine">
               <th scope="row">{{$t("boxWeigher")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumWeightBoxCounter*1 +
-              qualityLosses['rejectionCounter'][0].sumWeightBoxRejection*1}}
+              <td>{{productionPerMachineToShow["weightBoxCounter"] +
+              productionPerMachineToShow["weightBoxRejection"] }}
               </td>
             </tr>
 
             <tr class="boxWeigher">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumWeightBoxCounter}}</td>
+              <td>{{productionPerMachineToShow["weightBoxCounter"] }}</td>
             </tr>
 
             <tr class="boxWeigher">
               <th scope="row">{{$t("rejectedItems")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumWeightBoxRejection}}</td>
+              <td>{{productionPerMachineToShow["weightBoxRejection"] }}</td>
             </tr>
 
             <tr class="qualityControl mainLine">
               <th scope="row">{{$t("qualityControl")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumQualityControlCounter*1 +
-              qualityLosses['rejectionCounter'][0].sumQualityControlRejection*1}}
+              <td>{{productionPerMachineToShow["qualityControlCounter"]  +
+              productionPerMachineToShow["qualityControlRejection"] }}
               </td>
             </tr>
 
             <tr class="qualityControl">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumQualityControlCounter}}</td>
+              <td>{{productionPerMachineToShow["qualityControlCounter"]}}</td>
             </tr>
 
             <tr class="qualityControl">
               <th scope="row">{{$t("rejectedItems")}}</th>
-              <td>{{qualityLosses['rejectionCounter'][0].sumQualityControlRejection}}</td>
+              <td>{{productionPerMachineToShow["qualityControlRejection"]}}</td>
             </tr>
 
             <tr class="totalQty">
               <th scope="row">{{$t("total")}}</th>
-              <td>{{totalItems}}</td>
+              <td>{{totalToShow}}</td>
             </tr>
 
 
@@ -413,8 +413,10 @@ export default {
       show: 0,
       totalItems: 0,
       tableauFormats: [],
+      overAllRejection : 0,
       qtyPerMachine: [],
       totalPerFormat: [],
+      totalRejectionPerFormat : [],
       qualityLossesPerMachineArray: [],
       quality: 0,
       dataWorksite : null,
@@ -423,7 +425,10 @@ export default {
       allEvents : null,
       qualityLosses : null,
       username: localStorage.getItem("username"),
-      team: ""
+      team: "",
+
+      productionPerMachineToShow : [],
+      totalToShow : [],
     }
   },
 
@@ -446,6 +451,8 @@ export default {
 
     load: async function () {
 
+      var totalRejectionMachine = 0;
+
       if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '' && this.team !== '') {
         var tab = [];
         tab.push(this.site);
@@ -457,6 +464,41 @@ export default {
             .then(response => (this.allEvents = response.data))
 
         console.log(this.allEvents);
+        this.productionPerMachineToShow["fillerCounter"] = 0;
+        this.productionPerMachineToShow["caperCounter"] = 0;
+        this.productionPerMachineToShow["labelerCounter"] = 0;
+        this.productionPerMachineToShow["weightBoxCounter"] = 0;
+        this.productionPerMachineToShow["qualityControlCounter"] =0;
+        this.productionPerMachineToShow["fillerRejection"] = 0;
+        this.productionPerMachineToShow["caperRejection"] = 0;
+        this.productionPerMachineToShow["labelerRejection"] = 0;
+        this.productionPerMachineToShow["weightBoxRejection"] = 0;
+        this.productionPerMachineToShow["qualityControlRejection"] = 0;
+        this.totalToShow = 0;
+
+        for (let i = 0; i < this.allEvents['SITE'].length; i++) {
+
+
+          let PO = this.allEvents['SITE'][i];
+
+          totalRejectionMachine += (PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1);
+          this.totalToShow += (PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1)
+          this.totalToShow += (PO.fillerCounter * 1) + (PO.caperCounter * 1) + (PO.labelerCounter * 1) + (PO.weightBoxCounter * 1) + (PO.qualityControlCounter * 1)
+
+          this.productionPerMachineToShow["fillerCounter"] += PO.fillerCounter * 1;
+
+          this.productionPerMachineToShow["caperCounter"] += PO.caperCounter * 1;
+          this.productionPerMachineToShow["labelerCounter"] += PO.labelerCounter * 1;
+          this.productionPerMachineToShow["weightBoxCounter"] += PO.weightBoxCounter * 1;
+          this.productionPerMachineToShow["qualityControlCounter"] += PO.qualityControlCounter * 1;
+          this.productionPerMachineToShow["fillerRejection"] += PO.fillerRejection * 1;
+          this.productionPerMachineToShow["caperRejection"] += PO.caperRejection * 1;
+          this.productionPerMachineToShow["labelerRejection"] += PO.labelerRejection * 1;
+          this.productionPerMachineToShow["weightBoxRejection"] += PO.weightBoxRejection * 1;
+          this.productionPerMachineToShow["qualityControlRejection"] += PO.qualityControlRejection * 1;
+        }
+
+
 
         await axios.get(urlAPI + 'qualityLosses/' + this.site + '/' + this.productionline + '/' + this.beginningDate + '/' + this.endingDate + '/' + this.team)
             .then(response => (this.qualityLosses = response.data))
@@ -468,46 +510,31 @@ export default {
         this.qualityLossesPerMachineArray = [];
         this.qualityLossesPerMachineArray.push({
           name: "weightBox",
-          value: this.qualityLosses['rejectionCounter'][0].sumWeightBoxCounter * 1 +
-              this.qualityLosses['rejectionCounter'][0].sumWeightBoxRejection * 1
+          value: this.productionPerMachineToShow["weightBoxRejection"] / totalRejectionMachine
         });
 
         this.qualityLossesPerMachineArray.push({
           name: "caper",
-          value: this.qualityLosses['rejectionCounter'][0].sumCaperCounter * 1 +
-              this.qualityLosses['rejectionCounter'][0].sumCaperRejection * 1
+          value:  this.productionPerMachineToShow["caperRejection"] / totalRejectionMachine
         });
 
         this.qualityLossesPerMachineArray.push({
           name: "filler",
-          value: this.qualityLosses['rejectionCounter'][0].sumFillerCounter * 1 +
-              this.qualityLosses['rejectionCounter'][0].sumFillerRejection * 1
+          value: this.productionPerMachineToShow["fillerRejection"] / totalRejectionMachine
         });
 
         this.qualityLossesPerMachineArray.push({
           name: "labeler",
-          value: this.qualityLosses['rejectionCounter'][0].sumLabelerCounter * 1 +
-              this.qualityLosses['rejectionCounter'][0].sumLabelerRejection * 1
+          value:  this.productionPerMachineToShow["labelerRejection"] / totalRejectionMachine
         });
 
         this.qualityLossesPerMachineArray.push({
           name: "qualityControl",
-          value: this.qualityLosses['rejectionCounter'][0].sumQualityControlCounter * 1 +
-              this.qualityLosses['rejectionCounter'][0].sumQualityControlRejection * 1
+          value: this.productionPerMachineToShow["qualityControlRejection"] / totalRejectionMachine
         });
 
 
-        this.totalItems = this.qualityLosses['rejectionCounter'][0].sumWeightBoxCounter * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumWeightBoxRejection * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumCaperCounter * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumCaperRejection * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumFillerCounter * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumFillerRejection * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumLabelerCounter * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumLabelerRejection * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumQualityControlCounter * 1 +
-            this.qualityLosses['rejectionCounter'][0].sumQualityControlRejection * 1
-        ;
+        this.totalItems = this.totalToShow;
 
         this.loadQualityLossesByFormat();
         this.pieCharts();
@@ -533,12 +560,13 @@ export default {
 
 
         let PO = this.allEvents['SITE'][i];
-        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1;
+        sommeRejection += PO.fillerRejection * 1 + PO.caperRejection * 1 + PO.labelerRejection * 1 + PO.weightBoxRejection * 1 + PO.qualityControlRejection;
         fillerCounter += PO.fillerCounter * 1;
         caperCounter += PO.caperCounter * 1;
         labelerCounter += PO.labelerCounter * 1;
         wieghtBoxCounter += PO.weightBoxCounter * 1;
         qualityControlCounter += PO.qualityControlCounter * 1;
+
 
         if (!(this.allEvents['SITE'][i].labelerCounter === 0 && this.allEvents['SITE'][i].weightBoxCounter === 0
             && this.allEvents['SITE'][i].qualityControlCounter === 0 && this.allEvents['SITE'][i].caperCounter === 0
@@ -566,6 +594,12 @@ export default {
       if (wieghtBoxCounter !== 0) {
         summCompteur += (wieghtBoxCounter - sommeQtyProduced);
       }
+
+
+      console.log('DATA FOR QUALITY');
+      console.log('QTY PRODUCED : ' + sommeQtyProduced);
+      console.log('Rejection : ' + sommeRejection);
+      console.log('Compteur : ' + summCompteur);
 
 
       if(sommeQtyProduced + sommeRejection + summCompteur === 0 ){
@@ -597,11 +631,16 @@ export default {
       this.qtyPerMachine["controlQualityRejection"] = [];
 
 
-      for (let i = 0; i < this.qualityLosses['formats'].length; i++) {
+      for (let i = 0; i < this.allEvents['SITE'].length; i++) {
 
-        var line = this.qualityLosses['formats'][i];
+        var line = this.allEvents['SITE'][i];
 
         var format = line.size;
+
+
+        this.overAllRejection +=  line.caperRejection + line.fillerRejection +
+            line.weightBoxRejection + line.labelerRejection + line.qualityControlRejection;
+
 
         if (!this.tableauFormats.includes(format)) {
           this.tableauFormats.push(format);
@@ -622,6 +661,9 @@ export default {
               + line.fillerRejection + line.weightBoxCounter + line.weightBoxRejection + line.labelerCounter +
               line.labelerRejection + line.qualityControlCounter + line.qualityControlRejection;
 
+          this.totalRejectionPerFormat[format] =  line.caperRejection + line.fillerRejection +
+              line.weightBoxRejection + line.labelerRejection + line.qualityControlRejection;
+
         } else {
 
           this.qtyPerMachine["caperCounter"][format] += line.caperCounter;
@@ -637,10 +679,14 @@ export default {
           this.totalPerFormat[format] += line.caperCounter + line.caperRejection + line.fillerCounter
               + line.fillerRejection + line.weightBoxCounter + line.weightBoxRejection + line.labelerCounter +
               line.labelerRejection + line.qualityControlCounter + line.qualityControlRejection;
+          this.totalRejectionPerFormat[format] +=  line.caperRejection + line.fillerRejection +
+              line.weightBoxRejection + line.labelerRejection + line.qualityControlRejection;
         }
 
 
       }
+
+
 
     },
 
@@ -654,7 +700,7 @@ export default {
           nbr: this.qualityLossesPerMachineArray[j].value
         };
         data.push(obj);
-        totalPieChart1 += this.qualityLossesPerMachineArray[j].value;
+        totalPieChart1 = 1;
       }
       console.log('DATA');
 
@@ -733,10 +779,10 @@ export default {
 
         obj = {
           name: format,
-          nbr: this.totalPerFormat[format],
+          nbr: this.totalRejectionPerFormat[format]/this.overAllRejection,
         };
         data.push(obj);
-        totalPieChart2 += this.totalPerFormat[format];
+        totalPieChart2 = 1;
       }
 
       if (data.length === 0) {
