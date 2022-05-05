@@ -146,25 +146,25 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
           var i;
           var format2 = {
-                format : null,
-                shape : null,
-                mat1 : 'None',
-                mat2 : 'None',
-                mat3 : 'None',
-                design_rate : null,
-                productionlineName : null,
+            format: null,
+            shape: null,
+            mat1: 'None',
+            mat2: 'None',
+            mat3: 'None',
+            design_rate: null,
+            productionlineName: null,
 
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 7){
+            if (rowsSplited.length === 7) {
               format2.format = rowsSplited[0];
               format2.shape = rowsSplited[1];
               format2.mat1 = rowsSplited[2];
@@ -174,7 +174,7 @@ export default {
               format2.productionlineName = rowsSplited[6];
               console.log(format2);
 
-              axios.put(urlAPI + 'insertFormat', format2)
+              await axios.put(urlAPI + 'insertFormat', format2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -190,39 +190,38 @@ export default {
 
     },
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
-            this.format.format = this.format.format + 'L';
-            if(this.format.mat1 === ''){
-              this.format.mat1 = 'None';
-            }
-            if(this.format.mat2 === ''){
-              this.format.mat2 = 'None';
-            }
-            if(this.format.mat3 === ''){
-              this.format.mat3 = 'None';
-            }
-            console.log("OK");
-            console.log(this.format);
-
-
-            axios.put(urlAPI + 'insertFormat', this.format)
-                .then(response => (this.effective = response))
-
-            console.log('Effectif : ' + this.effective);
-            location.reload();
-
-          }
+      } else {
+        this.format.format = this.format.format + 'L';
+        if (this.format.mat1 === '') {
+          this.format.mat1 = 'None';
+        }
+        if (this.format.mat2 === '') {
+          this.format.mat2 = 'None';
+        }
+        if (this.format.mat3 === '') {
+          this.format.mat3 = 'None';
+        }
+        console.log("OK");
+        console.log(this.format);
 
 
+        await axios.put(urlAPI + 'insertFormat', this.format)
+            .then(response => (this.effective = response))
 
-          form.classList.add('was-validated');
+        console.log('Effectif : ' + this.effective);
+        location.reload();
+
+      }
+
+
+      form.classList.add('was-validated');
     },
 
 

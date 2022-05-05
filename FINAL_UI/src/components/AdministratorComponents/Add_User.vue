@@ -161,25 +161,25 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
           var i;
           var user2 = {
-            login : null,
-            password : null,
-            worksite_name : null,
-            lastname : null,
-            firstname : null ,
-            status : null,
-            productionline : null,
+            login: null,
+            password: null,
+            worksite_name: null,
+            lastname: null,
+            firstname: null,
+            status: null,
+            productionline: null,
 
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 7){
+            if (rowsSplited.length === 7) {
               user2.login = rowsSplited[0];
               user2.password = rowsSplited[1];
               user2.worksite_name = rowsSplited[2];
@@ -189,7 +189,7 @@ export default {
               user2.productionline = rowsSplited[6];
               console.log(user2);
 
-              axios.put(urlAPI + 'insertUser', user2)
+              await axios.put(urlAPI + 'insertUser', user2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -205,30 +205,29 @@ export default {
 
     },
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
+      } else {
 
-            console.log("OK");
-            console.log(this.user);
-
-
-            axios.put(urlAPI + 'insertUser', this.user)
-                .then(response => (this.effective = response))
-
-            console.log('Effectif : ' + this.effective);
-            location.reload();
-
-          }
+        console.log("OK");
+        console.log(this.user);
 
 
+        await axios.put(urlAPI + 'insertUser', this.user)
+            .then(response => (this.effective = response))
 
-          form.classList.add('was-validated');
+        console.log('Effectif : ' + this.effective);
+        location.reload();
+
+      }
+
+
+      form.classList.add('was-validated');
     },
 
 

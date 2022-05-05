@@ -126,29 +126,29 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
           var i;
           var teamInfo2 = {
-            workingDebut : null,
-            workingEnd : null,
-            type : null,
-            worksite_name : null,
-            state : 0,
+            workingDebut: null,
+            workingEnd: null,
+            type: null,
+            worksite_name: null,
+            state: 0,
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 5){
+            if (rowsSplited.length === 5) {
               teamInfo2.workingDebut = rowsSplited[0];
               teamInfo2.workingEnd = rowsSplited[1];
               teamInfo2.type = rowsSplited[2];
               teamInfo2.worksite_name = rowsSplited[3];
               console.log(teamInfo2);
 
-              axios.put(urlAPI + 'insertTeamInfo', teamInfo2)
+              await axios.put(urlAPI + 'insertTeamInfo', teamInfo2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -165,28 +165,27 @@ export default {
 
     },
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
-            console.log("OK");
-            console.log(this.downtimeReason);
+      } else {
+        console.log("OK");
+        console.log(this.downtimeReason);
 
-            axios.put(urlAPI + 'insertTeamInfo', this.teamInfo)
-                .then(response => (this.effective = response))
+        await axios.put(urlAPI + 'insertTeamInfo', this.teamInfo)
+            .then(response => (this.effective = response))
 
-            console.log('Effectif : ' + this.effective);
-            location.reload();
+        console.log('Effectif : ' + this.effective);
+        location.reload();
 
-          }
+      }
 
 
-
-          form.classList.add('was-validated');
+      form.classList.add('was-validated');
     },
 
 

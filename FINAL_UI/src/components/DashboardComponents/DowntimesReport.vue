@@ -32,7 +32,7 @@
             </div>
             <div>
             <form>
-              <label for="team">{{$t("team")}}: </label>
+              <label for="team-select">{{$t("team")}}: </label>
               <select name="team" id="team-select" class="form-select" v-model="team">
                 <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
                 <template v-for="team in dataTeams">
@@ -324,12 +324,14 @@
             <div class="row">
               <div class="col-sm">
                 <canvas id="can" width="100" height="100"/>
-                <h5>{{$t("packSizeSplit")}}</h5>
+                <h5>{{$t("formVolumeSplit")}}</h5>
+
               </div>
 
               <div class="col-sm">
                 <canvas id="can2" width="100" height="100"/>
-                <h5>{{$t("formVolumeSplit")}}</h5>
+                <h5>{{$t("packSizeSplit")}}</h5>
+
               </div>
 
             </div>
@@ -574,8 +576,8 @@ export default {
 
         let indexFormulation = this.formulationArray.indexOf(this.allEvents['SITE'][i].GIFAP);
 
-        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase
-            ;
+        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * this.allEvents['SITE'][i].size;
+
 
 
         if (!this.formatArray.includes(this.allEvents['SITE'][i].size)) {

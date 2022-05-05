@@ -154,7 +154,7 @@ export default {
         description : null,
         formulationType : null,
         size : null,
-        idealRate : null,
+        idealRate : 0.00,
         bottlesPerCase : null,
       },
     }
@@ -177,40 +177,40 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
           var i;
           var product2 = {
-                product : null,
-                GMID : null,
-                bulk : null,
-                family : null,
-                GIFAP : null,
-                description : null,
-                formulationType : null,
-                size : null,
-                idealRate : null,
-                bottlesPerCase : null,
+            product: null,
+            GMID: null,
+            bulk: null,
+            family: null,
+            GIFAP: null,
+            description: null,
+            formulationType: null,
+            size: null,
+            idealRate: null,
+            bottlesPerCase: null,
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 10){
+            if (rowsSplited.length === 10) {
               product2.product = rowsSplited[0];
               product2.GMID = rowsSplited[1];
-              product2.bulk = rowsSplited[2];
-              product2.family = rowsSplited[3];
-              product2.GIFAP = rowsSplited[4];
-              product2.description = rowsSplited[5];
-              product2.formulationType = rowsSplited[6];
-              product2.size = rowsSplited[7];
-              product2.idealRate = rowsSplited[8];
-              product2.bottlesPerCase = rowsSplited[9];
+              product2.family = rowsSplited[2];
+              product2.GIFAP = rowsSplited[3];
+              product2.description = rowsSplited[4];
+              product2.formulationType = rowsSplited[5];
+              product2.size = rowsSplited[6];
+              product2.idealRate = rowsSplited[7];
+              product2.bottlesPerCase = rowsSplited[8];
+              product2.bulk = rowsSplited[9];
               console.log(product2);
 
-              axios.put(urlAPI + 'insertProduct', product2)
+              await axios.put(urlAPI + 'insertProduct', product2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -238,13 +238,13 @@ export default {
         console.log(this.product);
 
 
-        axios.put(urlAPI + 'insertProduct', this.product)
+        await axios.put(urlAPI + 'insertProduct', this.product)
             .then(response => (this.effective = response))
 
         console.log('Effectif : ' + this.effective);
         await this.resolveAfter15Second();
 
-        location.reload();
+        //location.reload();
 
       }
 

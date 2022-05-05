@@ -141,7 +141,7 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
@@ -156,7 +156,7 @@ export default {
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 5){
+            if (rowsSplited.length === 5) {
               machineComponent2.name = rowsSplited[0];
               machineComponent2.machineName = rowsSplited[1];
               machineComponent2.other_machine = rowsSplited[2];
@@ -164,7 +164,7 @@ export default {
               machineComponent2.productionLine = rowsSplited[4];
               console.log(machineComponent2);
 
-              axios.post(urlAPI + 'insertMachineComponent', machineComponent2)
+              await axios.post(urlAPI + 'insertMachineComponent', machineComponent2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -180,30 +180,29 @@ export default {
 
     },
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
+      } else {
 
-            console.log("OK");
-            console.log(this.machineComponent);
-
-
-            axios.post(urlAPI + 'insertMachineComponent', this.machineComponent)
-                .then(response => (this.effective = response))
-
-            console.log('Effectif : ' + this.effective);
-            location.reload();
-
-          }
+        console.log("OK");
+        console.log(this.machineComponent);
 
 
+        await axios.post(urlAPI + 'insertMachineComponent', this.machineComponent)
+            .then(response => (this.effective = response))
 
-          form.classList.add('was-validated');
+        console.log('Effectif : ' + this.effective);
+        location.reload();
+
+      }
+
+
+      form.classList.add('was-validated');
     },
 
 

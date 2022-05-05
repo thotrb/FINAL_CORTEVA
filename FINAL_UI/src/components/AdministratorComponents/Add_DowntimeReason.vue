@@ -132,7 +132,7 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
@@ -146,14 +146,14 @@ export default {
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 4){
+            if (rowsSplited.length === 4) {
               downtimeReason2.reason = rowsSplited[0];
               downtimeReason2.downtimeType = rowsSplited[1];
               downtimeReason2.worksite = rowsSplited[2];
               downtimeReason2.production_line = rowsSplited[3];
               console.log(downtimeReason2);
 
-              axios.put(urlAPI + 'insertDowntimeReason', downtimeReason2)
+              await axios.put(urlAPI + 'insertDowntimeReason', downtimeReason2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -170,28 +170,27 @@ export default {
 
     },
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
-            console.log("OK");
-            console.log(this.downtimeReason);
+      } else {
+        console.log("OK");
+        console.log(this.downtimeReason);
 
-            axios.put(urlAPI + 'insertDowntimeReason', this.downtimeReason)
-                .then(response => (this.effective = response))
+        await axios.put(urlAPI + 'insertDowntimeReason', this.downtimeReason)
+            .then(response => (this.effective = response))
 
-            console.log('Effectif : ' + this.effective);
-            location.reload();
+        console.log('Effectif : ' + this.effective);
+        location.reload();
 
-          }
+      }
 
 
-
-          form.classList.add('was-validated');
+      form.classList.add('was-validated');
     },
 
 

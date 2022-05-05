@@ -70,24 +70,24 @@ export default {
 
       switch (reasonDowntime) {
 
-        case this.$t("CIP"):
+        case "CIP":
           router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/CIP");
           break;
 
-        case this.$t("formatChanging"):
+        case "formatChanging":
           router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/formatChanging");
           break;
 
-        case this.$t("packNumberChanging"):
-          router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/clientChanging");
+        case "packNumberChanging":
+          router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/packNumberChanging");
           break;
 
-        case this.$t("unplannedDowntime"):
+        case "unplannedDowntime":
           router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/unplannedDowntime");
           break;
 
         default :
-          router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/"+reasonDowntime);
+          router.replace("/eventDeclaration/"+this.productionName+"/"+this.downtimeType+"/other");
           break;
 
       }

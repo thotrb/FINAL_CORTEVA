@@ -169,26 +169,26 @@ export default {
         //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = function (e) {
+        reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
           var i;
-          var machine2 =  {
-                name : null,
-                operation : null,
-                fabricant : null,
-                modele : null,
-                productionline_name : null,
-                denomination_ordre : null,
-                ordre : null,
-                rejection : null,
-                worksite : null,
+          var machine2 = {
+            name: null,
+            operation: null,
+            fabricant: null,
+            modele: null,
+            productionline_name: null,
+            denomination_ordre: null,
+            ordre: null,
+            rejection: null,
+            worksite: null,
           };
           var effective;
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
-            if(rowsSplited.length === 9){
+            if (rowsSplited.length === 9) {
               machine2.name = rowsSplited[0];
               machine2.operation = rowsSplited[1];
               machine2.fabricant = rowsSplited[2];
@@ -200,7 +200,7 @@ export default {
               machine2.worksite = rowsSplited[8];
               console.log(machine2);
 
-              axios.put(urlAPI + 'insertMachine', machine2)
+              await axios.put(urlAPI + 'insertMachine', machine2)
                   .then(response => (effective = response))
               console.log(effective)
             }
@@ -217,28 +217,27 @@ export default {
     },
 
 
-    addMachine : function () {
+    addMachine : async function () {
       var form = document.getElementById('needs-validation');
-          if (form.checkValidity() === false) {
-            event.preventDefault();
-            event.stopPropagation();
-            console.log("PAS OK");
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-          }else {
-            console.log("OK");
-            console.log(this.machine);
+      } else {
+        console.log("OK");
+        console.log(this.machine);
 
-            axios.put(urlAPI + 'insertMachine', this.machine)
-                .then(response => (this.effective = response))
+        await axios.put(urlAPI + 'insertMachine', this.machine)
+            .then(response => (this.effective = response))
 
-            console.log('Effectif : ' + this.effective);
-            location.reload();
+        console.log('Effectif : ' + this.effective);
+        location.reload();
 
-          }
+      }
 
 
-
-          form.classList.add('was-validated');
+      form.classList.add('was-validated');
     },
 
 
