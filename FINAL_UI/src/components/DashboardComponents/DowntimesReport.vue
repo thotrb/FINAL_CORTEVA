@@ -119,7 +119,7 @@
               </tr>
               <tr>
                 <th scope="row">4. {{$t("breaksMeetingShiftChange")}} (BM)</th>
-                  <td>{{plannedDowntimes}} mn</td>
+                  <td>{{plannedDowntimes - allEvents['PP'][0].Duration - allEvents['PM'][0].Duration - allEvents['CP'][0].Duration}} mn</td>
               </tr>
 
               </tbody>
@@ -324,13 +324,14 @@
             <div class="row">
               <div class="col-sm">
                 <canvas id="can" width="100" height="100"/>
-                <h5>{{$t("formVolumeSplit")}}</h5>
+                <h5>{{$t("packSizeSplit")}}</h5>
+
 
               </div>
 
               <div class="col-sm">
                 <canvas id="can2" width="100" height="100"/>
-                <h5>{{$t("packSizeSplit")}}</h5>
+                <h5>{{$t("formVolumeSplit")}}</h5>
 
               </div>
 
@@ -576,7 +577,7 @@ export default {
 
         let indexFormulation = this.formulationArray.indexOf(this.allEvents['SITE'][i].GIFAP);
 
-        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * this.allEvents['SITE'][i].size;
+        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
 
 
 
@@ -645,7 +646,6 @@ export default {
       for (let i = 0; i < this.allEvents['SLEVENTS'].length; i++){
         this.speedLosses += this.allEvents['SLEVENTS'][i].duration;
 
-
       }
 
 
@@ -708,8 +708,49 @@ export default {
         }
       }
 
+      /**
+      var SpeedLossesPerPO = [];
+
+      for(let m = 0; m<POArray.length; m++){
+        let summPlannedDuration = 0;
+        let summUnplannedDuration = 0;
+        for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
+          if(POArray[m] ===this.allEvents['PLANNEDEVENTS'][k].OLE){
+            summPlannedDuration +=  this.allEvents['PLANNEDEVENTS'][k].duration;
+          }
+
+
+          for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+            if(POArray[m] === this.allEvents['EVENTS'][j].OLE ){
+              summUnplannedDuration += this.allEvents['EVENTS'][j].total_duration * 1;
+            }
+          }
+
+          for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+            if(POArray[m] === this.allEvents['UNPLANNEDEVENTS'][j].OLE ){
+              summUnplannedDuration += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+            }
+          }
+
+          for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
+            if(POArray[m] === this.allEvents['CIPEVENTS'][j].OLE ){
+              summUnplannedDuration += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+            }
+          }
+
+          for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
+            if(POArray[m] === this.allEvents['LOTCHANGING'][j].OLE ){
+              summUnplannedDuration += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+            }
+          }
+
+      }
+      **/
+
       this.plannedDowntimes = sommePlannedEvents;
       this.unplannedDowntimes = sommeUnplannedEvents;
+
+
 
 
 

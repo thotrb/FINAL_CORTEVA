@@ -57,7 +57,9 @@
               <br/>
               {{$t("totalPOOperatingTime")}} (min): {{totalOperatingTime}}
               <br/>
-              {{$t("difference")}} (min): {{totalProductionTime - totalOperatingTime}}
+              {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
+              <br/>
+              {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
               <br/>
 
               {{$t("totalPOPerformance")}} (%) : {{performance * 100}}
@@ -73,13 +75,13 @@
                 <thead>
                 <tr>
                   <th scope="col">{{$t("reason")}}</th>
-                  <th scope="col">{{$t("comments")}}</th>
+                  <th scope="col">{{$t("duration")}}</th>
                 </tr>
                 </thead>
                 <tbody>
                   <tr  v-for="event in speedLoss" :key="event.id">
                     <th scope="row">{{$t(event.reason)}}</th>
-                    <td>{{event.comment}}</td>
+                    <td>{{event.duration}}</td>
                   </tr>
                 </tbody>
 
@@ -319,6 +321,7 @@
                 <br/>
                 {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
                 <br/>
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
             </span>
 
       <br/>
@@ -541,6 +544,7 @@ export default {
 
       typeTeam : sessionStorage.getItem("typeTeam"),
 
+      differenceToJustify : 0,
 
 
 
@@ -675,6 +679,9 @@ export default {
 
         this.totalNetOperatingTime = this.totalOperatingTime - this.totalSpeedLosses;
 
+        this.differenceToJustify = (this.totalOperatingTime * this.netOP[0].idealRate - this.finalQuantityProduced * this.netOP[0].bottlesPerCase) / this.netOP[0].idealRate
+
+        console.log('OH DIFF : ' + this.differenceToJustify);
         console.log('OP time' + this.totalOperatingTime);
         console.log('NET OP : ' + this.totalNetOperatingTime);
         console.log(this.nbBottlesFilled);

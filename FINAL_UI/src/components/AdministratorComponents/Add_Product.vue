@@ -244,7 +244,7 @@ export default {
         console.log('Effectif : ' + this.effective);
         await this.resolveAfter15Second();
 
-        //location.reload();
+        location.reload();
 
       }
 

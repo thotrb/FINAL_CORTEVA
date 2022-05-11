@@ -153,14 +153,13 @@
 
             <tr class="filler mainLine">
               <th scope="row">{{$t("filler")}}</th>
-              <td>{{productionPerMachineToShow["fillerCounter"] +
-              productionPerMachineToShow["fillerRejection"]}}
+              <td>{{productionPerMachineToShow["fillerCounter"]}}
               </td>
             </tr>
 
             <tr class="filler">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{productionPerMachineToShow["fillerCounter"]}}</td>
+              <td>{{productionPerMachineToShow["fillerOverProcess"]}}</td>
             </tr>
 
             <tr class="filler">
@@ -171,14 +170,13 @@
 
             <tr class="caper mainLine">
               <th scope="row">{{$t("caper")}}</th>
-              <td>{{productionPerMachineToShow["caperCounter"] +
-              productionPerMachineToShow["caperRejection"]}}
+              <td>{{productionPerMachineToShow["caperCounter"]}}
               </td>
             </tr>
 
             <tr class="caper">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{productionPerMachineToShow["caperCounter"]}}</td>
+              <td>{{productionPerMachineToShow["caperOverProcess"]}}</td>
             </tr>
 
             <tr class="caper">
@@ -189,14 +187,13 @@
 
             <tr class="labeler mainLine">
               <th scope="row">{{$t("labeler")}}</th>
-              <td>{{productionPerMachineToShow["labelerCounter"] +
-              productionPerMachineToShow["labelerRejection"]}}
+              <td>{{productionPerMachineToShow["labelerCounter"]}}
               </td>
             </tr>
 
             <tr class="labeler">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{productionPerMachineToShow["labelerCounter"]}}</td>
+              <td>{{productionPerMachineToShow["labelerOverProcess"]}}</td>
             </tr>
 
             <tr class="labeler">
@@ -206,14 +203,13 @@
 
             <tr class="boxWeigher mainLine">
               <th scope="row">{{$t("boxWeigher")}}</th>
-              <td>{{productionPerMachineToShow["weightBoxCounter"] +
-              productionPerMachineToShow["weightBoxRejection"] }}
+              <td>{{productionPerMachineToShow["weightBoxCounter"] }}
               </td>
             </tr>
 
             <tr class="boxWeigher">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{productionPerMachineToShow["weightBoxCounter"] }}</td>
+              <td>{{productionPerMachineToShow["weightOverProcess"] }}</td>
             </tr>
 
             <tr class="boxWeigher">
@@ -223,14 +219,13 @@
 
             <tr class="qualityControl mainLine">
               <th scope="row">{{$t("qualityControl")}}</th>
-              <td>{{productionPerMachineToShow["qualityControlCounter"]  +
-              productionPerMachineToShow["qualityControlRejection"] }}
+              <td>{{productionPerMachineToShow["qualityControlCounter"] }}
               </td>
             </tr>
 
             <tr class="qualityControl">
               <th scope="row">{{$t("overProcess")}}</th>
-              <td>{{productionPerMachineToShow["qualityControlCounter"]}}</td>
+              <td>{{productionPerMachineToShow["qualityOverProcess"]}}</td>
             </tr>
 
             <tr class="qualityControl">
@@ -265,8 +260,7 @@
             <tr class="filler mainLine">
               <th scope="row">{{$t("filler")}}</th>
               <td v-for="format in tableauFormats" v-bind:key="format.id">
-                {{qtyPerMachine['fillerCounter'][format] +
-              qtyPerMachine['fillerRejection'][format]}}
+                {{qtyPerMachine['fillerCounter'][format]}}
               </td>
 
             </tr>
@@ -274,7 +268,7 @@
             <tr class="filler">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['fillerCounter'][format]}}
+                {{qtyPerMachine['fillerOverProcess'][format]}}
               </td>
             </tr>
 
@@ -288,15 +282,14 @@
             <tr class="caper mainLine">
               <th scope="row">{{$t("caper")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['caperCounter'][format] +
-              qtyPerMachine['caperRejection'][format]}}
+                {{qtyPerMachine['caperCounter'][format]}}
               </td>
             </tr>
 
             <tr class="caper">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['caperCounter'][format]}}
+                {{qtyPerMachine['caperOverProcess'][format]}}
               </td>
             </tr>
 
@@ -311,15 +304,14 @@
             <tr class="labeler mainLine">
               <th scope="row">{{$t("labeler")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['labelerCounter'][format] +
-              qtyPerMachine['labelerRejection'][format]}}
+                {{qtyPerMachine['labelerCounter'][format]}}
               </td>
             </tr>
 
             <tr class="labeler">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['labelerCounter'][format]}}
+                {{qtyPerMachine['labelerOverProcess'][format]}}
               </td>
             </tr>
 
@@ -333,8 +325,7 @@
             <tr class="boxWeigher mainLine">
               <th scope="row">{{$t("boxWeigher")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['weightBoxCounter'][format] +
-              qtyPerMachine['weightBoxRejection'][format]}}
+                {{qtyPerMachine['weightBoxCounter'][format]}}
               </td>
 
             </tr>
@@ -342,7 +333,7 @@
             <tr class="boxWeigher">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['weightBoxCounter'][format]}}
+                {{qtyPerMachine['weightBoxOverProcess'][format]}}
               </td>
             </tr>
 
@@ -356,8 +347,7 @@
             <tr class="qualityControl mainLine">
               <th scope="row">{{$t("qualityControl")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine["controlQualityCounter"][format] +
-              qtyPerMachine["controlQualityRejection"][format]}}
+                {{qtyPerMachine["controlQualityCounter"][format]}}
               </td>
 
             </tr>
@@ -365,7 +355,7 @@
             <tr class="qualityControl">
               <th scope="row">{{$t("overProcess")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{qtyPerMachine['controlQualityCounter'][format]}}
+                {{qtyPerMachine['controlQualityOverProcess'][format]}}
               </td>
             </tr>
 
@@ -380,7 +370,7 @@
             <tr class="totalQty">
               <th scope="row">{{$t("total")}}</th>
               <td v-for="format in tableauFormats"  v-bind:key="format.id">
-                {{totalPerFormat[format]}}
+                {{totalRejectionPerFormat[format]}}
               </td>
             </tr>
 
@@ -474,29 +464,54 @@ export default {
         this.productionPerMachineToShow["labelerRejection"] = 0;
         this.productionPerMachineToShow["weightBoxRejection"] = 0;
         this.productionPerMachineToShow["qualityControlRejection"] = 0;
+
+
+        this.productionPerMachineToShow["fillerOverProcess"] = 0;
+        this.productionPerMachineToShow["caperOverProcess"] = 0;
+        this.productionPerMachineToShow["labelerOverProcess"] = 0;
+        this.productionPerMachineToShow["weightOverProcess"] = 0;
+        this.productionPerMachineToShow["qualityOverProcess"] = 0;
+
+
         this.totalToShow = 0;
 
+
+
         for (let i = 0; i < this.allEvents['SITE'].length; i++) {
+
+
 
 
           let PO = this.allEvents['SITE'][i];
 
           totalRejectionMachine += (PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1);
           this.totalToShow += (PO.fillerRejection * 1) + (PO.caperRejection * 1) + (PO.labelerRejection * 1) + (PO.weightBoxRejection * 1) + (PO.qualityControlRejection * 1)
-          this.totalToShow += (PO.fillerCounter * 1) + (PO.caperCounter * 1) + (PO.labelerCounter * 1) + (PO.weightBoxCounter * 1) + (PO.qualityControlCounter * 1)
+          //this.totalToShow += (PO.fillerCounter * 1) + (PO.caperCounter * 1) + (PO.labelerCounter * 1) + (PO.weightBoxCounter * 1) + (PO.qualityControlCounter * 1)
 
-          this.productionPerMachineToShow["fillerCounter"] += PO.fillerCounter * 1;
+          this.productionPerMachineToShow["fillerCounter"] += PO.fillerCounter * 1 ;
 
-          this.productionPerMachineToShow["caperCounter"] += PO.caperCounter * 1;
-          this.productionPerMachineToShow["labelerCounter"] += PO.labelerCounter * 1;
-          this.productionPerMachineToShow["weightBoxCounter"] += PO.weightBoxCounter * 1;
-          this.productionPerMachineToShow["qualityControlCounter"] += PO.qualityControlCounter * 1;
+          this.productionPerMachineToShow["caperCounter"] += PO.caperCounter * 1  ;
+          this.productionPerMachineToShow["labelerCounter"] += PO.labelerCounter * 1  ;
+          this.productionPerMachineToShow["weightBoxCounter"] += PO.weightBoxCounter * 1  ;
+          this.productionPerMachineToShow["qualityControlCounter"] += PO.qualityControlCounter * 1 ;
           this.productionPerMachineToShow["fillerRejection"] += PO.fillerRejection * 1;
           this.productionPerMachineToShow["caperRejection"] += PO.caperRejection * 1;
           this.productionPerMachineToShow["labelerRejection"] += PO.labelerRejection * 1;
           this.productionPerMachineToShow["weightBoxRejection"] += PO.weightBoxRejection * 1;
           this.productionPerMachineToShow["qualityControlRejection"] += PO.qualityControlRejection * 1;
+
+/**
+          this.productionPerMachineToShow["fillerOverProcess"] +=  (this.productionPerMachineToShow["fillerCounter"] - this.productionPerMachineToShow["fillerRejection"] - (PO.qtyProduced * PO.bottlesPerCase)) ;
+          this.productionPerMachineToShow["caperOverProcess"] +=  (this.productionPerMachineToShow["caperCounter"] - this.productionPerMachineToShow["caperRejection"] - (PO.qtyProduced * PO.bottlesPerCase)) ;
+          this.productionPerMachineToShow["labelerOverProcess"] +=  (this.productionPerMachineToShow["labelerCounter"] - this.productionPerMachineToShow["labelerRejection"] - (PO.qtyProduced * PO.bottlesPerCase)) ;
+          this.productionPerMachineToShow["weightOverProcess"] +=  (this.productionPerMachineToShow["weightBoxCounter"] - this.productionPerMachineToShow["weightBoxRejection"] - (PO.qtyProduced * PO.bottlesPerCase)) ;
+          this.productionPerMachineToShow["qualityOverProcess"] +=  (this.productionPerMachineToShow["qualityControlCounter"] - this.productionPerMachineToShow["qualityControlRejection"] - (PO.qtyProduced * PO.bottlesPerCase)) ;
+**/
+
+
         }
+
+
 
 
 
@@ -630,6 +645,12 @@ export default {
       this.qtyPerMachine["controlQualityCounter"] = [];
       this.qtyPerMachine["controlQualityRejection"] = [];
 
+      this.qtyPerMachine["caperOverProcess"] = [];
+      this.qtyPerMachine["fillerOverProcess"] = [];
+      this.qtyPerMachine["weightBoxOverProcess"] = [];
+      this.qtyPerMachine["labelerOverProcess"] = [];
+      this.qtyPerMachine["controlQualityOverProcess"] = [];
+
 
       for (let i = 0; i < this.allEvents['SITE'].length; i++) {
 
@@ -657,6 +678,13 @@ export default {
           this.qtyPerMachine["controlQualityCounter"][format] = line.qualityControlCounter;
           this.qtyPerMachine["controlQualityRejection"][format] = line.qualityControlRejection;
 
+          this.qtyPerMachine["caperOverProcess"][format] = 0;
+          this.qtyPerMachine["fillerOverProcess"][format] = 0;
+          this.qtyPerMachine["weightBoxOverProcess"][format] = 0;
+          this.qtyPerMachine["labelerOverProcess"][format] = 0;
+          this.qtyPerMachine["controlQualityOverProcess"][format] = 0;
+
+
           this.totalPerFormat[format] = line.caperCounter + line.caperRejection + line.fillerCounter
               + line.fillerRejection + line.weightBoxCounter + line.weightBoxRejection + line.labelerCounter +
               line.labelerRejection + line.qualityControlCounter + line.qualityControlRejection;
@@ -681,6 +709,12 @@ export default {
               line.labelerRejection + line.qualityControlCounter + line.qualityControlRejection;
           this.totalRejectionPerFormat[format] +=  line.caperRejection + line.fillerRejection +
               line.weightBoxRejection + line.labelerRejection + line.qualityControlRejection;
+
+          this.qtyPerMachine["caperOverProcess"][format] += 0;
+          this.qtyPerMachine["fillerOverProcess"][format] += 0;
+          this.qtyPerMachine["weightBoxOverProcess"][format] += 0;
+          this.qtyPerMachine["labelerOverProcess"][format] += 0;
+          this.qtyPerMachine["controlQualityOverProcess"][format] += 0;
         }
 
 
