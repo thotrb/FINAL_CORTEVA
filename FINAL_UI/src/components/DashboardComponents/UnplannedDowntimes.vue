@@ -182,7 +182,7 @@
 
     <!-- Production window -->
     <div class="d-flex production-window-container">
-      <production-window :yearSelectedFunction="chargeGeneralData" />
+      <production-window/>
       <div class="d-flex pw-table-container">
         <template v-for="cat of Object.keys(unplannedDowntimesCategories)">
           <table class="table" :key="cat.id">
@@ -541,12 +541,14 @@ export default {
     },
 
     chargeGeneralData: async function () {
+      console.log("chargeGeneralData");
       const selectedPL = document.getElementById("pl-selection").value;
-      const dateFrom = document.getElementById("select-date-from").value.split('-')[0];
-      const dateTo = document.getElementById("select-date-to").value.split('-')[0];
+      const dateFrom = document.getElementById("select-date-from").value;
+      const dateTo = document.getElementById("select-date-to").value;
       const team = document.getElementById("team-selection").value || "allTeams";
 
-      await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + dateFrom + '/' + dateTo + '/' + team)
+      if (selectedPL && dateFrom && dateTo) {
+        await axios.get(urlAPI + 'UnplannedDowntimeEventsDate/' + selectedPL + '/' + dateFrom + '/' + dateTo + '/' + team)
           .then(response => {
             this.unplannedDowntimeEvents = response.data;
             for (let cat of ["cip", "cov", "bnc"]) {
@@ -618,6 +620,9 @@ export default {
               this.sequencesCOV[type].std = std;
             }
           });
+      }
+
+      
     },
 
     resolveAfter: function(milliseconds) {
@@ -673,6 +678,10 @@ export default {
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];
     this.dataTeams = this.dataSite[2];
+
+    //Add event listener to production window
+    document.getElementById("select-date-to").onchange = this.chargeGeneralData;
+    document.getElementById("select-date-from").onchange = this.chargeGeneralData;
 
 
     //Load chart.js into vue component
