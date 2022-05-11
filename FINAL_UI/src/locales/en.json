@@ -254,7 +254,8 @@
   "operator" : "Operator",
   "addWorksite" : "Add worksite",
   "completed": "Completed",
-  "speedLossesToJustify" : "Speed losses to justify"
+  "speedLossesToJustify" : "Speed losses to justify",
+  "delete" :  "Delete"
 
 
 }

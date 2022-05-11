@@ -72,6 +72,7 @@
           <th scope="col">{{ $t('machineName') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
           <th scope="col">{{ $t('worksite') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
 
         </tr>
         </thead>
@@ -82,6 +83,7 @@
                 <td>{{d.machineName}}</td>
                 <td>{{d.productionLine}}</td>
                 <td>{{d.worksite}}</td>
+                <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
               </template>
             </tr>
         </tbody>
@@ -178,6 +180,12 @@ export default {
 
       }
 
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteMachineComponent/' + id);
+      location.reload();
     },
 
     addMachine : async function () {

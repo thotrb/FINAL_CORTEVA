@@ -95,6 +95,8 @@
           <th scope="col">{{ $t('denominationOrder') }}</th>
           <th scope="col">{{ $t('order') }}</th>
           <th scope="col">{{ $t('rejection') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
+
         </tr>
         </thead>
         <tbody>
@@ -108,6 +110,8 @@
               <td>{{m.denomination_ordre}}</td>
               <td>{{m.ordre}}</td>
               <td>{{m.rejection}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(m.id)">{{$t('delete')}}</button></td>
+
             </tr>
         </tbody>
       </table>
@@ -157,6 +161,12 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteMachine/' + id);
+      location.reload();
     },
 
 

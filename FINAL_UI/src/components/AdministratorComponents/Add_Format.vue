@@ -75,6 +75,8 @@
           <th scope="col">{{ $t('mat2') }}</th>
           <th scope="col">{{ $t('mat3') }}</th>
           <th scope="col">{{ $t('designRate') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
+
 
         </tr>
         </thead>
@@ -87,6 +89,8 @@
               <td>{{d.mat2}}</td>
               <td>{{d.mat3}}</td>
               <td>{{d.design_rate}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
+
 
             </tr>
         </tbody>
@@ -135,6 +139,12 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteFormat/' + id);
+      location.reload();
     },
 
     readFile : function () {

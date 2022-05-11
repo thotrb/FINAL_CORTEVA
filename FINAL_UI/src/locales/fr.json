@@ -253,5 +253,7 @@
   "operator" : "Operateur",
   "addWorksite" : "Ajouter une usine",
   "completed" : "Terminé",
-  "speedLossesToJustify" : "Perte de vitesse à justifier"
+  "speedLossesToJustify" : "Perte de vitesse à justifier",
+  "delete" :  "Supprimer"
+
 }

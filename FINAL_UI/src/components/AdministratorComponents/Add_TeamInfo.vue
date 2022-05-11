@@ -63,6 +63,8 @@
           <th scope="col">{{ $t('workingEnd') }}</th>
           <th scope="col">{{ $t('name') }}</th>
           <th scope="col">{{ $t('worksite') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
+
         </tr>
         </thead>
         <tbody>
@@ -71,6 +73,8 @@
               <td>{{d.workingEnd}}</td>
               <td>{{d.type}}</td>
               <td>{{d.worksite_name}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
+
             </tr>
         </tbody>
       </table>
@@ -115,6 +119,12 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteTeamInfo/' + id);
+      location.reload();
     },
 
     readFile : function () {

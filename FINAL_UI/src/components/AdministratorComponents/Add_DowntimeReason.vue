@@ -69,6 +69,7 @@
           <th scope="col">{{ $t('downtimeType') }}</th>
           <th scope="col">{{ $t('worksite') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
         </tr>
         </thead>
         <tbody>
@@ -77,6 +78,7 @@
               <td>{{d.downtimeType}}</td>
               <td>{{d.worksite}}</td>
               <td>{{d.production_line}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
             </tr>
         </tbody>
       </table>
@@ -121,6 +123,12 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteDowntime/' + id);
+      location.reload();
     },
 
     readFile : function () {

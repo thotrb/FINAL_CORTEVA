@@ -51,12 +51,16 @@
         <tr>
           <th scope="col">{{ $t('worksite') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
+
         </tr>
         </thead>
         <tbody>
             <tr v-for="d in productionlines" :key="d.id">
               <th scope="row">{{d.name}}</th>
               <td>{{d.productionline_name}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
+
             </tr>
         </tbody>
       </table>
@@ -97,6 +101,13 @@ export default {
         }, 1500);
       });
     },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteProductionLine/' + id);
+      location.reload();
+    },
+
 
     readFile : function () {
       var textType = /.csv/;

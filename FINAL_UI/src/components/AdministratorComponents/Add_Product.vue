@@ -102,6 +102,7 @@
           <th scope="col">{{ $t('size') }}</th>
           <th scope="col">{{ $t('idealRate') }}</th>
           <th scope="col">{{ $t('bottlesPerCase') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
 
         </tr>
         </thead>
@@ -117,6 +118,7 @@
               <td>{{d.size}}</td>
               <td>{{d.idealRate}}</td>
               <td>{{d.bottlesPerCase}}</td>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
 
             </tr>
         </tbody>
@@ -222,6 +224,13 @@ export default {
         var fileDisplayArea = document.getElementById('fileDisplayArea');
         fileDisplayArea.innerText = this.$t('fileNotSupported');
       }
+    },
+
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteProduct/' + id);
+      location.reload();
     },
 
 

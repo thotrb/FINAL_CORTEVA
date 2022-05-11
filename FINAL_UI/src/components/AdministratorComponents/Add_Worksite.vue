@@ -39,12 +39,15 @@
         <thead class="thead-dark">
         <tr>
           <th scope="col">{{ $t('name') }}</th>
+          <th scope="col">{{ $t('action') }}</th>
 
         </tr>
         </thead>
         <tbody>
             <tr v-for="d in worksites" :key="d.id">
               <th scope="row">{{d.name}}</th>
+              <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
+
             </tr>
         </tbody>
       </table>
@@ -84,6 +87,12 @@ export default {
           resolve('resolved');
         }, 1500);
       });
+    },
+
+    deleteItem : async function (id) {
+
+      await axios.delete(urlAPI + 'deleteWorksite/' + id);
+      location.reload();
     },
 
     readFile : function () {
