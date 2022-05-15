@@ -254,6 +254,10 @@
   "addWorksite" : "Ajouter une usine",
   "completed" : "Terminé",
   "speedLossesToJustify" : "Perte de vitesse à justifier",
-  "delete" :  "Supprimer"
+  "delete" :  "Supprimer",
+  "action" :  "Action",
+  "otherMachine" :  "Autre machine"
+
+
 
 }

@@ -255,7 +255,9 @@
   "addWorksite" : "Add worksite",
   "completed": "Completed",
   "speedLossesToJustify" : "Speed losses to justify",
-  "delete" :  "Delete"
+  "delete" :  "Delete",
+  "action" :  "Action",
+  "otherMachine" :  "Other machine"
 
 
 }

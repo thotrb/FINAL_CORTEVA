@@ -143,13 +143,13 @@ namespace CortevaApp.Controllers
             return new JsonResult(data);
         }
 
-        [HttpGet("unplannedDowntime/unplannedDowntime/{machineName}/{worksite}/0")]
-        public JsonResult GetUnplannedDowntimeMachineIssueFiller(string machineName, string worksite)
+        [HttpGet("unplannedDowntime/unplannedDowntime/{machineName}/{worksite}/0/{productionline}")]
+        public JsonResult GetUnplannedDowntimeMachineIssueFiller(string machineName, string worksite, string productionline)
         {
             string queryIssues = @"select mc.name as component, m.name, other_machine, mc.worksite
                                    from dbo.ole_machines m, dbo.machine_component mc
                                    where m.name = mc.machineName
-                                   and m.name = @machineName and mc.worksite = @worksite and mc.other_machine=0";
+                                   and m.name = @machineName and mc.worksite = @worksite and mc.other_machine=0 and mc.productionLine = @productionline";
 
             DataTable Issues = new DataTable();
 
@@ -162,6 +162,7 @@ namespace CortevaApp.Controllers
                 {
                     command.Parameters.AddWithValue("@machineName", machineName);
                     command.Parameters.AddWithValue("@worksite", worksite);
+                    command.Parameters.AddWithValue("@productionline", productionline);
 
                     reader = command.ExecuteReader();
                     Issues.Load(reader);

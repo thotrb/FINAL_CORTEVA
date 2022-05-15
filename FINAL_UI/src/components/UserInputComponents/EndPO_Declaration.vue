@@ -59,7 +59,9 @@
               <br/>
               {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
               <br/>
-              {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
+              <span style="color:red">
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
+              </span>
               <br/>
 
               {{$t("totalPOPerformance")}} (%) : {{performance * 100}}
@@ -76,12 +78,16 @@
                 <tr>
                   <th scope="col">{{$t("reason")}}</th>
                   <th scope="col">{{$t("duration")}}</th>
+                  <th scope="col">{{$t("comments")}}</th>
+
                 </tr>
                 </thead>
                 <tbody>
                   <tr  v-for="event in speedLoss" :key="event.id">
                     <th scope="row">{{$t(event.reason)}}</th>
                     <td>{{event.duration}}</td>
+                    <td>{{event.comment}}</td>
+
                   </tr>
                 </tbody>
 
@@ -854,6 +860,25 @@ export default {
           this.OLE+'/'+this.finalQuantityProduced+'/'+this.totalDuration+'/'+this.totalOperatingTime + '/'+this.totalNetOperatingTime+'/'+sessionStorage.getItem("typeTeam") );
 
       await this.resolveAfter1Second();
+
+      if (this.FillerCounter === 0) {
+        this.FillerCounter = this.nbBottlesFilled;
+
+      }
+      if (this.CaperCounter === 0) {
+        this.CaperCounter = this.nbBottlesFilled;
+      }
+
+      if (this.EtiqueteuseCounter === 0) {
+        this.EtiqueteuseCounter = this.nbBottlesFilled;
+      }
+
+      if (this.WieghtBoxCounter === 0) {
+        this.WieghtBoxCounter = this.nbBottlesFilled;
+      }
+      if (this.QualityControlCounter === 0) {
+        this.QualityControlCounter = this.nbBottlesFilled;
+      }
 
 
       await axios.post(urlAPI+'storeRejection', {

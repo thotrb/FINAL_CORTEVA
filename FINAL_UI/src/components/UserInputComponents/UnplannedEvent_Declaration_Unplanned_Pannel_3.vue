@@ -228,7 +228,7 @@ export default {
     },
 
     addReasonOtherMachine : async function (machineImplicated) {
-      await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/'+machineImplicated+'/'+ sessionStorage.getItem("worksite") + '/0')
+      await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/'+machineImplicated+'/'+ sessionStorage.getItem("worksite") + '/0/' + this.productionName)
          .then(response => (this.issueOtherMachine = response.data));
       this.machineImplicated = machineImplicated;
       this.printedStep = 3;

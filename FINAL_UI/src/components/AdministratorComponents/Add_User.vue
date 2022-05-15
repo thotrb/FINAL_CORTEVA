@@ -87,6 +87,7 @@
         <thead class="thead-dark">
         <tr>
           <th scope="col">{{ $t('login') }}</th>
+          <th scope="col">{{ $t('password') }}</th>
           <th scope="col">{{ $t('firstName') }}</th>
           <th scope="col">{{ $t('lastName') }}</th>
           <th scope="col">{{ $t('status') }}</th>
@@ -100,6 +101,7 @@
         <tbody>
             <tr v-for="d in users" :key="d.id">
               <th scope="row">{{d.login}}</th>
+              <th scope="row">{{d.password}}</th>
               <td>{{d.firstname}}</td>
               <td>{{d.lastname}}</td>
               <td>{{d.status}}</td>
@@ -243,7 +245,7 @@ export default {
 
   },
   async mounted() {
-    axios.get(urlAPI+'user/'+this.username)
+    await axios.get(urlAPI+'user/'+this.username)
         .then(response => (this.data = response.data))
 
     await this.resolveAfter15Second();

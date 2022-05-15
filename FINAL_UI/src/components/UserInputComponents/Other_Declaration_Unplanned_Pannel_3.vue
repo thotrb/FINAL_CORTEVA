@@ -16,12 +16,7 @@
         </div>
       </div>
 
-      <div class="form-group row">
-        <label class="col-sm-2 col-form-label rcorners1" for="expectedDuration">{{$t("expectedDuration(Minutes)")}}</label>
-        <div class="col-sm-10">
-          <input type="number" id="expectedDuration" class="form-control-plaintext rcorners2" value="5" disabled>
-        </div>
-      </div>
+
 
 
       <div class="form-group row cip-hidden" >

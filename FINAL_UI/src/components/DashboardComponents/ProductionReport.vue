@@ -305,6 +305,8 @@ export default {
   methods: {
     load: async function () {
 
+      this.total = 0;
+      this.total2 = 0;
       if (this.productionline !== '' && this.beginningDate !== '' && this.endingDate !== '' && this.team !== '') {
         var tab = [];
         tab.push(this.site);
@@ -580,6 +582,7 @@ export default {
         } else {
           qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1;
         }
+
       }
 
       var finalValue = [];
@@ -673,6 +676,7 @@ export default {
       this.sumPerMonth2 = tab;
       this.packsizePerMonth = finalValue2;
 
+      console.log("ARRAY")
       console.log(this.sumPerMonth2);
       console.log(this.sumPerMonth);
 

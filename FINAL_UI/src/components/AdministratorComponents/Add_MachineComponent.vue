@@ -25,14 +25,7 @@
           <input type="text" class="form-control" id="inputEmail4" v-model="machineComponent.name"   required>
         </div>
 
-        <div class="form-group">
-          <label for="li">{{$t("affiliatedMachine")}}</label>
-          <select name="m" id="li" class="form-select" v-model="machineComponent.machineName">
-            <option  v-for="machine in machinesAvailable" :key="machine.id" v-bind:value="machine.name">
-              {{$t(machine.name)}}
-            </option>
-          </select>
-        </div>
+
 
       <div class="form-group">
         <label for="w">{{$t("worksite")}}</label>
@@ -56,6 +49,34 @@
           </select>
         </div>
 
+      <div class="form-group">
+        <label for="li">{{$t("affiliatedMachine")}}</label>
+        <select name="m" id="li" class="form-select" v-model="machineComponent.machineName">
+          <template v-for="machine in machinesAvailable">
+            <template v-if="machine.worksite === machineComponent.worksite && machine.productionline_name === machineComponent.productionLine">
+              <option :key="machine.id" v-bind:value="machine.name">
+                {{$t(machine.name)}}
+              </option>
+            </template>
+          </template>
+          <option value="other">
+            {{$t("other")}}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="m">{{$t("otherMachine")}}</label>
+        <select name="line" id="m" class="form-select" v-model="machineComponent.other_machine">
+          <option value="0">
+            0
+          </option>
+          <option value="1">
+            1
+          </option>
+        </select>
+      </div>
+
         <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
     </form>
 
@@ -71,6 +92,7 @@
           <th scope="col">{{ $t('name') }}</th>
           <th scope="col">{{ $t('machineName') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
+          <th scope="col">{{ $t('otherMachine') }}</th>
           <th scope="col">{{ $t('worksite') }}</th>
           <th scope="col">{{ $t('action') }}</th>
 
@@ -78,13 +100,12 @@
         </thead>
         <tbody>
             <tr v-for="d in machineComponents" :key="d.id">
-              <template v-if="d.other_machine===0">
-                <th scope="row">{{d.name}}</th>
-                <td>{{d.machineName}}</td>
+                <th scope="row">{{$t(d.name)}}</th>
+                <td>{{$t(d.machineName)}}</td>
                 <td>{{d.productionLine}}</td>
+                <td>{{d.other_machine}}</td>
                 <td>{{d.worksite}}</td>
                 <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
-              </template>
             </tr>
         </tbody>
       </table>
@@ -216,7 +237,7 @@ export default {
 
   },
   async mounted() {
-    axios.get(urlAPI+'user/'+this.username)
+    await axios.get(urlAPI+'user/'+this.username)
         .then(response => (this.data = response.data))
 
     await this.resolveAfter15Second();
@@ -234,6 +255,8 @@ export default {
     console.log(this.machinesAvailable)
     await axios.get(urlAPI+'machine_component/' + this.userWorksite)
           .then(response => (this.machineComponents = response.data))
+
+    console.log(this.machineComponents);
 
 
   }

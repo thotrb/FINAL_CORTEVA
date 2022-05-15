@@ -25,11 +25,11 @@ namespace CortevaApp.Controllers
         }
 
         [HttpGet("getMachines/{productionName}/{downtimeType}/unplannedDowntime/{worksite}")]
-        public JsonResult GetUnplannedDowntime2Worksite(string _, string __, string worksite)
+        public JsonResult GetUnplannedDowntime2Worksite(string productionName, string __, string worksite)
         {
             string queryUnplannedDowntime2 = @"select *
                                               from dbo.ole_machines 
-                                              where name != 'filler' and worksite = @worksite";
+                                              where name != 'filler' and worksite = @worksite and productionline_name = @productionName";
 
             DataTable UnplannedDowntime2 = new DataTable();
 
@@ -41,6 +41,8 @@ namespace CortevaApp.Controllers
                 using (SqlCommand command = new SqlCommand(queryUnplannedDowntime2, connection))
                 {
                     command.Parameters.AddWithValue("@worksite", worksite);
+                    command.Parameters.AddWithValue("@productionName", productionName);
+
                     reader = command.ExecuteReader();
                     UnplannedDowntime2.Load(reader);
                     reader.Close();

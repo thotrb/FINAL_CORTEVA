@@ -506,6 +506,10 @@ export default {
       summIdealRate : 0,
       quantityPerGMID : [],
 
+      userWorksite  : null,
+      crewLeaders :  null,
+      shiftCrew : null,
+      productionLParam :null,
 
 
     }
@@ -571,13 +575,13 @@ export default {
         let nbBottles = this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
         this.qtyProduced += nbBottles * 1;
 
-        if (!this.formulationArray.includes(this.allEvents['SITE'][i].GIFAP)) {
-          this.formulationArray.push(this.allEvents['SITE'][i].GIFAP);
+        if (!this.formulationArray.includes(this.allEvents['SITE'][i].bulk)) {
+          this.formulationArray.push(this.allEvents['SITE'][i].bulk);
         }
 
-        let indexFormulation = this.formulationArray.indexOf(this.allEvents['SITE'][i].GIFAP);
+        let indexFormulation = this.formulationArray.indexOf(this.allEvents['SITE'][i].bulk);
 
-        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase;
+        this.quantityPerArray[indexFormulation] += this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase* this.allEvents['SITE'][i].size;
 
 
 
@@ -1169,6 +1173,8 @@ export default {
     //sites[0] = sites
     //sites[1] = lignes de production de ce site
     //sites[2] = teams
+
+
 
     console.log(sessionStorage.getItem("user-status"));
     if(sessionStorage.getItem("user-status") == 1){
