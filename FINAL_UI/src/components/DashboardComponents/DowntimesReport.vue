@@ -69,7 +69,7 @@
             <div class="col-sm">
 
               <p>
-                {{$t("volumePacked")}} : {{littersProduced}} L <br/>
+                {{$t("volumePacked")}} : {{littersProduced}} L / Kg<br/>
                 {{$t("numberOfProductionOrder")}} : {{ allEvents['SITE'].length}} <br/>
                 {{$t("numberOfItemsProduced")}} : {{ qtyProduced }} {{$t("bottles")}} <br/>
 

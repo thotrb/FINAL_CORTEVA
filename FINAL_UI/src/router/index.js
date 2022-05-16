@@ -36,7 +36,6 @@ import Add_Productionline_Page from "@/views/AdministratorInputs/Add_Productionl
 import Add_TeamInfo_Page from "@/views/AdministratorInputs/Add_TeamInfo_Page";
 import Add_User_Page from "@/views/AdministratorInputs/Add_User_Page";
 import Add_Worksite_Page from "@/views/AdministratorInputs/Add_Worksite_Page";
-import ArrowHorinzontale from "@/components/DashboardComponents/ArrowHorizontale"
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
 axios.interceptors.response.use(response => response, error => {
   if (error.response || error.response.status == 401) {
@@ -292,15 +291,6 @@ const routes = [
     // which is lazy-loaded when the route is visited.
     component: Add_Worksite_Page
   },
-  {
-    path: '/assets/arrowVerticale.png',
-    name: 'ArrowHorizontale',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: ArrowHorinzontale
-  }
-
 ]
 
 const router = new VueRouter({

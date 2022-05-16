@@ -81,6 +81,7 @@ namespace CortevaApp
 
             app.UseEndpoints(endpoints =>
             {
+                
                 endpoints.MapControllers();
             });
         }

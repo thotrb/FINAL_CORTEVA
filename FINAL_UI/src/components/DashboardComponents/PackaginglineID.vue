@@ -32,7 +32,6 @@
                       {{productionline.productionline_name}}
                     </option>
                   </template>
-
                 </template>
 
               </select>
@@ -64,10 +63,12 @@
               {{$t("flowDiagram")}}
             </h2>
           </div>
-        </template>
-
+      <!--
         <div id="flowDiagram">
         </div>
+        -->
+        <img :src="imgUrl" width="100%">
+        </template>
 
       </div>
 
@@ -179,6 +180,7 @@ export default {
       username: localStorage.getItem("username"),
       index: -1,
       show: 0,
+      imgUrl : '',
       lo: this.$t("load"),
 
       dataWorksite:null,
@@ -218,6 +220,11 @@ export default {
 
       }
 
+      var image = require.context('../../assets/', false, /\.png$/);
+
+      this.imgUrl = image('./' + this.productionline + '.png');
+
+
 
       await this.resolveAfter15Second();
 
@@ -255,7 +262,7 @@ export default {
 
 
 
-
+/**
       var rejection = null;
       var R = null;
 
@@ -374,14 +381,12 @@ export default {
               {color: 'red'}
           );
         }
-         **/
-
 
 
         previousMachine = machine;
+       }
+         **/
 
-
-      }
 
 
       this.show = 1;

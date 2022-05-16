@@ -63,7 +63,7 @@ export default {
             if(sessionStorage.getItem("loginChoice") == 'operator'){
               router.replace('/teamInfo');
             }else if(sessionStorage.getItem("loginChoice") == 'supervisor' && (userCredential == 1 || userCredential == 2)){
-              router.replace('/Dashboard/downtimesReport');
+              router.replace('/Dashboard/packagingLineID');
             }else if(sessionStorage.getItem("loginChoice") == 'administrator'  && (userCredential == 2)){
               router.replace('/mainPageAdministrator');
             }

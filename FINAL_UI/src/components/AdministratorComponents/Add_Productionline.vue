@@ -13,7 +13,6 @@
              accept=".csv">
       <p id="fileDisplayArea"></p>
       <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
-
     </div>
 
     <br/>
@@ -37,7 +36,22 @@
       </div>
 
 
+
+      <!--
+
+      <div class="form-group">
+        <label for="upload-pic" style="cursor:pointer; height: 200px; weight:200px; margin-bottom: 50px">Select an image</label>
+        <input class="upload-pic" type="file" name="photo" id="upload-pic" accept="image/" ref="fileInput" @change="uploadImage($event)" required/>
+      </div>
+
+      <div class="">
+        <div id="imagePreview" :style="{'background-image' : `url(${url})`}"></div>
+      </div>
+
+      -->
+
       <button type="button" class="btn btn-primary" v-on:click="addMachine()">{{$t('add')}}</button>
+
     </form>
 
     <br/>
@@ -87,6 +101,11 @@ export default {
       userWorksite : null,
       effective : null,
       worksites : null,
+
+      message: "",
+
+      url : "@/assets/logo.png",
+
       productionLine: {
         productionline_name : null,
         worksite_name : null
@@ -94,6 +113,27 @@ export default {
     }
   },
   methods : {
+
+
+    onFileChange : function(e) {
+
+      console.log(e);
+      const file = e.target.files[0];
+      this.url = URL.createObjectURL(file);
+      var imagefile = document.querySelector("#imageUpload");
+      console.log(file);
+      console.log(imagefile.files[0]);
+      let formData = new FormData();
+      formData.append("image", file);
+      this.uploadImage(formData);
+    },
+
+    uploadImage : async function (e) {
+      this.file = e.target.files[0];
+      this.fileSrc = window.URL.createObjectURL(this.file);
+    },
+
+
     resolveAfter15Second: function () {
       return new Promise(resolve => {
         setTimeout(() => {
@@ -128,6 +168,7 @@ export default {
             worksite_name: '',
           };
           var effective;
+
           for (i = 1; i < rows.length - 1; i++) {
             rowsSplited = rows[i].split('\r')[0].split(',');
             if (rowsSplited.length === 2) {
@@ -153,6 +194,7 @@ export default {
 
     },
 
+
     addMachine : async function () {
       var form = document.getElementById('needs-validation');
       if (form.checkValidity() === false) {
@@ -164,16 +206,24 @@ export default {
         console.log("OK");
         console.log(this.productionLine);
 
+        /**
+        var formData = new FormData();
+        for(var key in this.productionLine){
+          formData.append(key, this.productionLine[key]);
+        }
+        formData.append("Files", this.file);
+        await axios.post(urlAPI + 'insertProductionlineImage', formData)
+           .then(response => (this.effective = response))
+
+**/
         await axios.put(urlAPI + 'insertProductionline', this.productionLine)
-            .then(response => (this.effective = response))
+          .then(response => (this.effective = response))
 
         console.log('Effectif : ' + this.effective);
         location.reload();
-
       }
 
-
-      form.classList.add('was-validated');
+      //form.classList.add('was-validated');
     },
 
 
@@ -190,6 +240,8 @@ export default {
 
 
 
+
+
   }
 }
 </script>
@@ -202,5 +254,7 @@ export default {
   border: 2px solid lightblue;
   padding: 20px;
 }
+
+
 
 </style>
