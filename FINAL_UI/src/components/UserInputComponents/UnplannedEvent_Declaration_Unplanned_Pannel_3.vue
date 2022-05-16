@@ -18,7 +18,7 @@
           <div class="col-sm-4" v-for="issue in machineIssue" :key="issue.id">
             <button
                 class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-                type="button" @click.prevent="chooseMachineImplicated(issue.component, issue.other_machine)">
+                type="button" @click.prevent="chooseMachineImplicated(issue.component, issue.other_machine, issue.name)">
               {{$t(issue.component)}}
             </button>
 
@@ -203,8 +203,9 @@ export default {
       this.machineImplicated = componentName;
 
     },
-    chooseMachineImplicated : async function (componentName, otherMachine) {
+    chooseMachineImplicated : async function (componentName, otherMachine, machineName) {
 
+      if (machineName == 'other') this.issueOtherMachine = 'other';
       this.componentName = componentName;
       this.otherMachine = otherMachine;
 
@@ -254,7 +255,7 @@ export default {
 
     validateInformations : function(){
       this.unplannedEvent.OLE = sessionStorage.getItem("poNumber");
-      this.unplannedEvent.implicated_machine = this.machineImplicated;
+      this.unplannedEvent.implicated_machine = this.issueOtherMachine;
       this.unplannedEvent.component = this.componentName;
       this.unplannedEvent.total_duration = document.getElementById('time').value;
       this.unplannedEvent.comment = document.getElementById('comments').value;

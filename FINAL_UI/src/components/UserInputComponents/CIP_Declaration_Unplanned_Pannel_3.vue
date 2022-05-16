@@ -12,7 +12,7 @@
       <div class="form-group row">
         <label class="col-sm-2 col-form-label rcorners1" for="previousBulk">{{$t("previousBulk")}}</label>
         <div class="col-sm-10">
-          <input type="text" id="previousBulk" class="form-control-plaintext rcorners2"  v-model="CIP_Event.previous_bulk">
+          <input type="text" id="previousBulk" class="form-control-plaintext rcorners2" v-model="CIP_Event.previous_bulk" readonly>
         </div>
       </div>
 

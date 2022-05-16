@@ -180,7 +180,11 @@ namespace CortevaApp.Controllers
             string queryIssues = @"select mc.name as component, m.name, other_machine, mc.worksite
                                    from dbo.ole_machines m, dbo.machine_component mc
                                    where m.name = mc.machineName
-                                   and m.name = @machineName and mc.worksite = @worksite and mc.productionLine = @productionline";
+                                   and m.name = @machineName and mc.worksite = @worksite and mc.productionLine = @productionline
+                                   union
+                                   select mc.name as component, mc.machineName, other_machine, mc.worksite
+                                   from dbo.machine_component mc
+                                   where mc.machineName = 'other' and mc.worksite = @worksite and mc.productionLine = @productionline";
 
             DataTable Issues = new DataTable();
 
