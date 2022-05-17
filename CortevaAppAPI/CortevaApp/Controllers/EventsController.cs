@@ -306,17 +306,17 @@ namespace CortevaApp.Controllers
                                 and year(cip.created_at) >= @startYear
                                 and year(cip.created_at) <= @endYear";
 
-            string queryCOV = @"select *
-                                from dbo.ole_unplanned_event_changing_clients cov
-                                where cov.productionline = @productionLine
-                                and year(cov.created_at) >= @startYear
-                                and year(cov.created_at) <= @endYear";
-
             string queryBNC = @"select *
-                                from dbo.ole_unplanned_event_changing_formats bnc
+                                from dbo.ole_unplanned_event_changing_clients bnc
                                 where bnc.productionline = @productionLine
                                 and year(bnc.created_at) >= @startYear
                                 and year(bnc.created_at) <= @endYear";
+
+            string queryCOV = @"select *
+                                from dbo.ole_unplanned_event_changing_formats cov
+                                where cov.productionline = @productionLine
+                                and year(cov.created_at) >= @startYear
+                                and year(cov.created_at) <= @endYear";
 
             string queryMachineShutdowns = @"select *
                                             from dbo.ole_unplanned_event_unplanned_downtimes
@@ -342,7 +342,7 @@ namespace CortevaApp.Controllers
 
 
             string querySeqCovs = @"select *
-                                    from dbo.ole_unplanned_event_changing_clients cov, dbo.ole_pos pos, dbo.ole_products prod
+                                    from dbo.ole_unplanned_event_changing_formats cov, dbo.ole_pos pos, dbo.ole_products prod
                                     where cov.productionline = @productionLine
                                     and year(cov.created_at) >= @startYear
                                     and year(cov.created_at) <= @endYear
@@ -352,8 +352,8 @@ namespace CortevaApp.Controllers
             if (shift != "allTeams")
             {
                 queryCIP += " and cip.shift = @shift";
-                queryCOV += " and cov.shift = @shift";
-                queryBNC += " and bnc.shift = @shift";
+                queryCOV += " and bnc.shift = @shift";
+                queryBNC += " and cov.shift = @shift";
                 queryMachineShutdowns += " and shift = @shift";
                 queryExternalShutdowns += " and shift = @shift";
                 querySeqCips += " and cip.shift = @shift";
@@ -502,17 +502,17 @@ namespace CortevaApp.Controllers
                                 and cip.created_at >= @startDate
                                 and cip.created_at <= @endDate";
 
-            string queryCOV = @"select *
-                                from dbo.ole_unplanned_event_changing_clients cov
-                                where cov.productionline = @productionLine
-                                and cov.created_at >= @startDate
-                                and cov.created_at <= @endDate";
-
             string queryBNC = @"select *
-                                from dbo.ole_unplanned_event_changing_formats bnc
+                                from dbo.ole_unplanned_event_changing_clients bnc
                                 where bnc.productionline = @productionLine
                                 and bnc.created_at >= @startDate
                                 and bnc.created_at <= @endDate";
+
+            string queryCOV = @"select *
+                                from dbo.ole_unplanned_event_changing_formats cov
+                                where cov.productionline = @productionLine
+                                and cov.created_at >= @startDate
+                                and cov.created_at <= @endDate";
 
             string queryMachineShutdowns = @"select *
                                             from dbo.ole_unplanned_event_unplanned_downtimes
@@ -538,7 +538,7 @@ namespace CortevaApp.Controllers
 
 
             string querySeqCovs = @"select *
-                                    from dbo.ole_unplanned_event_changing_clients cov, dbo.ole_pos pos, dbo.ole_products prod
+                                    from dbo.ole_unplanned_event_changing_formats cov, dbo.ole_pos pos, dbo.ole_products prod
                                     where cov.productionline = @productionLine
                                     and cov.created_at >= @startDate
                                     and cov.created_at <= @endDate
