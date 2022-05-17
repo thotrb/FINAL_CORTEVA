@@ -59,16 +59,17 @@ namespace CortevaApp.Controllers
             int beginningYear = Int16.Parse(_date[0]);
             int beginningMonth = Int16.Parse(_date[1]);
             int beginningDay = Int16.Parse(_date[2]);
-            DateTime cipDateMin = new DateTime(beginningYear, beginningMonth, beginningDay);
-            cipDateMin.AddDays(-2);
-            string dateString = cipDateMin.ToString("yyyy-MM-dd HH:mm:ss.fff");
+            DateTime cipDateMax = new DateTime(beginningYear, beginningMonth, beginningDay);
+            cipDateMax = cipDateMax.AddDays(1);
+            string dateString = cipDateMax.ToString("yyyy-MM-dd");
 
             string QueryOverlappingCIP = @"select * 
                                         from dbo.ole_unplanned_event_cips
                                         where productionline = @productionLine
                                         and created_at >= @minDate
+                                        and created_at <= @maxDate
                                         and OLE = @OLE
-                                        and finished = 0";
+                                        and finished = 1";
 
 
             DataTable OverlappingCIP = new DataTable();
@@ -81,7 +82,8 @@ namespace CortevaApp.Controllers
                 using (SqlCommand command = new SqlCommand(QueryOverlappingCIP, connection))
                 {
                     command.Parameters.AddWithValue("@productionLine", productionLine);
-                    command.Parameters.AddWithValue("@minDate", dateString);
+                    command.Parameters.AddWithValue("@maxDate", dateString);
+                    command.Parameters.AddWithValue("@minDate", date);
                     command.Parameters.AddWithValue("@OLE", OLE);
                     reader = command.ExecuteReader();
                     OverlappingCIP.Load(reader);
