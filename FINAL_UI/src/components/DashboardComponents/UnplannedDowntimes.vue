@@ -456,8 +456,9 @@ export default {
       
 
       await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear + '/' + team)
-          .then(response => {
+          .then(async (response) => {
                 this.unplannedDowntimeEvents = response.data;
+                console.log(this.unplannedDowntimeEvents)
                 this.resolveAfter(1000);
                 this.createDowntimeObject();
 
@@ -479,15 +480,28 @@ export default {
 
                 let totalDowntimeDuration = 0;
 
-
+            let CIPsToSkip = [];
             for (let type of ["cip", "cov", "bnc"]) {
                   for (let event of this.unplannedDowntimeEvents[type.toUpperCase()]) {
+                    if (type == 'cip' && CIPsToSkip.includes(event.id)) {
+                      continue;
+                    }
                     const monthCreated = this.getMonth(event.created_at);
                     const month = this.months[monthCreated - 1];
 
-                    const eventDurationInHours = event.total_duration / 60;
-                    const eventDurationLabelCoef = Math.floor(event.total_duration / 10);
-                    const durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
+                    let eventDurationInHours = event.total_duration / 60;
+                    let eventDurationLabelCoef = Math.floor(event.total_duration / 10);
+                    let durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
+
+                    //Search for overlapping CIP
+                    if (type == 'cip' && !event.finished) {
+                      let olCIP = await axios.get(urlAPI + "getOverlappedCIP/" + event.productionline + "/" + event.created_at.split('T')[0] + "/" + event.OLE);
+                      olCIP = olCIP.data;
+                      if (olCIP.length > 0) {
+                        this.downtimes[type][month].totalDuration += (olCIP[0].total_duration/60);
+                        CIPsToSkip.push(olCIP[0].id);
+                      }             
+                    }
 
                     if (!Object.keys(labels[type]).includes(durationIntervalChartLabel)){
                       labels[type][durationIntervalChartLabel] = 1;
@@ -673,7 +687,6 @@ export default {
       await axios.get(urlAPI + 'sites')
           .then(response => (this.dataSite = response.data))
     }
-
 
     this.dataWorksite = this.dataSite[0];
     this.dataProductionlines = this.dataSite[1];

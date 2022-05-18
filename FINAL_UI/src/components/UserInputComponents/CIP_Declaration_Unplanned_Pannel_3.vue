@@ -112,18 +112,7 @@ export default {
       this.CIP_Event.shift = sessionStorage.getItem("typeTeam");
 
       console.log(this.CIP_Event);
-
-      let currentDate = new Date();
-      let dateString = currentDate.getFullYear() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getDate();
-      axios.get(urlAPI + "getOverlappedCIP/" + this.CIP_Event.productionline + "/" + dateString + "/" + this.CIP_Event.OLE).then(response => {
-        console.log("OVERLAPPED")
-        console.log(response.data);
-        if (response.data.length > 0) {
-          let id = response.data[0].id;
-          axios.delete(urlAPI + "deleteCIP/" + id);
-          this.CIP_Event.total_duration = parseInt(this.CIP_Event.total_duration) + parseInt(response.data[0].total_duration);
-        }
-      }).then(() => {
+      
         if(this.CIP_Event.previous_bulk !== null && this.CIP_Event.total_duration !== null){
           axios.post(urlAPI + "unplannedEvent/CIP", this.CIP_Event);
           this.backOrigin();
@@ -131,7 +120,7 @@ export default {
         }else{
           this.errorMessage();
         }
-      });
+  
 
     },
 
