@@ -18,7 +18,7 @@
           <div class="col-sm-4" v-for="issue in machineIssue" :key="issue.id">
             <button
                 class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
-                type="button" @click.prevent="chooseMachineImplicated(issue.component, issue.other_machine, issue.name)">
+                type="button" @click.prevent="chooseMachineImplicated(issue.component, issue.other_machine, issue.name, issue.machineName)">
               {{$t(issue.component)}}
             </button>
 
@@ -184,7 +184,7 @@ export default {
 
         shift : '',
 
-        issueOtherMachine : null,
+        issueOtherMachine : '',
       },
 
 
@@ -203,14 +203,19 @@ export default {
       this.machineImplicated = componentName;
 
     },
-    chooseMachineImplicated : async function (componentName, otherMachine, machineName) {
+    chooseMachineImplicated : async function (componentName, otherMachine, machineName, implicatedMachine) {
 
-      if (machineName == 'other') this.issueOtherMachine = 'other';
+      if (machineName === 'other') this.issueOtherMachine = 'other';
       this.componentName = componentName;
       this.otherMachine = otherMachine;
+      this.machineImplicated = implicatedMachine;
 
-    //  await axios.get(urlAPI + 'summary/' + this.productionName + '/' + this.downtimeType + '/' + sessionStorage.getItem("worksite")+'/1')
-      //    .then(response => (this.issueOtherMachine = response.data));
+      console.log('je passe : ' + implicatedMachine);
+
+      /**
+      await axios.get(urlAPI + 'summary/' + this.productionName + '/' + this.downtimeType + '/' + sessionStorage.getItem("worksite")+'/1')
+         .then(response => (this.issueOtherMachine = response.data));
+**/
 
       if (otherMachine === 1) {
         this.previousTitle = this.title;
@@ -222,7 +227,7 @@ export default {
         this.title = this.$t(componentName);
         this.printedStep = 2;
         //this.printedStep = 3;
-        this.machineImplicated = componentName;
+        //this.machineImplicated = componentName;
       }
 
 
@@ -231,6 +236,8 @@ export default {
     addReasonOtherMachine : async function (machineImplicated) {
       await axios.get(urlAPI + 'unplannedDowntime/unplannedDowntime/'+machineImplicated+'/'+ sessionStorage.getItem("worksite") + '/0/' + this.productionName)
          .then(response => (this.issueOtherMachine = response.data));
+
+      console.log(this.issueOtherMachine);
       this.machineImplicated = machineImplicated;
       this.printedStep = 3;
       this.marker = 1;
@@ -253,21 +260,23 @@ export default {
 
     },
 
-    validateInformations : function(){
+    validateInformations : async function () {
       this.unplannedEvent.OLE = sessionStorage.getItem("poNumber");
-      this.unplannedEvent.implicated_machine = this.issueOtherMachine;
+      this.unplannedEvent.implicated_machine = this.machineImplicated;
       this.unplannedEvent.component = this.componentName;
+      this.unplannedEvent.issueOtherMachine = this.title;
       this.unplannedEvent.total_duration = document.getElementById('time').value;
       this.unplannedEvent.comment = document.getElementById('comments').value;
       this.unplannedEvent.shift = sessionStorage.getItem("typeTeam");
-      console.log(this.unplannedEvent);
 
 
+      if (this.unplannedEvent.total_duration >= 0) {
+        await axios.post(urlAPI + "unplannedEvent/unplannedDowntime", this.unplannedEvent);
+        console.log(this.unplannedEvent);
+        console.log(this.title);
 
-      if(this.unplannedEvent.total_duration  > 0){
-        axios.post(urlAPI + "unplannedEvent/unplannedDowntime", this.unplannedEvent);
         this.backOrigin();
-      }else{
+      } else {
         this.errorMessage();
       }
 

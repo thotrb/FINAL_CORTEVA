@@ -89,7 +89,7 @@ export default {
 
         previous_bulk: '',
 
-        predicted_duration:  5,
+        predicted_duration:  0,
 
         total_duration: 0,
 

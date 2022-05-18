@@ -207,6 +207,8 @@ export default {
 
         if (this.dataProductionlines[i].productionline_name === this.productionline) {
           index = this.dataProductionlines[i].id;
+          console.log(this.dataProductionlines[i])
+
         }
       }
 

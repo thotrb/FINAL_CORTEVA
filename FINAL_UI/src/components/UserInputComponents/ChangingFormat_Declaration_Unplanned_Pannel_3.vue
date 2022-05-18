@@ -74,7 +74,7 @@ export default {
       ChangingFormat_Event: {
 
         productionline : sessionStorage.getItem("productionName"),
-        predicted_duration: null,
+        predicted_duration: 0,
         total_duration: null,
         comment: '',
         OLE:  '',
@@ -88,32 +88,22 @@ export default {
 
   methods: {
 
-    validateInformations: function () {
+    validateInformations: async function () {
 
-      var responses = document.getElementsByClassName('response');
-      var duration = 0;
-      for (let i = 0; i < responses.length; i++) {
-        if (responses[i].checked) {
-          duration = responses[i].value;
-        }
-      }
 
-      this.ChangingFormat_Event.predicted_duration = duration;
       this.ChangingFormat_Event.total_duration = document.getElementById('totalDuration').value;
       this.ChangingFormat_Event.comment = document.getElementById('comments').value;
       this.ChangingFormat_Event.OLE = sessionStorage.getItem("poNumber");
       this.ChangingFormat_Event.shift = sessionStorage.getItem("typeTeam");
       console.log(this.ChangingFormat_Event);
-      if(this.ChangingFormat_Event.predicted_duration > 0 &&this.ChangingFormat_Event.total_duration > 0){
-        axios.post(urlAPI + "unplannedEvent/changingFormat", this.ChangingFormat_Event);
+      if (this.ChangingFormat_Event.total_duration >= 0) {
+        await axios.post(urlAPI + "unplannedEvent/changingFormat", this.ChangingFormat_Event);
 
         this.backOrigin();
 
-      }else{
+      } else {
         this.errorMessage();
       }
-
-
 
 
     },

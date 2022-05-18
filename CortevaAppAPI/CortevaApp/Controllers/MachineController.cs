@@ -177,12 +177,12 @@ namespace CortevaApp.Controllers
         [HttpGet("unplannedDowntime/unplannedDowntime/{machineName}/{worksite}/{productionline}")]
         public JsonResult GetUnplannedDowntimeMachineIssue(string machineName, string worksite, string productionline)
         {
-            string queryIssues = @"select mc.name as component, m.name, other_machine, mc.worksite
+            string queryIssues = @"select mc.name as component, m.name, other_machine, mc.worksite, mc.machineName
                                    from dbo.ole_machines m, dbo.machine_component mc
                                    where m.name = mc.machineName
                                    and m.name = @machineName and mc.worksite = @worksite and mc.productionLine = @productionline
                                    union
-                                   select mc.name as component, mc.machineName, other_machine, mc.worksite
+                                   select mc.name as component, mc.machineName, other_machine, mc.worksite, mc.machineName
                                    from dbo.machine_component mc
                                    where mc.machineName = 'other' and mc.worksite = @worksite and mc.productionLine = @productionline";
 

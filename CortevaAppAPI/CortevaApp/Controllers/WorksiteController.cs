@@ -28,7 +28,7 @@ namespace CortevaApp.Controllers
         public JsonResult getSitesUser(string username)
         {
             string querySites = @"select worksite_name as name from dbo.users where login=@username";
-            string queryProductionLines = @"select  pl.productionline_name, pl.worksite_name as name
+            string queryProductionLines = @"select distinct pl.id, pl.productionline_name, pl.worksite_name as name
                                             from dbo.ole_productionline pl, users u 
                                             where u.productionline = pl.productionline_name and u.login = @username";
             string queryTeams = @"select ti.type, ti.worksite_name

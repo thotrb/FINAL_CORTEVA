@@ -86,7 +86,7 @@ data() {
 
       productionline: sessionStorage.getItem("productionName"),
 
-      predicted_duration:  5,
+      predicted_duration:  0,
 
       total_duration: 10,
 
@@ -103,23 +103,21 @@ data() {
 
 methods: {
 
-  validateInformations : function() {
+  validateInformations : async function () {
 
-    this.ChangingClient_Event.predicted_duration = 0;
     //this.ChangingClient_Event.lot_number = document.getElementById('lotNumber').value;
     this.ChangingClient_Event.total_duration = document.getElementById('totalDuration').value;
     this.ChangingClient_Event.comment = document.getElementById('comments').value;
     this.ChangingClient_Event.OLE = sessionStorage.getItem("poNumber");
     this.ChangingClient_Event.shift = sessionStorage.getItem("typeTeam");
-    if (this.ChangingClient_Event.total_duration  > 0) {
+    if (this.ChangingClient_Event.total_duration > 0) {
 
-      axios.post(urlAPI + "unplannedEvent/clientChanging", this.ChangingClient_Event);
+      await axios.post(urlAPI + "unplannedEvent/clientChanging", this.ChangingClient_Event);
 
       this.backOrigin();
     } else {
       this.errorMessage();
     }
-
 
 
   },
