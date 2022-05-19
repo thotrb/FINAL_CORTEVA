@@ -578,9 +578,9 @@ export default {
       for (let i = 0; i < this.volumes.length; i++) {
         if (!this.formulations.includes(this.volumes[i].bulk)) {
           this.formulations.push(this.volumes[i].bulk);
-          qtyPerFormulation[this.volumes[i].bulk] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
+          qtyPerFormulation[this.volumes[i].bulk] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1 * this.volumes[i].size ;
         } else {
-          qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1;
+          qtyPerFormulation[this.volumes[i].bulk] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1 * this.volumes[i].size;
         }
 
       }
@@ -600,7 +600,7 @@ export default {
             console.log('MOIS : ' + month);
 
             var correspondingMonth = tableauFormulation[month - 1];
-            tableauFormulationValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1;
+            tableauFormulationValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase  * 1 * this.volumes[i].size;
           }
         }
 
@@ -635,7 +635,7 @@ export default {
           this.packsizes.push(this.volumes[i].size);
           qtyPerPacksize[this.volumes[i].size] = this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size* 1;
         } else {
-          qtyPerPacksize[this.volumes[i].size] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
+          qtyPerPacksize[this.volumes[i].size] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size;
         }
       }
 
@@ -653,7 +653,7 @@ export default {
             month = this.volumes[i].created_at.split('-')[1];
 
             correspondingMonth = tableauFormulation[month - 1];
-            tableauPacksizeValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * 1;
+            tableauPacksizeValue[correspondingMonth] += this.volumes[i].qtyProduced * this.volumes[i].bottlesPerCase * this.volumes[i].size;
           }
         }
 

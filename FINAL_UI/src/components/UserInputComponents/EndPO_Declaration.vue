@@ -758,7 +758,7 @@ export default {
 
         var N = this.nbBottlesFilled;
         var summRejection = this.FillerRejection*1 + this.CaperRejection*1 +
-            this.EtiqueteuseRejection*1 + this.WieghtBoxRejection*this.netOP[0].bottlesPerCase + this.QualityControlRejection*1;
+            this.EtiqueteuseRejection*1 + this.WieghtBoxRejection*this.netOP[0].bottlesPerCase + this.QualityControlRejection*1*this.netOP[0].bottlesPerCase;
 
         var summCompteur = 0;
 
@@ -785,7 +785,7 @@ export default {
         }
 
         if (this.QualityControlCounter !== 0) {
-          summCompteur += (this.QualityControlCounter - N);
+          summCompteur += (this.QualityControlCounter*this.netOP[0].bottlesPerCase - N);
           console.log('ICI4 : ' + summCompteur);
         }
 
