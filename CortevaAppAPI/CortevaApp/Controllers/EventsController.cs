@@ -1310,5 +1310,62 @@ namespace CortevaApp.Controllers
 
             return new JsonResult(SavePE);
         }
+
+        [HttpGet("generalUnplannedData/{pl}/{from}/{to}")]
+        public JsonResult generalUnplannedData(string pl, string from, string to)
+        {
+            from += " 00:00:00.000";
+            to += " 23:59:59.000";
+
+            string TotalDurationQuery = @"select sum(cip.total_duration) as duration
+                                       from dbo.ole_unplanned_event_cips cip
+                                       where cip.productionline = @pl
+                                       and cip.created_at >= @from
+                                       and cip.created_at <= @to";
+            
+            string CountQuery = @"select count(*) as eventCount
+                            from dbo.ole_unplanned_event_cips cip
+                            where cip.productionline = @pl
+                            and cip.created_at >= @from
+                            and cip.created_at <= @to
+                            and cip.finished = 1";
+
+
+            DataTable TotalDuration = new DataTable();
+            DataTable Count = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(TotalDurationQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@pl", pl);
+                    command.Parameters.AddWithValue("@from", from);
+                    command.Parameters.AddWithValue("@to", to);
+                    reader = command.ExecuteReader();
+                    TotalDuration.Load(reader);
+                    reader.Close();
+                }
+
+                using (SqlCommand command = new SqlCommand(CountQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@pl", pl);
+                    command.Parameters.AddWithValue("@from", from);
+                    command.Parameters.AddWithValue("@to", to);
+                    reader = command.ExecuteReader();
+                    Count.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(new Dictionary<string, DataTable>()
+                {
+                    { "totalDuration", TotalDuration },
+                    { "count", Count }
+                });
+        }
     }
 }

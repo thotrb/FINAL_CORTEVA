@@ -31,18 +31,6 @@
             </template>
           </template>
         </select>
-
-        <!-- Team selection -->
-        <label for="team">{{$t("team")}}: </label>
-        <select name="team" id="team-selection" class="form-select">
-          <option disabled selected value="">-- {{ $t("select") }} --</option>
-          <option value="allTeams" id="all-teams-option">{{$t("allTeams")}}</option>
-          <template v-for="team in dataTeams">
-            <template v-if="team.worksite_name === site">
-              <option v-bind:key="team.type" v-bind:value="team.type">{{team.type}}</option>
-            </template>
-          </template> 
-        </select>
       </div>
       <div class="main-production-window">
         <div class="d-flex title">
@@ -193,7 +181,7 @@
               <td scope="col"></td>
             </tr>
             <tr class="subrow">
-              <td scope="col">&emsp;{{ $t("duration") }}</td>
+              <td scope="col">&emsp;{{ $t("duration") }} ({{ $t("hours")}})</td>
               <td scope="col">{{ generalData[cat].totalDuration }}</td>
             </tr>
             <tr class="subrow last-subrow">
@@ -219,7 +207,7 @@
           </thead>
           <tbody>
           <tr>
-            <th scope="row">{{ $t("duration") }}</th>
+            <th scope="row">{{ $t("duration") }} ({{ $t("minutes")}})</th>
             <template v-for="event of sequencesCIP">
               <td :key="event.id">{{ event.totalDuration }}</td>
             </template>
@@ -452,15 +440,15 @@ export default {
     chargeCurrentYearData: async function () {
       const selectedPL = document.getElementById("pl-selection").value;
       const selectedYear = document.getElementById("year-select").value;
-      const team = document.getElementById("team-selection").value;
+      const team = 'allTeams'
       
 
       await axios.get(urlAPI + 'UnplannedDowntimeEvents/' + selectedPL + '/' + selectedYear + '/' + selectedYear + '/' + team)
           .then(async (response) => {
                 this.unplannedDowntimeEvents = response.data;
-                console.log(this.unplannedDowntimeEvents)
                 this.resolveAfter(1000);
                 this.createDowntimeObject();
+                console.log(response);
 
                 let totalDuration = {
                   cip: 0,
@@ -483,12 +471,6 @@ export default {
             let CIPsToSkip = [];
             for (let type of ["cip", "cov", "bnc"]) {
                   for (let event of this.unplannedDowntimeEvents[type.toUpperCase()]) {
-                    if (type == 'cip' && CIPsToSkip.includes(event.id)) {
-                      continue;
-                    }
-                    const monthCreated = this.getMonth(event.created_at);
-                    const month = this.months[monthCreated - 1];
-
                     let eventDurationInHours = event.total_duration / 60;
                     let eventDurationLabelCoef = Math.floor(event.total_duration / 10);
                     let durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
@@ -499,9 +481,17 @@ export default {
                       olCIP = olCIP.data;
                       if (olCIP.length > 0) {
                         this.downtimes[type][month].totalDuration += (olCIP[0].total_duration/60);
+                        eventDurationInHours += (olCIP[0].total_duration/60);
+                        eventDurationLabelCoef += Math.floor(olCIP[0].total_duration/10);
+                        durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
                         CIPsToSkip.push(olCIP[0].id);
                       }             
                     }
+                    //Skip CIP if it is overlapping
+                    if (type == 'cip' && CIPsToSkip.includes(event.id)) continue;
+                    
+                    const monthCreated = this.getMonth(event.created_at);
+                    const month = this.months[monthCreated - 1];
 
                     if (!Object.keys(labels[type]).includes(durationIntervalChartLabel)){
                       labels[type][durationIntervalChartLabel] = 1;
@@ -546,36 +536,67 @@ export default {
                   if (downtimePercent) {
                     downtimePercent = downtimePercent.toFixed(2);
                     this.downtimes[type].general.downtimePercentage = downtimePercent;
-                    this.chargeGeneralData();
                   }
                 }
             })
 
-
+      this.chargeGeneralData();
     },
 
     chargeGeneralData: async function () {
-      console.log("chargeGeneralData");
       const selectedPL = document.getElementById("pl-selection").value;
       const dateFrom = document.getElementById("select-date-from").value;
       const dateTo = document.getElementById("select-date-to").value;
-      const team = document.getElementById("team-selection").value || "allTeams";
+      const team = "allTeams";
 
       if (selectedPL && dateFrom && dateTo) {
         await axios.get(urlAPI + 'UnplannedDowntimeEventsDate/' + selectedPL + '/' + dateFrom + '/' + dateTo + '/' + team)
-          .then(response => {
-            this.unplannedDowntimeEvents = response.data;
+          .then(async response => {
+            let ude = response.data;
+            let CIPsToSkip = {};
+
             for (let cat of ["cip", "cov", "bnc"]) {
               this.generalData[cat] = {totalDuration: 0, totalNb: 0};
-              for (let event of this.unplannedDowntimeEvents[cat.toUpperCase()]) {
-                this.generalData[cat].totalDuration += event.total_duration / 60;
-                this.generalData[cat].totalNb++;
+
+              for (let event of ude[cat.toUpperCase()]) {
+                //Search for overlapping CIP
+                if (cat == 'cip' && !event.finished) {
+                  let olCIP = await axios.get(urlAPI + "getOverlappedCIP/" + event.productionline + "/" + event.created_at.split('T')[0] + "/" + event.OLE);
+                  olCIP = olCIP?.data[0];
+                
+                  if (olCIP) {
+                    CIPsToSkip[olCIP.id] = {starting: event, ending: olCIP};
+                    console.log("CIPsToSkip", CIPsToSkip);
+                  }              
+                }
+                
+                this.generalData[cat].totalDuration += parseInt(event.total_duration)/60;
+
+                //Skip CIP if it is overlapping, duration already counted 
+                if (cat == 'cip' && Object.keys(CIPsToSkip).includes(event.id + '')) continue;
+                else this.generalData[cat].totalNb++;
               }
+              console.log("total duration", cat,this.generalData[cat])
               this.generalData[cat].totalDuration = this.generalData[cat].totalDuration.toFixed(2);
             }
 
             this.sequencesCIP = {};
-            for (let event of this.unplannedDowntimeEvents["seqCIP"]) {
+            let sequeceCIPEvents = ude["seqCIP"].reduce((acc, event) => {
+              if (Object.keys(CIPsToSkip).includes(event.id + '')) {
+                acc = acc.map(e => {
+                  if (e.id == CIPsToSkip[event.id].starting.id) {
+                    e.total_duration += event.total_duration;
+                  }
+                  return e;
+                });
+              } 
+              else if (acc.filter(e => e.id == event.id).length == 0) {
+                acc.push(event);
+              }
+              return acc;
+            }, []);
+         
+            for (let event of sequeceCIPEvents) {
               const pair = event.previous_bulk + "/" + event.bulk;
               if (!this.sequencesCIP[pair]) {
                 this.sequencesCIP[pair] = {
@@ -604,7 +625,7 @@ export default {
             }
 
             this.sequencesCOV = {};
-            for (let event of this.unplannedDowntimeEvents["seqCOV"]) {
+            for (let event of ude["seqCOV"]) {
               const type = event.size + "L";
               if (!this.sequencesCOV[type]) {
                 this.sequencesCOV[type] = {
