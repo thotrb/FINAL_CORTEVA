@@ -576,26 +576,31 @@ export default {
                 if (cat == 'cip' && Object.keys(CIPsToSkip).includes(event.id + '')) continue;
                 else this.generalData[cat].totalNb++;
               }
-              console.log("total duration", cat,this.generalData[cat])
+   
               this.generalData[cat].totalDuration = this.generalData[cat].totalDuration.toFixed(2);
             }
 
             this.sequencesCIP = {};
             let sequeceCIPEvents = ude["seqCIP"].reduce((acc, event) => {
-              if (Object.keys(CIPsToSkip).includes(event.id + '')) {
-                acc = acc.map(e => {
-                  if (e.id == CIPsToSkip[event.id].starting.id) {
-                    e.total_duration += event.total_duration;
-                  }
-                  return e;
-                });
-              } 
+              let eventId = event.id + '';
+              if (Object.keys(CIPsToSkip).includes(eventId)) {
+                return acc;
+              }
               else if (acc.filter(e => e.id == event.id).length == 0) {
                 acc.push(event);
               }
               return acc;
             }, []);
-         
+            
+            Object.values(CIPsToSkip).forEach(cip => {
+              sequeceCIPEvents = sequeceCIPEvents.map(e => {
+                if (e.id == cip.starting.id) {
+                  e.total_duration += cip.ending.total_duration;
+                }
+                return e;
+              });
+            });
+
             for (let event of sequeceCIPEvents) {
               const pair = event.previous_bulk + "/" + event.bulk;
               if (!this.sequencesCIP[pair]) {
@@ -625,7 +630,13 @@ export default {
             }
 
             this.sequencesCOV = {};
-            for (let event of ude["seqCOV"]) {
+            let sequencesCOVEvents = ude["seqCOV"].reduce((acc, event) => {
+              if (acc.filter(e => e.id == event.id).length == 0) {
+                acc.push(event);
+              }
+              return acc;
+            }, []);
+            for (let event of sequencesCOVEvents) {
               const type = event.size + "L";
               if (!this.sequencesCOV[type]) {
                 this.sequencesCOV[type] = {
