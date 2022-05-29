@@ -256,8 +256,8 @@
   "speedLossesToJustify" : "Perte de vitesse à justifier",
   "delete" :  "Supprimer",
   "action" :  "Action",
-  "otherMachine" :  "Autre machine"
-
+  "otherMachine" :  "Autre machine",
+  "minutes": "Min"
 
 
 }

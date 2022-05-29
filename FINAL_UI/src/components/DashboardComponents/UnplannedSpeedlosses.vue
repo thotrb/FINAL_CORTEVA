@@ -64,7 +64,7 @@
             <tbody>
             <template v-for="event of slEventsByTable.fillerStop">
               <tr :key="event.id">
-                <td>{{event.id}}</td>
+                <td>{{event.OLE}}</td>
                 <td>{{event.size}} L</td>
                 <td>{{event.idealRate}}</td>
                 <td>{{event.reducedRate}}</td>
@@ -101,7 +101,7 @@
             <tbody>
             <template v-for="event of slEventsByTable.reducedRate">
               <tr :key="event.id">
-                <td>{{event.id}}</td>
+                <td>{{event.OLE}}</td>
                 <td>{{event.size}} L</td>
                 <td>{{event.idealRate}}</td>
                 <td>{{event.reducedRate}}</td>
@@ -190,9 +190,6 @@ export default {
       const team = document.getElementById('team-selection').value;
 
       if (site && selectedPL && begDate && endDate) {
-
-
-
         await axios.get(urlAPI + 'getSpeedLosses/'+site+'/'+selectedPL+'/'+begDate+'/'+endDate+'/'+team)
             .then(response => {
                 this.getSpeedLosses = response.data;
@@ -223,8 +220,8 @@ export default {
                     }
 
                     acc[slEvent.reason].totalDuration += slEvent.duration;
-                    const reducedRate = Math.floor(slEvent.qtyProduced / slEvent.workingDuration);
-                    slEvent.reducedRate = reducedRate || 0;
+                    let reducedRate = (slEvent.qtyProduced / slEvent.workingDuration);
+                    slEvent.reducedRate = Math.ceil(reducedRate || 0)
                     acc[slEvent.reason].events.push(slEvent);
                   }
 
