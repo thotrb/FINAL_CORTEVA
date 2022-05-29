@@ -212,7 +212,7 @@ namespace CortevaApp.Controllers
                                         where pe.productionline = @productionLine
                                         and pe.OLE = @po";
 
-            string queryChanginClients= @"select total_duration, type, comment, updated_at, OLE, productionline, kind
+            string queryChanginClients = @"select total_duration, type, comment, updated_at, OLE, productionline, kind
                                         from dbo.ole_unplanned_event_changing_clients
                                         where productionline = @productionLine
                                         and OLE = @po";
@@ -471,7 +471,7 @@ namespace CortevaApp.Controllers
                     reader.Close();
                 }
 
-     
+
 
                 connection.Close();
             }
@@ -667,7 +667,7 @@ namespace CortevaApp.Controllers
                     reader.Close();
                 }
 
-     
+
 
                 connection.Close();
             }
@@ -685,7 +685,7 @@ namespace CortevaApp.Controllers
 
             return new JsonResult(data);
         }
-       
+
         [HttpGet("allevents/{site}/{productionLine}/{beginningDate}/{endingDate}/{team}")]
         public JsonResult GetAllEventsPeriod(string site, string productionLine, string beginningDate, string endingDate, string team)
         {
@@ -714,7 +714,7 @@ namespace CortevaApp.Controllers
                                 and pos.created_at >= @beginningDate
                                 and pos.created_at <= @endingDate
                                 and pos.shift = rc.shift";
-        
+
 
             if (team != "allTeams")
             {
@@ -751,6 +751,7 @@ namespace CortevaApp.Controllers
                                                       from dbo.ole_speed_losses sl, dbo.ole_pos pos, dbo.ole_products prod
                                                       where pos.number = sl.OLE
                                                       and prod.GMID = pos.GMIDCode
+                                                      and pos.shift = sl.shift
                                                       and sl.productionline = @productionlineName
                                                       and sl.created_at >= @startDate
                                                       and sl.created_at <= @endDate";
@@ -803,26 +804,33 @@ namespace CortevaApp.Controllers
                                        and bnc.created_at <= @endDate";
 
                     string QueryUEE = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                       from dbo.ole_unplanned_event_unplanned_downtimes ud
-                                       where ud.productionline = @productionlineName
-                                       and ud.created_at >= @startDate
-                                       and ud.created_at <= @endDate
-                                       and ud.component = 'other'";
+                                       from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
+                                        where mc.name = ud.component 
+                                        and mc.productionLine = ud.productionline
+                                        and ud.implicated_machine = 'other' 
+                                        and ud.productionline = @productionlineName 
+                                        and ud.created_at >= @startDate
+                                        and ud.created_at <= @endDate
+                                       ";
 
                     string QueryUSM = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                       from dbo.ole_unplanned_event_unplanned_downtimes ud
-                                       where ud.productionline = @productionlineName
-                                       and ud.created_at >= @startDate
-                                       and ud.created_at <= @endDate
-                                       and (ud.component != 'downstreamSaturation' or ud.component != 'missingBottle'
-                                       or ud.component != 'other')";
+                                        from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
+                                        where mc.name = ud.component 
+                                        and mc.productionLine = ud.productionline
+                                        and ud.implicated_machine != 'other' 
+                                        and ud.implicated_machine != 'filler' 
+                                        and ud.productionline = @productionlineName 
+                                        and ud.created_at >= @startDate
+                                        and ud.created_at <= @endDate";
 
                     string QueryFUS = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                       from dbo.ole_unplanned_event_unplanned_downtimes ud
-                                       where ud.productionline = @productionlineName
-                                       and ud.created_at >= @startDate
-                                       and ud.created_at <= @endDate
-                                       and (ud.component = 'downstreamSaturation' or ud.component = 'missingBottle')";
+                                       from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
+                                        where mc.name = ud.component 
+                                         and mc.productionLine = ud.productionline
+                                        and ud.implicated_machine = 'filler' 
+                                        and ud.productionline = @productionlineName 
+                                        and ud.created_at >= @startDate
+                                        and ud.created_at <= @endDate";
 
                     string QueryRRF = @"select isnull(sum(sl.duration),0) as Duration, count(*) as nbEvents
                                        from dbo.ole_speed_losses sl
@@ -910,7 +918,8 @@ namespace CortevaApp.Controllers
                                                    and bnc.created_at >= @startDate
                                                    and bnc.created_at <= @endDate";
 
-                    if (team != "allTeams") {
+                    if (team != "allTeams")
+                    {
                         QuerySpeedLossesEvents += " and sl.shift = @team";
                         QueryBM += " and pe.shift = @team";
                         QueryCP += " and pe.shift = @team";
@@ -1033,7 +1042,7 @@ namespace CortevaApp.Controllers
                         { "FSM", 0 },
                         { "SITE", 0 },
                         { "EVENTS", 0 }
-                    } );
+                    });
                 }
             }
         }

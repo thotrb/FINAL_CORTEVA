@@ -60,11 +60,11 @@
               {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
               <br/>
               <span style="color:red">
-                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(2)}}
               </span>
               <br/>
 
-              {{$t("totalPOPerformance")}} (%) : {{performance * 100}}
+              {{$t("totalPOPerformance")}} (%) : {{(performance * 100).toFixed(2)}}
             </div>
 
             <br/>
@@ -327,7 +327,7 @@
                 <br/>
                 {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
                 <br/>
-                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify}}
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(2)}}
             </span>
 
       <br/>
@@ -425,13 +425,13 @@
 
       <span>
 
-                 {{$t("availability")}} (%) :  {{availability * 100}}
+                 {{$t("availability")}} (%) :  {{(availability * 100).toFixed(2)}}
                 <br/>
-                 {{$t("performance")}} (%) :  {{performance * 100}}
+                 {{$t("performance")}} (%) :  {{(performance * 100).toFixed(2)}}
                 <br/>
-                 {{$t("quality")}} (%) :  {{quality * 100}}
+                 {{$t("quality")}} (%) :  {{(quality * 100).toFixed(2)}}
                 <br/>
-                 OLE (%) :  {{OLE * 100}}
+                 OLE (%) :  {{(OLE * 100).toFixed(2)}}
 
             </span>
 
@@ -705,7 +705,7 @@ export default {
         if(this.finalQuantityProduced === '0' ||this.finalQuantityProduced === 0 ){
           this.performance = 0;
         }else{
-          this.performance = (numerateur / this.totalOperatingTime).toFixed(2);
+          this.performance = (numerateur / this.totalOperatingTime);
           if(this.performance > 1){
             this.performance = 1;
           }
@@ -804,14 +804,14 @@ export default {
         if(N + summRejection + summCompteur === 0 ){
           this.quality = 1;
         }else{
-          this.quality = (N / (N + summRejection + summCompteur)).toFixed(2);
+          this.quality = (N / (N + summRejection + summCompteur));
         }
 
         if(this.quality > 1){
           this.quality = 1;
         }
       }
-      this.OLE = (this.quality * this.availability * this.performance).toFixed(2);
+      this.OLE = (this.quality * this.availability * this.performance);
 
       if (sessionStorage.getItem("quality") === null) {
         sessionStorage.quality = this.quality;

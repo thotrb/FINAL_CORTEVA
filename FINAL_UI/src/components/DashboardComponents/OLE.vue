@@ -320,6 +320,16 @@ export default {
 
         if(this.allEvents2["SITE"].length > 0){
           this.loadProductionTimePreviousYear();
+        }else{
+          this.availability2 = 0;
+          this.performance2 = 0;
+          this.quality2 = 0;
+          this.OLE2 = 0;
+          this.operatingTime2 = 0;
+          this.plannedProductionTime2 = 0;
+          this.plannedDowntimes2 = 0;
+          this.unplannedDowntimes2 =0;
+
         }
 
 
@@ -340,6 +350,8 @@ export default {
     },
 
     loadProductionTimePreviousYear: function () {
+
+
       var sommePlannedEvents = 0;
       var sommeUnplannedEvents = 0;
 
@@ -382,6 +394,7 @@ export default {
         n += (this.allEvents2['SITE'][i].qtyProduced * this.allEvents2['SITE'][i].bottlesPerCase / this.allEvents2['SITE'][i].idealRate);
 
 
+        /**
         this.netOperatingTime2 += (this.allEvents2['SITE'][i].qtyProduced * this.allEvents2['SITE'][i].bottlesPerCase * 1) / this.allEvents2['SITE'][i].idealRate * 1;
         for (let j = 0; j < this.allEvents2['EVENTS'].length; j++) {
 
@@ -392,6 +405,8 @@ export default {
           }
 
         }
+
+         **/
       }
 
       var summCompteur = 0;
@@ -437,11 +452,6 @@ export default {
 
       for (let k = 0; k < this.allEvents2['PLANNEDEVENTS'].length; k++) {
         sommePlannedEvents += this.allEvents2['PLANNEDEVENTS'][k].duration * 1;
-      }
-
-
-      for (let k = 0; k < this.allEvents2['PLANNEDEVENTS'].length; k++) {
-          sommePlannedEvents += this.allEvents2['PLANNEDEVENTS'][k].duration * 1;
       }
 
 

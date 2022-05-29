@@ -159,8 +159,8 @@
 
                 </template>
                 <template v-else>
-                  <td>{{allEvents['COV'][0].Duration}} mn</td>
-                  <td>{{allEvents['COV'][0].nbEvents}}</td>
+                  <td>{{allEvents['BNC'][0].Duration}} mn</td>
+                  <td>{{allEvents['BNC'][0].nbEvents}}</td>
                 </template>
 
 
@@ -173,8 +173,8 @@
 
                 </template>
                 <template v-else>
-                  <td>{{allEvents['BNC'][0].Duration}} mn</td>
-                  <td>{{allEvents['BNC'][0].nbEvents}}</td>
+                  <td>{{allEvents['COV'][0].Duration}} mn</td>
+                  <td>{{allEvents['COV'][0].nbEvents}}</td>
                 </template>
 
 
