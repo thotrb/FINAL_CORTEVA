@@ -211,12 +211,10 @@ export default {
               //Add fetched events to the slEvents variable
               //Creates charts' data
               if (this.getSpeedLosses["SLEVENTS"]) {
-                console.log("avant filter", this.getSpeedLosses["SLEVENTS"]);
                 //Remove duplicates
                 this.getSpeedLosses["SLEVENTS"] = this.getSpeedLosses["SLEVENTS"].filter((sl, index, self) => {
                   return self.findIndex(v => v.OLE === sl.OLE) === index;
                 });
-                console.log("après filter", this.getSpeedLosses["SLEVENTS"]);
 
                 this.slEvents = this.getSpeedLosses["SLEVENTS"].reduce((acc, slEvent) => {
                   if (acc[slEvent.reason]) {
