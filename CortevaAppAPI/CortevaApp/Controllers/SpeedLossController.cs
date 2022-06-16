@@ -92,7 +92,7 @@ namespace CortevaApp.Controllers
             endingDate += " 23:59:59.999";
 
             string querySpeedLossesEvents = @"select sl.duration, sl.reason, sl.comment, sl.OLE, pos.qtyProduced, pos.workingDuration,
-                                            prod.size, prod.idealRate
+                                            prod.size, prod.idealRate, sl.id as slid
                                             from dbo.ole_speed_losses sl, dbo.ole_pos pos, dbo.ole_products prod, dbo.worksite w
                                             where sl.productionline = @productionLine
                                             and sl.OLE = pos.number
