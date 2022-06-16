@@ -213,7 +213,7 @@ export default {
               if (this.getSpeedLosses["SLEVENTS"]) {
                 //Remove duplicates
                 this.getSpeedLosses["SLEVENTS"] = this.getSpeedLosses["SLEVENTS"].filter((sl, index, self) => {
-                  return self.findIndex(v => v.OLE === sl.OLE) === index;
+                  return self.findIndex(v => v.slid === sl.slid) === index;
                 });
 
                 this.slEvents = this.getSpeedLosses["SLEVENTS"].reduce((acc, slEvent) => {
