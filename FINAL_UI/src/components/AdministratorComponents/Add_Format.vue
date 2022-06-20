@@ -27,14 +27,14 @@
       </div>
       <div class="form-group">
         <label for="d">{{$t("shape")}}</label>
-        <select name="line" id="d" class="form-select" v-model="format.shape">
+        <select name="line" id="d" class="form-select" v-model="format.shape" required>
           <option value="round">{{ $t('round') }}</option>
           <option value="square">{{ $t('square') }}</option>
         </select>
       </div>
       <div class="form-group">
         <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="format.productionlineName">
+        <select name="line" id="l" class="form-select" v-model="format.productionlineName" required>
           <option  v-for="line in productionlines" :key="line.id" v-bind:value="line.productionline_name">
             {{line.productionline_name}}
           </option>
@@ -42,11 +42,11 @@
       </div>
       <div class="form-group">
         <label for="inputEmail">{{$t('mat1')}}</label>
-        <input type="text" class="form-control" id="inputEmail" v-model="format.mat1">
+        <input type="text" class="form-control" id="inputEmail" v-model="format.mat1" >
       </div>
       <div class="form-group">
         <label for="inputEmail1">{{$t('mat2')}}</label>
-        <input type="text" class="form-control" id="inputEmail1" v-model="format.mat2">
+        <input type="text" class="form-control" id="inputEmail1" v-model="format.mat2" >
       </div>
       <div class="form-group">
         <label for="inputEmail2">{{$t('mat3')}}</label>

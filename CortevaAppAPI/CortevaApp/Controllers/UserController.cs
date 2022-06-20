@@ -136,12 +136,41 @@ namespace CortevaApp.Controllers
 
         }
 
+        [HttpGet("getLanguage/{username}")]
+        public JsonResult GetLanguage(string username)
+        {
+            string queryDowntimeReason = @"select language
+                                          from dbo.users 
+                                          where login = @username";
+
+            DataTable downtimeReason = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDowntimeReason, connection))
+                {
+                    command.Parameters.AddWithValue("@username", username);
+                    reader = command.ExecuteReader();
+                    downtimeReason.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(downtimeReason.Select()[0][0]);
+        }
+
+
+
         [HttpGet("administratorUsers/{worksite}")]
         public JsonResult GetUsersAdministrator(string worksite)
         {
             string queryDowntimeReason = @"select *
                                           from dbo.users 
-                                          order by worksite_name, productionline, login, lastname ASC";
+                                          order by worksite_name, productionline, firstname, lastname, language ASC";
 
             DataTable downtimeReason = new DataTable();
 
@@ -166,8 +195,8 @@ namespace CortevaApp.Controllers
         [HttpPut("insertUser")]
         public JsonResult CreateNewUser(User user)
         {
-            string QueryNewPO = @"insert into dbo.users (login, password, worksite_name, lastname, firstname, status, productionline)
-                                  values (@login, @password, @worksite_name, @lastname, @firstname, @status, @productionline)";
+            string QueryNewPO = @"insert into dbo.users (login, password, worksite_name, lastname, firstname, status, productionline, language)
+                                  values (@login, @password, @worksite_name, @lastname, @firstname, @status, @productionline, @language)";
 
 
             DataTable NewMachine = new DataTable();
@@ -186,6 +215,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@firstname", user.firstname);
                     command.Parameters.AddWithValue("@status", user.status);
                     command.Parameters.AddWithValue("@productionline", user.productionline);
+                    command.Parameters.AddWithValue("@language", user.language);
 
                     reader = command.ExecuteReader();
                     NewMachine.Load(reader);

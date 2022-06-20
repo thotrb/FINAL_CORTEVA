@@ -207,7 +207,7 @@
 
               </tr>
               <tr>
-                <th scope="row">6. {{$t("fillerUnplannedShutdown")}} (UEE)</th>
+                <th scope="row">6. {{$t("fillerUnplannedShutdown")}} (FUS)</th>
                 <template v-if="allEvents['FUS'] === 0 || allEvents['FUS'][0].Duration === null">
                   <td>0 mn</td>
                   <td>0</td>
@@ -324,14 +324,15 @@
             <div class="row">
               <div class="col-sm">
                 <canvas id="can" width="100" height="100"/>
-                <h5>{{$t("packSizeSplit")}}</h5>
+                <h5>{{$t("formVolumeSplit")}}</h5>
 
 
               </div>
 
               <div class="col-sm">
                 <canvas id="can2" width="100" height="100"/>
-                <h5>{{$t("formVolumeSplit")}}</h5>
+                <h5>{{$t("packSizeSplit")}}</h5>
+
 
               </div>
 
@@ -808,6 +809,8 @@ export default {
         //idealPerf += this.allEvents['SITE'][i].idealRate;
       }
       //var numerateur = n / this.summIdealRate;
+      console.log("BIGTEST");
+      console.log(n);
       this.performance = n / this.operatingTime;
 
       //=====
@@ -849,6 +852,12 @@ export default {
       console.log('QTY PRODUCED : ' + quantityProducedForQuality);
       console.log('Rejection : ' + this.sommeRejection);
       console.log('Compteur : ' + summCompteur);
+      console.log('Compteur : ' + wieghtBoxCounter);
+      console.log('Compteur : ' + qualityControlCounter);
+      console.log('Compteur : ' + labelerCounter);
+      console.log('Compteur : ' + caperCounter);
+      console.log('Compteur : ' + fillerCounter);
+
 
       if(quantityProducedForQuality + this.sommeRejection + summCompteur === 0 ){
         this.quality = 1;

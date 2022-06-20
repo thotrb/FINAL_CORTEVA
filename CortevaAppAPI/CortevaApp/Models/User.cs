@@ -11,6 +11,7 @@ namespace CortevaApp.Models
         public string firstname { get; set; }
         public int status { get; set; }
         public string productionline { get; set; }
+        public string language { get; set; }
 
     }
 }

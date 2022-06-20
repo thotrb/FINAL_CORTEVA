@@ -52,7 +52,7 @@
       <button
           class="btn btn-primary border-info btn-lg btn-block align-items-center btn-info"
           type="button" @click.prevent="goTo('user')">
-        {{$t("user")}}
+        {{$t("operator")}}
       </button>
 
       <button

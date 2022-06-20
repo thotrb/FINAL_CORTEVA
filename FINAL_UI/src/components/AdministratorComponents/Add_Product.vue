@@ -13,12 +13,22 @@
       <input type="file" id="csv" name="profile_pic"
              accept=".csv">
       <p id="fileDisplayArea"></p>
-      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+      <button type="button" class="btn btn-primary" v-on:click="readFile(function(GMID) {errorRequest = 1; GMIDProbleme = GMID;})">{{ $t('load') }}</button>
 
     </div>
 
     <br/>
     <br/>
+
+    <template v-if="errorRequest!==0">
+      <div align="center" class="col productionName rcorners3">
+        {{$t("anErrorHasOccured")}} <br>
+        {{$t("GMIDMustBeUnique")}} : {{GMIDProbleme}}
+      </div>
+
+      <br/>
+      <br/>
+    </template>
 
 
     <form id="needs-validation" novalidate>
@@ -58,7 +68,7 @@
       <br/>
       <div class="form-group">
         <label for="g">{{$t("formulationType")}}</label>
-        <select name="line" id="g" class="form-select" v-model="product.formulationType">
+        <select name="line" id="g" class="form-select" v-model="product.formulationType" required>
           <option value="Solid">{{ $t('solid') }}</option>
           <option value="Liquid">{{ $t('liquid') }}</option>
           <option value="Sparkling">{{ $t('sparkling') }}</option>
@@ -147,6 +157,8 @@ export default {
       userWorksite : null,
       effective : null,
       products : [],
+      GMIDProbleme : '',
+      errorRequest : 0,
       product: {
         product : null,
         GMID : null,
@@ -170,20 +182,19 @@ export default {
       });
     },
 
-    readFile : function () {
+    readFile : function (callback) {
       var textType = /.csv/;
       var doc = document.getElementById("csv").files[0];
 
       if (doc.type.match(textType)) {
 
-        //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
         reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
-          var i;
+          var i = 1;
           var product2 = {
             product: null,
             GMID: null,
@@ -196,9 +207,14 @@ export default {
             idealRate: null,
             bottlesPerCase: null,
           };
-          var effective;
-          for (i = 1; i < rows.length - 1; i++) {
+
+          this.errorRequest = 0;
+          console.log(rows);
+
+          while (i < rows.length - 1 && this.errorRequest === 0) {
             rowsSplited = rows[i].split('\r')[0].split(',');
+            console.log(rowsSplited);
+
             if (rowsSplited.length === 10) {
               product2.product = rowsSplited[0];
               product2.GMID = rowsSplited[1];
@@ -213,12 +229,28 @@ export default {
               console.log(product2);
 
               await axios.put(urlAPI + 'insertProduct', product2)
-                  .then(response => (effective = response))
-              console.log(effective)
+                  .then(response => {
+                    this.effective = response;
+                    console.log(response)
+                    if (response.status === 500) {
+                      console.log("Je passe");
+                    } else {
+                      this.effective = response;
+                    }
+                  })
+                  .catch(error => {
+                    console.log("catch error");
+                    console.log(error);
+                    this.errorRequest = 1;
+                    this.GMIDProbleme = product2.GMID;
+                    callback(product2.GMID);
+                  })
             }
+            i++;
           }
-          location.reload();
-
+          if(this.errorRequest === 0){
+            location.reload();
+          }
         }
       }else{
         var fileDisplayArea = document.getElementById('fileDisplayArea');
@@ -243,17 +275,19 @@ export default {
 
       } else {
 
-        console.log("OK");
-        console.log(this.product);
+
 
 
         await axios.put(urlAPI + 'insertProduct', this.product)
-            .then(response => (this.effective = response))
-
-        console.log('Effectif : ' + this.effective);
-        await this.resolveAfter15Second();
-
-        location.reload();
+            .then(response => {this.effective = response; console.log(response)
+              if(response.status === 500){
+                console.log("Je passe");
+              }else {
+                this.effective = response;
+                location.reload();
+              }
+            })
+            .catch(error => {console.log("je passe"); console.log(error); this.errorRequest=1;this.GMIDProbleme = this.product.GMID})
 
       }
 
@@ -291,6 +325,15 @@ export default {
   border-radius: 25px;
   border: 2px solid lightblue;
   padding: 20px;
+}
+
+.rcorners3 {
+  margin-top : 20px;
+  border-radius: 25px;
+  border: 4px solid red;
+  padding: 20px;
+  color : red;
+  font-weight: bold;
 }
 
 </style>

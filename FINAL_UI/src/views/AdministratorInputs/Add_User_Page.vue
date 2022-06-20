@@ -1,10 +1,14 @@
 <template>
   <div>
     <Navbar></Navbar>
+
+    <br/>
     <div class="container">
+
       <button class="btn btn-primary d-flex align-items-center btn-danger" type="button"
               @click.prevent="resetPage()">
         {{$t("back")}}</button>
+
       <AddUser></AddUser>
     </div>
   </div>

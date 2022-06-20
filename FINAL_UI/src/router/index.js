@@ -38,12 +38,14 @@ import Add_User_Page from "@/views/AdministratorInputs/Add_User_Page";
 import Add_Worksite_Page from "@/views/AdministratorInputs/Add_Worksite_Page";
 axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem("auth-token")}`;
 axios.interceptors.response.use(response => response, error => {
-  if (error.response || error.response.status == 401) {
+  if (error.response && error.response.status === 401) {
     localStorage.removeItem('username');
     localStorage.removeItem('auth-token');
     router.replace("/");
   }
 });
+
+
 
 Vue.use(VueRouter)
 

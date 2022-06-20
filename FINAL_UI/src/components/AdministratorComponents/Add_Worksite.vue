@@ -7,13 +7,23 @@
     <br/>
     <br/>
 
+    <template v-if="errorRequest!==0">
+      <div align="center" class="col productionName rcorners3">
+        {{$t("anErrorHasOccured")}} <br>
+        {{$t("worksiteMustBeUnique")}} : {{worksiteProbleme}}
+      </div>
+
+      <br/>
+      <br/>
+    </template>
+
 
     <div>
       <label for="csv">{{$t('select.csvFileToUse')}}</label>
       <input type="file" id="csv" name="profile_pic"
              accept=".csv">
       <p id="fileDisplayArea"></p>
-      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+      <button type="button" class="btn btn-primary" v-on:click="readFile(function(worksite) {errorRequest = 1; worksiteProbleme = worksite;})">{{ $t('load') }}</button>
 
     </div>
 
@@ -75,6 +85,8 @@ export default {
       productionlines : null,
       userWorksite : null,
       effective : null,
+      errorRequest : 0,
+      worksiteProbleme : '',
       worksite: {
         name : null
       },
@@ -95,7 +107,7 @@ export default {
       location.reload();
     },
 
-    readFile : function () {
+    readFile : function (callback) {
       var textType = /.csv/;
       var doc = document.getElementById("csv").files[0];
 
@@ -108,25 +120,44 @@ export default {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
-          var i;
+          var i = 1;
           var worksite2 = {
             name: null,
 
           };
-          var effective;
-          for (i = 1; i < rows.length - 1; i++) {
+
+          this.errorRequest = 0;
+          while (i < rows.length - 1 && this.errorRequest === 0) {
+
             rowsSplited = rows[i].split('\r')[0].split(',');
             if (rowsSplited.length === 1) {
               worksite2.name = rowsSplited[0];
               console.log(worksite2);
 
-              await axios.put(urlAPI + 'insertWorksite', worksite2)
-                  .then(response => (effective = response))
-              console.log(effective)
-            }
-          }
-          location.reload();
 
+              await axios.put(urlAPI + 'insertWorksite', worksite2)
+                  .then(response => {
+                    this.effective = response;
+                    console.log(response)
+                    if (response.status === 500) {
+                      console.log("Je passe");
+                    } else {
+                      this.effective = response;
+                    }
+                  })
+                  .catch(error => {
+                    console.log("catch error");
+                    console.log(error);
+                    this.errorRequest = 1;
+                    this.loginProbleme = worksite2.name;
+                    callback(worksite2.name);
+                  })
+            }
+            i++;
+          }
+          if(this.errorRequest === 0){
+            location.reload();
+          }
         }
       }else{
         var fileDisplayArea = document.getElementById('fileDisplayArea');
@@ -149,11 +180,17 @@ export default {
         console.log(this.user);
 
 
-        await axios.put(urlAPI + 'insertWorksite', this.worksite)
-            .then(response => (this.effective = response))
 
-        console.log('Effectif : ' + this.effective);
-        location.reload();
+        await axios.put(urlAPI + 'insertWorksite', this.worksite)
+            .then(response => {this.effective = response; console.log(response)
+              if(response.status === 500){
+                console.log("Je passe");
+              }else {
+                this.effective = response;
+                location.reload();
+              }
+            })
+            .catch(error => {console.log("je passe"); console.log(error); this.errorRequest=1;this.worksiteProbleme = this.worksite.name})
 
       }
 
@@ -189,6 +226,15 @@ export default {
   border-radius: 25px;
   border: 2px solid lightblue;
   padding: 20px;
+}
+
+.rcorners3 {
+  margin-top : 20px;
+  border-radius: 25px;
+  border: 4px solid red;
+  padding: 20px;
+  color : red;
+  font-weight: bold;
 }
 
 </style>

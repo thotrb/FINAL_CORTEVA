@@ -211,6 +211,7 @@ export default {
               //Add fetched events to the slEvents variable
               //Creates charts' data
               if (this.getSpeedLosses["SLEVENTS"]) {
+                this.getSpeedLosses["SLEVENTS"] = this.getSpeedLosses["SLEVENTS"].filter((sl, index, self) => {return self.findIndex(v=>v.OLE === sl.OLE) === index;});
                 this.slEvents = this.getSpeedLosses["SLEVENTS"].reduce((acc, slEvent) => {
                   if (acc[slEvent.reason]) {
                     //If event is concerned by a chart, create its data

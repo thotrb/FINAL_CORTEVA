@@ -38,7 +38,7 @@
 
         <div class="form-group">
           <label for="l">{{$t("productionLine")}}</label>
-          <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine">
+          <select name="line" id="l" class="form-select" v-model="machineComponent.productionLine" required>
             <template v-for="line in productionlines">
               <template v-if="line.name === machineComponent.worksite">
                 <option v-bind:key="line.id" v-bind:value="line.productionline_name">
@@ -51,7 +51,7 @@
 
       <div class="form-group">
         <label for="li">{{$t("affiliatedMachine")}}</label>
-        <select name="m" id="li" class="form-select" v-model="machineComponent.machineName">
+        <select name="m" id="li" class="form-select" v-model="machineComponent.machineName" required>
           <template v-for="machine in machinesAvailable">
             <template v-if="machine.worksite === machineComponent.worksite && machine.productionline_name === machineComponent.productionLine">
               <option :key="machine.id" v-bind:value="machine.name">
@@ -67,7 +67,7 @@
 
       <div class="form-group">
         <label for="m">{{$t("otherMachine")}}</label>
-        <select name="line" id="m" class="form-select" v-model="machineComponent.other_machine">
+        <select name="line" id="m" class="form-select" v-model="machineComponent.other_machine" required>
           <option value="0">
             0
           </option>
@@ -100,8 +100,8 @@
         </thead>
         <tbody>
             <tr v-for="d in machineComponents" :key="d.id">
-                <th scope="row">{{$t(d.name)}}</th>
-                <td>{{$t(d.machineName)}}</td>
+                <th scope="row">{{d.name}}</th>
+                <td>{{d.machineName}}</td>
                 <td>{{d.productionLine}}</td>
                 <td>{{d.other_machine}}</td>
                 <td>{{d.worksite}}</td>

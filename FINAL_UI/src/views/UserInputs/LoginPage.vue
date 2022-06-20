@@ -34,11 +34,12 @@ export default {
       password:'',
       us : this.$t("user"),
       pass: this.$t("password"),
-      lo: this.$t("connection")
+      lo: this.$t("connection"),
+      language : 'en',
     }
   },
   methods: {
-    log : function(){
+    log : async function () {
       const logData = {
         login: this.username,
         password: this.password
@@ -47,8 +48,22 @@ export default {
       console.log(logData);
 
 
-      axios.post(urlAPI + "login", logData).then((resp) => {
+      await axios.post(urlAPI + "login", logData).then(async (resp) => {
         if (resp.status === 200 && resp.data.token) {
+
+          await axios.get(urlAPI + "getLanguage/" + this.username)
+              .then(response => (this.language = response.data));
+
+          console.log("LANGUAGE");
+          console.log(this.language);
+          this.$i18n.locale = this.language;
+          if(sessionStorage.getItem("language") === null){
+            sessionStorage.language = this.language;
+          }else{
+            sessionStorage.setItem("language",this.language);
+          }
+
+
           const tokenDecoded = jwt_decode(resp.data.token);
           axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.token}`;
           const user = tokenDecoded.login;
@@ -60,15 +75,15 @@ export default {
 
             console.log(sessionStorage.getItem("loginChoice"))
             console.log(userCredential)
-            if(sessionStorage.getItem("loginChoice") == 'operator'){
+            if (sessionStorage.getItem("loginChoice") == 'operator') {
               router.replace('/teamInfo');
-            }else if(sessionStorage.getItem("loginChoice") == 'supervisor' && (userCredential == 1 || userCredential == 2)){
+            } else if (sessionStorage.getItem("loginChoice") == 'supervisor' && (userCredential == 1 || userCredential == 2)) {
               router.replace('/Dashboard/packagingLineID');
-            }else if(sessionStorage.getItem("loginChoice") == 'administrator'  && (userCredential == 2)){
+            } else if (sessionStorage.getItem("loginChoice") == 'administrator' && (userCredential == 2)) {
               router.replace('/mainPageAdministrator');
             }
             /**
-            if (userCredential == 0) {
+             if (userCredential == 0) {
               router.replace('/teamInfo');
             } else if (userCredential == 1 && sessionStorage.getItem("loginChoice") == 'supervisor') {
               router.replace('/Dashboard/downtimesReport');
@@ -78,7 +93,7 @@ export default {
               router.replace('/teamInfo');
             }
              **/
-          }, 1000);  
+          }, 1000);
         } else {
           localStorage.removeItem("username");
         }
@@ -86,7 +101,7 @@ export default {
         localStorage.removeItem("username");
         console.log(err);
       });
-    
+
     },
   }
 }

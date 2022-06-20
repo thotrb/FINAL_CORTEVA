@@ -100,28 +100,28 @@ namespace CortevaApp.Controllers
         [HttpGet("events/{po}/{productionLine}/{shift}")]
         public JsonResult GetEventsShift(string po, string productionLine, string shift)
         {
-            string queryPlannedEvents = @"select pe.duration as total_duration, pe.reason as type,
+            string queryPlannedEvents = @"select pe.id, pe.duration as total_duration, pe.reason as type,
                                         pe.comment, pe.created_at as updated_at, pe.OLE, pe.productionline, pe.kind
                                         from dbo.ole_planned_events pe
                                         where pe.productionline = @productionLine
                                         and pe.OLE = @po and pe.shift = @shift";
 
-            string queryChanginClients = @"select total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
+            string queryChanginClients = @"select id, total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
                                         from dbo.ole_unplanned_event_changing_clients
                                         where productionline = @productionLine
                                         and OLE = @po and shift = @shift";
 
-            string queryCIP = @"select total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
+            string queryCIP = @"select id, total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
                                 from dbo.ole_unplanned_event_cips
                                 where productionline = @productionLine
                                 and OLE = @po and shift = @shift";
 
-            string queryUnplanned = @"select total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
+            string queryUnplanned = @"select id, total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
                                     from dbo.ole_unplanned_event_unplanned_downtimes
                                     where productionline = @productionLine
                                     and OLE = @po and shift = @shift";
 
-            string queryChangingFormats = @"select total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
+            string queryChangingFormats = @"select id, total_duration, type, comment, created_at as updated_at, OLE, productionline, kind
                                         from dbo.ole_unplanned_event_changing_formats
                                         where productionline = @productionLine
                                         and OLE = @po and  shift = @shift";
@@ -1375,6 +1375,116 @@ namespace CortevaApp.Controllers
                     { "totalDuration", TotalDuration },
                     { "count", Count }
                 });
+        }
+
+        
+
+        [HttpDelete("deleteUnplannedDowntime/{id}")]
+        public JsonResult DeleteUnplannedDowntime(int id)
+        {
+            string queryDelete = @"delete from dbo.ole_unplanned_event_unplanned_downtimes 
+                                          where id = @id";
+
+            DataTable result = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDelete, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    result.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(result);
+
+        }
+
+        [HttpDelete("deletePackNumberChanging/{id}")]
+        public JsonResult DeletePackNumberChanging(int id)
+        {
+            string queryDelete = @"delete from dbo.ole_unplanned_event_changing_clients 
+                                          where id = @id";
+
+            DataTable result = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDelete, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    result.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(result);
+
+        }
+
+        [HttpDelete("deleteFormatChanging/{id}")]
+        public JsonResult DeleteFormatChanging(int id)
+        {
+            string queryDelete = @"delete from dbo.ole_unplanned_event_changing_formats 
+                                          where id = @id";
+
+            DataTable result = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDelete, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    result.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(result);
+
+        }
+
+        [HttpDelete("deletePlannedEvent/{id}")]
+        public JsonResult DeletePlannedEvent(int id)
+        {
+            string queryDelete = @"delete from dbo.ole_planned_events 
+                                          where id = @id";
+
+            DataTable result = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDelete, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    result.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(result);
+
         }
     }
 }

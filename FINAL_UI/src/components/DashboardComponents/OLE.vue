@@ -109,22 +109,22 @@
             <tbody>
             <tr>
               <th scope="row">{{$t("availability")}}</th>
-              <td>{{(AvailabilityPerMonth[peakSeason]*100).toFixed(2)}} %</td>
+              <td>{{(availabilityPeakSeason*100).toFixed(2)}} %</td>
               <td>{{(availability * 100).toFixed(2)}} %</td>
             </tr>
             <tr>
               <th scope="row">{{$t("performance")}}</th>
-              <td>{{(PerformancePerMonth[peakSeason]*100).toFixed(2)}} %</td>
+              <td>{{(performancePeakSeason*100).toFixed(2)}} %</td>
               <td>{{(performance * 100).toFixed(2)}} %</td>
             </tr>
             <tr>
               <th scope="row">{{$t("quality")}}</th>
-              <td>{{(QualityPerMonth[peakSeason]*100).toFixed(2)}} %</td>
+              <td>{{(qualityPeakSeason*100).toFixed(2)}} %</td>
               <td>{{(quality * 100).toFixed(2)}} %</td>
             </tr>
             <tr>
               <th scope="row">OLE</th>
-              <td>{{(OLEPerMonth[peakSeason]*100).toFixed(2)}} %</td>
+              <td>{{(OLEPeakSeason*100).toFixed(2)}} %</td>
               <td>{{(OLE * 100).toFixed(2)}} %</td>
             </tr>
             </tbody>
@@ -287,6 +287,11 @@ export default {
       dataProductionlines : null,
       teamData : null,
       allEvents : null,
+
+      availabilityPeakSeason : null,
+      performancePeakSeason : null,
+      qualityPeakSeason : null,
+      OLEPeakSeason : null,
     }
   },
 
@@ -574,29 +579,47 @@ export default {
       }
 
 
-      for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+      var POArray = [];
+      for (let i = 0; i < this.allEvents['SITE'].length; i++) {
+        let PO = this.allEvents['SITE'][i];
 
-        sommeUnplannedEvents += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+        if(!POArray.includes(PO.number)){
+          POArray.push(PO.number);
+        }
+      }
+
+
+      for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['UNPLANNEDEVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+        }
       }
 
       for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
-
-        sommeUnplannedEvents += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+        if(POArray.includes(this.allEvents['CIPEVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+        }
 
       }
 
       for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['EVENTS'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
+        }
 
-        sommeUnplannedEvents += this.allEvents['EVENTS'][j].total_duration * 1;
 
       }
 
       for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
-        sommeUnplannedEvents += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+        if(POArray.includes(this.allEvents['LOTCHANGING'][j].OLE )){
+          sommeUnplannedEvents += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+        }
       }
 
       for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
+        if(POArray.includes(this.allEvents['PLANNEDEVENTS'][k].OLE )){
           sommePlannedEvents += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        }
       }
 
 
@@ -758,38 +781,57 @@ export default {
       this.plannedDowntimesPerMonth = sumPlannedEventsPerMonth;
       this.unplannedDowntimesPerMonth = sumUnplannedEventsPerMonth;
       var currentMonth = 1;
+      var POArray = [];
+      for (let j = 0; j < this.allEvents['SITE'].length; j++) {
+        let PO = this.allEvents['SITE'][j];
+        if(!POArray.includes(PO.number)){
+          POArray.push(PO.number);
+        }
+      }
+
+
       for (let j = 0; j < this.allEvents['UNPLANNEDEVENTS'].length; j++) {
 
         currentMonth = this.allEvents['UNPLANNEDEVENTS'][j].created_at.split('-')[1] - 1;
-        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+        if(POArray.includes(this.allEvents['UNPLANNEDEVENTS'][j].OLE )) {
+          sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['UNPLANNEDEVENTS'][j].total_duration * 1;
+        }
       }
 
       for (let j = 0; j < this.allEvents['CIPEVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['CIPEVENTS'][j].OLE )) {
+          currentMonth = this.allEvents['CIPEVENTS'][j].created_at.split('-')[1] - 1;
+          sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['CIPEVENTS'][j].total_duration * 1;
 
-        currentMonth = this.allEvents['CIPEVENTS'][j].created_at.split('-')[1] - 1;
-        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['CIPEVENTS'][j].total_duration * 1;
+        }
 
       }
 
 
       for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
 
-        currentMonth = this.allEvents['EVENTS'][j].created_at.split('-')[1] - 1;
-        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['EVENTS'][j].total_duration * 1;
+        if(POArray.includes(this.allEvents['EVENTS'][j].OLE )) {
+          currentMonth = this.allEvents['EVENTS'][j].created_at.split('-')[1] - 1;
+          sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['EVENTS'][j].total_duration * 1;
+        }
+
+
 
       }
 
       for (let j = 0; j < this.allEvents['LOTCHANGING'].length; j++) {
-
-        currentMonth = this.allEvents['LOTCHANGING'][j].created_at.split('-')[1] - 1;
-        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['LOTCHANGING'][j].total_duration * 1;
-
+        if(POArray.includes(this.allEvents['LOTCHANGING'][j].OLE )) {
+          currentMonth = this.allEvents['LOTCHANGING'][j].created_at.split('-')[1] - 1;
+          sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['LOTCHANGING'][j].total_duration * 1;
+        }
       }
 
 
       for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
-        currentMonth = this.allEvents['PLANNEDEVENTS'][k].created_at.split('-')[1] - 1;
-        sumPlannedEventsPerMonth[currentMonth] += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        if(POArray.includes(this.allEvents['PLANNEDEVENTS'][k].OLE )) {
+          currentMonth = this.allEvents['PLANNEDEVENTS'][k].created_at.split('-')[1] - 1;
+          sumPlannedEventsPerMonth[currentMonth] += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        }
       }
 
 
@@ -818,7 +860,13 @@ export default {
         this.plannedProductionTimePerMonth[m] = sommeWorkingTimePerMonth[m] - sumPlannedEventsPerMonth[m];
       }
 
+      console.log('BIGTEST OPERATING TIME')
+      console.log(sommeWorkingTimePerMonth)
+      console.log(sumPlannedEventsPerMonth)
+      console.log(sumUnplannedEventsPerMonth)
+
       for (let n = 0; n < this.operatingTimePerMonth.length; n++) {
+
         this.operatingTimePerMonth[n] = sommeWorkingTimePerMonth[n] - sumPlannedEventsPerMonth[n] - sumUnplannedEventsPerMonth[n];
       }
 
@@ -832,6 +880,9 @@ export default {
           this.AvailabilityPerMonth[j] = 0;
 
         } else {
+          console.log('BIGTEST')
+          console.log(this.operatingTimePerMonth)
+          console.log(this.plannedProductionTimePerMonth)
           this.AvailabilityPerMonth[j] = this.operatingTimePerMonth[j] / this.plannedProductionTimePerMonth[j];
         }
       }
@@ -842,12 +893,16 @@ export default {
         month = this.allEvents['SITE'][i].created_at.split('-')[1] - 1;
         n = (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase / this.allEvents['SITE'][i].idealRate);
         nPerMonthForPerformance[month] += n;
+        console.log('BIGTESTPERF');
+        console.log(n)
       }
 
       for (let j = 0; j < this.PerformancePerMonth.length; j++) {
         if( this.operatingTimePerMonth[j] === 0 ){
           this.PerformancePerMonth[j] = 0;
         }else{
+          console.log('BIGTESTPERF');
+          console.log(this.operatingTimePerMonth)
           this.PerformancePerMonth[j] = nPerMonthForPerformance[j] / this.operatingTimePerMonth[j];
 
         }
@@ -899,13 +954,39 @@ export default {
           console.log(fillerCounterPerMonth[j]);
           console.log(caperCounterPerMonth[j]);
 
-
-
         }
       }
 
       for (let j = 0; j < this.OLEPerMonth.length; j++) {
         this.OLEPerMonth[j] = this.AvailabilityPerMonth[j] * this.PerformancePerMonth[j] * this.QualityPerMonth[j];
+      }
+
+      this.performancePeakSeason = -1;
+      for(let j=0; j<this.PerformancePerMonth.length; j++) {
+        if(this.PerformancePerMonth[j] > this.performancePeakSeason){
+          this.performancePeakSeason  = this.PerformancePerMonth[j];
+        }
+      }
+
+      this.availabilityPeakSeason = -1;
+      for(let j=0; j<this.AvailabilityPerMonth.length; j++) {
+        if(this.AvailabilityPerMonth[j] > this.availabilityPeakSeason){
+          this.availabilityPeakSeason  = this.AvailabilityPerMonth[j];
+        }
+      }
+
+      this.qualityPeakSeason = -1;
+      for(let j=0; j<this.QualityPerMonth.length; j++) {
+        if(this.QualityPerMonth[j] > this.qualityPeakSeason){
+          this.qualityPeakSeason  = this.QualityPerMonth[j];
+        }
+      }
+
+      this.OLEPeakSeason = -1;
+      for(let j=0; j<this.OLEPerMonth.length; j++) {
+        if(this.OLEPerMonth[j] > this.OLEPeakSeason){
+          this.OLEPeakSeason  = this.OLEPerMonth[j];
+        }
       }
 
       console.log("QTY PER MONTH");
@@ -1016,17 +1097,28 @@ export default {
       this.plannedDowntimesPerMonth2 = sumPlannedEventsPerMonth;
       this.unplannedDowntimesPerMonth2 = sumUnplannedEventsPerMonth;
       var currentMonth = 1;
+      var POArray = [];
+      for (let j = 0; j < this.allEvents['SITE'].length; j++) {
+        let PO = this.allEvents['SITE'][j];
+        if(!POArray.includes(PO.number)){
+          POArray.push(PO.number);
+        }
+      }
       for (let j = 0; j < this.allEvents['EVENTS'].length; j++) {
+        if(POArray.includes(this.allEvents['EVENTS'][j].OLE )){
+          currentMonth = this.allEvents['EVENTS'][j].created_at.split('-')[1] - 1;
+          sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['EVENTS'][j].total_duration * 1;
 
-        currentMonth = this.allEvents['EVENTS'][j].created_at.split('-')[1] - 1;
-        sumUnplannedEventsPerMonth[currentMonth] += this.allEvents['EVENTS'][j].total_duration * 1;
+        }
 
 
       }
 
       for (let k = 0; k < this.allEvents['PLANNEDEVENTS'].length; k++) {
-        currentMonth = this.allEvents['PLANNEDEVENTS'][k].created_at.split('-')[1] - 1;
-        sumPlannedEventsPerMonth[currentMonth] += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        if(POArray.includes(this.allEvents['PLANNEDEVENTS'][k].OLE )){
+          currentMonth = this.allEvents['PLANNEDEVENTS'][k].created_at.split('-')[1] - 1;
+          sumPlannedEventsPerMonth[currentMonth] += this.allEvents['PLANNEDEVENTS'][k].duration * 1;
+        }
       }
 
 

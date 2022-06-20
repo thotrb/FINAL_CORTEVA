@@ -13,7 +13,6 @@
           <div class="rcorners2">
             <p>
               {{$t("site")}} : {{site}} <br/>
-              {{$t("crewLeader")}} : {{crewLeader}} <br/>
               {{$t("typeTeam")}} : {{typeTeam}} <br/>
               {{$t("startTime")}} : {{workingDebut}} <br/>
               {{$t("endTime")}} : {{workingEnd}} <br/>
@@ -30,18 +29,21 @@
                 <th scope="col">{{$t("entryTime")}}</th>
                 <th scope="col">{{$t("duration(Minutes)")}}</th>
                 <th scope="col">{{$t("comments")}}</th>
+                <th scope="col">{{$t("action")}}</th>
 
               </tr>
               </thead>
               <tbody>
                 <template v-if="eventsPerProductionline.length > 0">
 
-                    <tr v-for="event in eventsPerProductionline[productionline]" :key="event.id">
 
+
+                    <tr v-for="event in eventsPerProductionline[productionline]" :key="event.id">
                       <th scope="row">{{$t(event.type)}}</th>
                       <td>{{event.updated_at.split('T')[1].split('.')[0]}}</td>
                       <td>{{event.total_duration}}</td>
                       <td>{{event.comment}}</td>
+                      <td><button type="button" class="btn btn-danger" @click="deleteEvent(event.id, event.type)">{{$t("delete")}}</button> </td>
                     </tr>
                 </template>
 
@@ -140,7 +142,35 @@ export default {
           resolve('resolved');
         }, 1000);
       });
+    },
 
+    deleteEvent : async function (id, type) {
+      switch (type) {
+        case "CIP" :
+          console.log("CIP : " + id);
+          await axios.delete(urlAPI + 'deleteCIP/' + id);
+          break;
+        case "unplannedDowntime" :
+          console.log("unplannedDowntime : " + id);
+          await axios.delete(urlAPI + 'deleteUnplannedDowntime/' + id);
+          break;
+
+        case "packNumberChanging" :
+          console.log("packNumberChanging : " + id);
+          await axios.delete(urlAPI + 'deletePackNumberChanging/' + id);
+
+          break;
+        case "formatChanging" :
+          console.log("formatChanging : " + id);
+          await axios.delete(urlAPI + 'deleteFormatChanging/' + id);
+
+          break;
+        default :
+          console.log(type + " : " + id);
+          await axios.delete(urlAPI + 'deletePlannedEvent/' + id);
+          break;
+      }
+      location.reload();
 
     },
 
@@ -167,6 +197,7 @@ export default {
         await axios.get(urlAPI + 'events/'+this.PO[i]+'/'+this.productionlines[i]+'/'+this.typeTeam)
             .then(response => (this.eventsUser = response.data))
 
+        console.log('EVENT');
 
         console.log(this.eventsUser);
 

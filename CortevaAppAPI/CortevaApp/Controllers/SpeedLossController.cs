@@ -136,6 +136,33 @@ namespace CortevaApp.Controllers
             return new JsonResult(Result);
         }
 
+        [HttpDelete("deleteSpeedloss/{id}")]
+        public JsonResult DeleteSpeedloss(int id)
+        {
+            string queryDelete = @"delete from dbo.ole_speed_losses 
+                                          where id = @id";
+
+            DataTable result = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CortevaDBConnection");
+            SqlDataReader reader;
+            using (SqlConnection connection = new SqlConnection(sqlDataSource))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(queryDelete, connection))
+                {
+                    command.Parameters.AddWithValue("@id", id);
+                    reader = command.ExecuteReader();
+                    result.Load(reader);
+                    reader.Close();
+                }
+                connection.Close();
+            }
+
+            return new JsonResult(result);
+
+        }
+
         [HttpPost("speedLoss")]
         public JsonResult SaveSpeedLoss(SpeedLoss sl)
         {

@@ -56,7 +56,7 @@ namespace CortevaApp.Controllers
         {
             string QueryNetOP = @"select *
                                 from dbo.ole_products
-                                order by product, formulationType, size ASC";
+                                order by product, GMID, formulationType, size ASC";
 
 
             DataTable NetOP = new DataTable();

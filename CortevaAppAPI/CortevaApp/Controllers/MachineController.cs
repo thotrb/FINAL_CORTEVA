@@ -214,7 +214,7 @@ namespace CortevaApp.Controllers
         {
             string queryIssues = @"select *
                                    from dbo.ole_machines m
-                                   order by worksite, productionline_name, ordre ASC";
+                                   order by worksite, productionline_name, name ASC";
 
             DataTable Issues = new DataTable();
 

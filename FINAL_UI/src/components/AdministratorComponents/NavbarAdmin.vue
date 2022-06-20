@@ -12,6 +12,9 @@
           <option value="en" >
             En
           </option>
+          <option value="pt" >
+            Pt
+          </option>
         </select>
       </div>
 
@@ -40,6 +43,15 @@ export default {
         sessionStorage.setItem("language",language);
       }
     }
+  },
+
+  mounted () {
+
+    console.log("Language navbar: " + sessionStorage.language );
+
+    this.language = sessionStorage.language;
+    this.$i18n.locale = sessionStorage.language;
+
   },
 }
 </script>

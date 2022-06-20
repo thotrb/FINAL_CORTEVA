@@ -15,6 +15,9 @@
           <option value="en" >
             En
           </option>
+          <option value="pt" >
+            Pt
+          </option>
         </select>
 
         <select name="page" id="page" class="" v-model="selection">
@@ -93,15 +96,15 @@ export default {
         sessionStorage.setItem("language",language);
       }
     },
+  },
 
-    mounted: function()
-    {
-      if(sessionStorage.getItem("language") === null){
-        this.language = "en";
-      }else{
-        this.language = sessionStorage.getItem("language");
-      }
-    }
+  mounted () {
+
+    console.log("Language navbar: " + sessionStorage.language );
+
+    this.language = sessionStorage.language;
+    this.$i18n.locale = sessionStorage.language;
+
   },
 
 }

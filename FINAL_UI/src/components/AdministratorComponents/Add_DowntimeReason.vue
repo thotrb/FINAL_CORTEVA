@@ -27,14 +27,14 @@
       </div>
       <div class="form-group">
         <label for="d">{{$t("downtimeType")}}</label>
-        <select name="line" id="d" class="form-select" v-model="downtimeReason.downtimeType">
+        <select name="line" id="d" class="form-select" v-model="downtimeReason.downtimeType" required>
           <option value="plannedDowntime">{{ $t('plannedDowntime') }}</option>
           <option value="unplannedDowntime">{{ $t('unplannedDowntime') }}</option>
         </select>
       </div>
       <div class="form-group">
         <label for="w">{{$t("worksite")}}</label>
-        <select name="m" id="w" class="form-select" v-model="downtimeReason.worksite">
+        <select name="m" id="w" class="form-select" v-model="downtimeReason.worksite" required>
           <option  v-for="w in worksites" :key="w.id" v-bind:value="w.name">
             {{w.name}}
           </option>
@@ -43,7 +43,7 @@
 
       <div class="form-group">
         <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="downtimeReason.production_line">
+        <select name="line" id="l" class="form-select" v-model="downtimeReason.production_line" required>
           <template v-for="line in productionlines">
             <template v-if="line.name === downtimeReason.worksite">
               <option v-bind:key="line.id" v-bind:value="line.productionline_name">

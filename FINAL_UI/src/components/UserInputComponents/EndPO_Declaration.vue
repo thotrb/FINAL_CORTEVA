@@ -7,7 +7,44 @@
           {{$t("performance")}}
         </div>
 
-        <form id="form">
+
+        <template v-if="historicPO.length > 0">
+
+          <div align="center" class="col productionName rcorners1">
+            {{$t("previousPOYourTeamWorkedOn")}}
+          </div>
+
+          <div class="container table-info-data" align="center">
+            <table class="table">
+              <thead class="thead-dark">
+              <tr>
+                <th scope="col">{{$t("productionOrder")}}</th>
+                <th scope="col">{{$t("date")}}</th>
+                <th scope="col">{{$t("startTime")}}</th>
+                <th scope="col">{{$t("endTime")}}</th>
+                <th scope="col">{{$t("finalQuantityProduced(Cases)")}}</th>
+
+              </tr>
+              </thead>
+              <tbody>
+                <tr v-for="shift in historicPO" :key="shift.created_at">
+                  <th scope="row">{{shift.number}}</th>
+                  <td>{{shift.created_at.split('T')[0]}}</td>
+                  <td>{{shift.workingDebut}}</td>
+                  <td>{{shift.workingEnd}}</td>
+                  <td>{{shift.qtyProduced}}</td>
+                </tr>
+              </tbody>
+            </table>
+
+
+          </div>
+          <br/>
+          <br/>
+          <br/>
+        </template>
+
+        <form>
           <div class="form-group row blockInput">
             <label class="col-sm-2 col-form-label rcorners1" for="startingPO">{{$t("POStartTime")}}</label>
             <div class="col-sm-10">
@@ -60,7 +97,7 @@
               {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
               <br/>
               <span style="color:red">
-                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(2)}}
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(0)}}
               </span>
               <br/>
 
@@ -79,6 +116,7 @@
                   <th scope="col">{{$t("reason")}}</th>
                   <th scope="col">{{$t("duration")}}</th>
                   <th scope="col">{{$t("comments")}}</th>
+                  <th scope="col">{{$t("action")}}</th>
 
                 </tr>
                 </thead>
@@ -87,6 +125,7 @@
                     <th scope="row">{{$t(event.reason)}}</th>
                     <td>{{event.duration}}</td>
                     <td>{{event.comment}}</td>
+                    <td><button type="button" id="deleteSpeedLossButton" class="btn btn-danger" @click="deleteSpeedloss(event.id)">{{$t("delete")}}</button> </td>
 
                   </tr>
                 </tbody>
@@ -191,35 +230,35 @@
 
         <br>
 
-        <form>
+        <form id="needs-validation" novalidate>
           <div class="form-group row">
             <label for="comments" class="col-sm-2 rcorners1">{{$t("comments")}}</label>
             <div class="col-sm-10">
-              <textarea id="comments" class="form-control-plaintext rcorners2"></textarea>
+              <textarea id="comments" class="form-control"></textarea>
             </div>
           </div>
           <div class="form-group row">
             <label for="comments" class="col-sm-2 rcorners1">{{$t("duration")}} (min)</label>
             <div class="col-sm-10">
-              <input id="sl-duration" class="form-control-plaintext rcorners2" style="width: 100px;"/>
+              <input id="sl-duration" class="form-control" style="min-width: 100px;" type="number" min="1" step="1" required/>
             </div>
+          </div>
+          <div class="d-flex flex-row justify-content-between align-items-center bg-white">
+            <button class="btn btn-primary d-flex align-items-center btn-danger" type="button"
+                    @click.prevent="resetPage()">
+              {{$t("back")}}
+            </button>
+
+
+            <button class="btn align-items-center btn-success" type="button"
+                    @click.prevent="confirmSpeedloss()">
+              OK
+            </button>
           </div>
         </form>
 
-        <br/>
-
-        <div class="d-flex flex-row justify-content-between align-items-center bg-white">
-          <button class="btn btn-primary d-flex align-items-center btn-danger" type="button"
-                  @click.prevent="resetPage()">
-            {{$t("back")}}
-          </button>
 
 
-          <button class="btn btn-primary border-success align-items-center btn-success" type="button"
-                  @click.prevent="confirmSpeedloss()">
-            OK
-          </button>
-        </div>
       </div>
 
 
@@ -327,7 +366,7 @@
                 <br/>
                 {{$t("difference")}}(min): {{totalProductionTime - totalOperatingTime}}
                 <br/>
-                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(2)}}
+                {{$t("speedLossesToJustify")}} (min): {{differenceToJustify.toFixed(0)}}
             </span>
 
       <br/>
@@ -552,12 +591,21 @@ export default {
 
       differenceToJustify : 0,
 
+      historicPO: [],
+
 
 
     };
   },
 
   methods: {
+
+    deleteSpeedloss : async function (id) {
+
+      await axios.delete(urlAPI + "deleteSpeedloss/" + id);
+      location.reload();
+
+    },
 
     backPage2: function () {
       this.FillerCounter= 0; this.CaperCounter= 0; this.EtiqueteuseCounter= 0;
@@ -846,6 +894,7 @@ export default {
     saveEndPO: async function () {
 
 
+      var end = this.endPO;
 
 
       this.endPO = sessionStorage.getItem("pos").split(',')[this.indice];
@@ -855,29 +904,40 @@ export default {
       console.log("TIME : " + this.totalOperatingTime);
       console.log("TIME : " + this.totalNetOperatingTime);
 
+      console.log("START : " + this.startPO);
+
+      console.log("END : " + end);
+
+
 
       await axios.post(urlAPI+'stopPO/'+this.endPO+'/'+this.availability+'/'+this.performance+'/'+this.quality+'/'+
-          this.OLE+'/'+this.finalQuantityProduced+'/'+this.totalDuration+'/'+this.totalOperatingTime + '/'+this.totalNetOperatingTime+'/'+sessionStorage.getItem("typeTeam") );
+          this.OLE+'/'+this.finalQuantityProduced+'/'+this.totalDuration+'/'+this.totalOperatingTime + '/'+this.totalNetOperatingTime+'/'+
+          sessionStorage.getItem("typeTeam")+'/'+this.startPO+'/'+end );
 
       await this.resolveAfter1Second();
 
-      if (this.FillerCounter === 0) {
+      if (this.FillerCounter === 0  || this.FillerCounter === '' || this.FillerCounter === undefined || this.FillerCounter === null) {
         this.FillerCounter = this.nbBottlesFilled;
 
       }
-      if (this.CaperCounter === 0) {
+      if (this.CaperCounter === 0 || this.CaperCounter === '' || this.CaperCounter === undefined || this.CaperCounter === null) {
         this.CaperCounter = this.nbBottlesFilled;
       }
 
-      if (this.EtiqueteuseCounter === 0) {
+      if (this.EtiqueteuseCounter === 0  || this.EtiqueteuseCounter === '' || this.EtiqueteuseCounter === undefined || this.EtiqueteuseCounter === null) {
         this.EtiqueteuseCounter = this.nbBottlesFilled;
       }
 
-      if (this.WieghtBoxCounter === 0) {
+      if (this.WieghtBoxCounter === 0 || this.WieghtBoxCounter === '' || this.WieghtBoxCounter === undefined || this.WieghtBoxCounter === null) {
         this.WieghtBoxCounter = this.nbBottlesFilled;
+      }else {
+        this.WieghtBoxCounter = this.WieghtBoxCounter*this.netOP[0].bottlesPerCase
       }
-      if (this.QualityControlCounter === 0) {
+
+      if (this.QualityControlCounter === 0 || this.QualityControlCounter === '' || this.QualityControlCounter === undefined || this.QualityControlCounter === null) {
         this.QualityControlCounter = this.nbBottlesFilled;
+      }else {
+        this.QualityControlCounter = this.QualityControlCounter*this.netOP[0].bottlesPerCase
       }
 
 
@@ -886,8 +946,8 @@ export default {
         fillerCounter: this.FillerCounter,
         caperCounter: this.CaperCounter,
         labelerCounter: this.EtiqueteuseCounter,
-        weightBoxCounter: this.WieghtBoxCounter*this.netOP[0].bottlesPerCase,
-        qualityControlCounter : this.QualityControlCounter*this.netOP[0].bottlesPerCase,
+        weightBoxCounter: this.WieghtBoxCounter,
+        qualityControlCounter : this.QualityControlCounter,
         fillerRejection : this.FillerRejection,
         caperRejection : this.CaperRejection,
         labelerRejection : this.EtiqueteuseRejection,
@@ -961,33 +1021,40 @@ export default {
     },
 
     confirmSpeedloss: async function () {
+      var form = document.getElementById('needs-validation');
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-      var responses = document.getElementsByClassName('response');
-      var reason = '';
-      for (let i = 0; i < responses.length; i++) {
-        if (responses[i].checked) {
-          reason = responses[i].value;
+      }else{
+        var responses = document.getElementsByClassName('response');
+        var reason = '';
+        for (let i = 0; i < responses.length; i++) {
+          if (responses[i].checked) {
+            reason = responses[i].value;
+          }
+          responses[i].setAttribute('disabled', 'disabled');
         }
-        responses[i].setAttribute('disabled', 'disabled');
+
+        this.speedLossEvent.comment = document.getElementById('comments').value;
+        this.speedLossEvent.OLE = sessionStorage.getItem("pos").split(',')[this.indice];
+        this.speedLossEvent.reason = reason;
+        this.speedLossEvent.shift = sessionStorage.getItem("typeTeam");
+        this.speedLossEvent.duration = document.getElementById('sl-duration').value;
+
+        console.log(this.speedLossEvent);
+
+        if (this.speedLossEvent.reason === "") {
+          this.errorMessage2();
+        } else {
+
+          await axios.post(urlAPI+'speedLoss',  this.speedLossEvent)
+
+          window.location.reload();
+        }
+
       }
-
-      this.speedLossEvent.comment = document.getElementById('comments').value;
-      this.speedLossEvent.OLE = sessionStorage.getItem("pos").split(',')[this.indice];
-      this.speedLossEvent.reason = reason;
-      this.speedLossEvent.shift = sessionStorage.getItem("typeTeam");
-      this.speedLossEvent.duration = document.getElementById('sl-duration').value;
-
-      console.log(this.speedLossEvent);
-
-      if (this.speedLossEvent.reason === "") {
-        this.errorMessage2();
-      } else {
-
-        await axios.post(urlAPI+'speedLoss',  this.speedLossEvent)
-
-        window.location.reload();
-      }
-
 
     }
 
@@ -1019,6 +1086,8 @@ export default {
 
     var poNumber = sessionStorage.getItem("pos").split(',')[this.indice];
 
+    this.PO = sessionStorage.getItem("pos");
+
 
     await axios.get(urlAPI + 'speedLosses/' + poNumber + '/' + this.productionName + '/' + sessionStorage.getItem("typeTeam"))
         .then(response => (this.speedLoss = response.data))
@@ -1033,6 +1102,15 @@ export default {
 
     await axios.get(urlAPI + 'performance/' + this.PO)
         .then(response => (this.performanceIndexes = response.data))
+
+    //console.log("getHistoricPO/" + this.typeTeam +"/"+this.productionName)
+
+    await axios.get(urlAPI + "getHistoricPO/"+this.productionName)
+      .then(response => (this.historicPO = response.data))
+
+    console.log("Historic " +  sessionStorage.getItem("pos"));
+
+    console.log(this.historicPO);
 
 
 
@@ -1083,6 +1161,11 @@ export default {
 button {
   color: white;
   margin-top: 20px;
+}
+
+#deleteSpeedLossButton {
+  margin-top: 0;
+
 }
 
 #addReasonButton {
@@ -1171,5 +1254,8 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
+.table-info-data {
+  overflow:scroll; max-height: 300px;
+}
 
 </style>

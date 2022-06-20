@@ -119,7 +119,7 @@
   "maintenance" : "Maintenance",
   "projectImplementation" : "Project Implementation",
   "formatChanging" : "Format Changing",
-  "packNumberChanging" : "Pack Number Changing",
+  "packNumberChanging" : "Pack Number Changing / Client changing",
   "CIP" : "CIP",
   "errorInput" :  "Inputs requiered",
   "other" : "Other",
@@ -258,6 +258,16 @@
   "delete" :  "Delete",
   "action" :  "Action",
   "otherMachine" :  "Other machine",
-  "minutes": "mn"
+  "minutes": "mn",
+  "previousPOYourTeamWorkedOn" : "Previous PO your team worked on",
+  "current" : "Current",
+  "language" : "Language",
+  "date" : "Date",
+  "loginMustBeUnique" : "Login must be unique",
+  "GMIDMustBeUnique" : "GMID must be unique",
+  "worksiteMustBeUnique" : "Worksite must be unique",
+  "productionLineNameMustBeUnique" : "Productionline name must be unique",
+  "anErrorHasOccured" : "An error has occured"
+
 
 }

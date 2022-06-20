@@ -51,7 +51,7 @@
 
       <div class="form-group">
         <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="machine.productionline_name">
+        <select name="line" id="l" class="form-select" v-model="machine.productionline_name" required>
           <template v-for="line in productionlines">
             <template v-if="line.name === machine.worksite">
               <option v-bind:key="line.id" v-bind:value="line.productionline_name">

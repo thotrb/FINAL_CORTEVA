@@ -4,7 +4,7 @@
 
     <template v-if="userWorksite !== null">
 
-      <form>
+      <form id="needs-validation" novalidate>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label rcorners1" for="site">{{$t("site")}}</label>
           <div class="col-sm-10">
@@ -13,6 +13,7 @@
           </div>
         </div>
 
+        <!--
         <div class="form-group row">
           <label for="crewLeader" class="col-sm-2 rcorners1">{{$t("crewLeader")}}</label>
           <select name="crewL" id="crewLeader" class="rcorners2">
@@ -21,10 +22,11 @@
                 </option>
           </select>
         </div>
+        -->
 
         <div class="form-group row">
 
-          <label for="typeTeam" class="col-sm-2 rcorners1">{{$t("typeTeam")}}</label>
+          <label for="typeTeam" class="col-sm-2 rcorners1">{{$t("team")}}</label>
           <select name="Leader" id="typeTeam" class="rcorners2" v-model="selected">
               <option v-for="shift in shiftCrew" :key="shift.workingDebut" v-bind:value="shift.type">
                 {{shift.type}}
@@ -65,12 +67,12 @@
 
               <div class="col">
                 <input type="text" class="form-control-plaintext rcorners2 D-Code" name="D-Code/GMID"
-                       placeholder="D-Code/GMID">
+                       placeholder="D-Code/GMID" required>
               </div>
 
               <div class="col">
                 <input type="text" class="form-control-plaintext rcorners2 PO" name="PO"
-                       placeholder="PO">
+                       placeholder="PO" required>
               </div>
             </div>
 
@@ -177,168 +179,183 @@ export default {
 
     nextPage: async function () {
 
-      //this.addSessionValue("productionA", this.productionA);
-      var DCODES = document.getElementsByClassName('D-Code');
-      var dcodesTab = [];
+      var form = document.getElementById('needs-validation');
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log("PAS OK");
 
-      for (let i = 0; i < DCODES.length; i++) {
-        dcodesTab.push(''+DCODES[i].value);
-      }
+      }else{
 
-      if (sessionStorage.getItem("GMID") === null) {
-        sessionStorage.GMID = dcodesTab;
-      } else {
-        sessionStorage.setItem("GMID", dcodesTab);
-      }
+        //this.addSessionValue("productionA", this.productionA);
+        var DCODES = document.getElementsByClassName('D-Code');
+        var dcodesTab = [];
 
-      var POs = document.getElementsByClassName('PO');
-      var poTab = [];
-      var productionlinesTab = [];
-      var typeTeam = document.getElementById('typeTeam');
-      var valueTypeTeam = typeTeam.options[typeTeam.selectedIndex].value;
+        for (let i = 0; i < DCODES.length; i++) {
+          dcodesTab.push(''+DCODES[i].value);
+        }
+
+        if (sessionStorage.getItem("GMID") === null) {
+          sessionStorage.GMID = dcodesTab;
+        } else {
+          sessionStorage.setItem("GMID", dcodesTab);
+        }
+
+        var POs = document.getElementsByClassName('PO');
+        var poTab = [];
+        var productionlinesTab = [];
+        var typeTeam = document.getElementById('typeTeam');
+        var valueTypeTeam = typeTeam.options[typeTeam.selectedIndex].value;
 
 
-      for(let i=0; i<this.productionLParam.length; i++){
-        productionlinesTab.push(this.productionLParam[i].productionline_name);
-      }
+        for(let i=0; i<this.productionLParam.length; i++){
+          productionlinesTab.push(this.productionLParam[i].productionline_name);
+        }
 
-      /**
-      for (let i = 0; i < this.user[3].length; i++) {
+        /**
+         for (let i = 0; i < this.user[3].length; i++) {
         if (this.user[3][i].worksiteID === this.user[0][0].worksiteID) {
           productionlinesTab.push(this.user[3][i].productionline_name);
         }
       }*/
 
-          // eslint-disable-next-line no-unused-vars
-      var productionLineUser =null;
+            // eslint-disable-next-line no-unused-vars
+        var productionLineUser =null;
 
-      for (let i = 0; i < POs.length; i++) {
-        poTab.push(POs[i].value);
+        for (let i = 0; i < POs.length; i++) {
+          poTab.push(POs[i].value);
 
-        var number = POs[i].value;
+          var number = POs[i].value;
 
-        if(number !== "" && dcodesTab[i] !==  ""){
+          if(number !== "" && dcodesTab[i] !==  ""){
 
-          //Teste le PO à partir du number
-          await axios.get(urlAPI + 'PO/' +number+'/'+valueTypeTeam)
-              .then(response => (this.POCheck = response.data))
-
-
-          console.log(this.POCheck);
-
-          if (this.POCheck === 0) {
-            let element = {
-              number: number,
-              GMIDCode: dcodesTab[i],
-              productionline_name: productionlinesTab[i],
-            };
-
-            productionLineUser = productionlinesTab[i];
+            //Teste le PO à partir du number
+            await axios.get(urlAPI + 'PO/' +number+'/'+valueTypeTeam)
+                .then(response => (this.POCheck = response.data))
 
 
+            console.log(this.POCheck);
 
-            console.log(element);
+            if (this.POCheck === 0) {
+              let element = {
+                number: number,
+                GMIDCode: dcodesTab[i],
+                productionline_name: productionlinesTab[i],
+              };
+
+              productionLineUser = productionlinesTab[i];
 
 
 
-            axios.put(urlAPI + 'PO/insertPO/PO', {
-              number: number,
-              GMIDCode: dcodesTab[i],
-
-              productionline_name: this.userWorksite.productionline,
-              shift: valueTypeTeam
-            })
-                .then(response => (this.effective = response))
+              console.log(element);
 
 
-            console.log('Effectif : ' + this.effective);
 
+              axios.put(urlAPI + 'PO/insertPO/PO', {
+                number: number,
+                GMIDCode: dcodesTab[i],
+
+                productionline_name: this.userWorksite.productionline,
+                shift: valueTypeTeam
+              })
+                  .then(response => (this.effective = response))
+
+
+              console.log('Effectif : ' + this.effective);
+
+
+            }
 
           }
-
         }
+
+
+
+        if (sessionStorage.getItem("pos") === null) {
+          sessionStorage.pos = poTab;
+        } else {
+          sessionStorage.setItem("pos", poTab);
+        }
+
+        if (sessionStorage.getItem("worksite") === null) {
+          sessionStorage.worksite = this.userWorksite.worksite_name;
+        } else {
+          sessionStorage.setItem("worksite",  this.userWorksite.worksite_name);
+        }
+
+        if (sessionStorage.getItem("worksiteUserID") === null) {
+          sessionStorage.worksiteUserID = this.userWorksite.id;
+        } else {
+          sessionStorage.setItem("worksiteUserID", this.userWorksite.id);
+        }
+
+
+
+        var nbProd = document.getElementsByClassName('production').length;
+
+
+        if (sessionStorage.getItem("nbProductionlines") === null) {
+          sessionStorage.nbProductionlines = nbProd;
+        } else {
+          sessionStorage.setItem("nbProductionlines", nbProd);
+        }
+
+
+        if (sessionStorage.getItem("prodlines") === null) {
+          sessionStorage.prodlines = productionlinesTab;
+        } else {
+          sessionStorage.setItem("prodlines", productionlinesTab);
+        }
+
+
+
+
+        /**
+        var selectCrewLeader = document.getElementById('crewLeader');
+        var valueCrewLeader = selectCrewLeader.options[selectCrewLeader.selectedIndex].value;
+
+
+        if (sessionStorage.getItem("crewLeader") === null) {
+          sessionStorage.crewLeader = valueCrewLeader;
+        } else {
+          sessionStorage.setItem("crewLeader", valueCrewLeader);
+        }
+
+         **/
+
+
+        if (sessionStorage.getItem("typeTeam") === null) {
+          sessionStorage.typeTeam = valueTypeTeam;
+        } else {
+          sessionStorage.setItem("typeTeam", valueTypeTeam);
+        }
+
+
+        if (sessionStorage.getItem("workingEnd") === null) {
+          sessionStorage.workingEnd = document.getElementById('workingEnd').value;
+        } else {
+          sessionStorage.setItem("workingEnd", document.getElementById('workingEnd').value);
+        }
+
+        if (sessionStorage.getItem("workingDebut") === null) {
+          sessionStorage.workingDebut = document.getElementById('workingDebut').value;
+        } else {
+          sessionStorage.setItem("workingDebut", document.getElementById('workingDebut').value);
+        }
+
+        if (sessionStorage.getItem("site") === null) {
+          sessionStorage.site = document.getElementById('site').value;
+        } else {
+          sessionStorage.setItem("site", document.getElementById('site').value);
+        }
+
+        router.replace('/homePage')
+
+
+
+
+
       }
-
-
-
-      if (sessionStorage.getItem("pos") === null) {
-        sessionStorage.pos = poTab;
-      } else {
-        sessionStorage.setItem("pos", poTab);
-      }
-
-      if (sessionStorage.getItem("worksite") === null) {
-        sessionStorage.worksite = this.userWorksite.worksite_name;
-      } else {
-        sessionStorage.setItem("worksite",  this.userWorksite.worksite_name);
-      }
-
-      if (sessionStorage.getItem("worksiteUserID") === null) {
-        sessionStorage.worksiteUserID = this.userWorksite.id;
-      } else {
-        sessionStorage.setItem("worksiteUserID", this.userWorksite.id);
-      }
-
-
-
-      var nbProd = document.getElementsByClassName('production').length;
-
-
-      if (sessionStorage.getItem("nbProductionlines") === null) {
-        sessionStorage.nbProductionlines = nbProd;
-      } else {
-        sessionStorage.setItem("nbProductionlines", nbProd);
-      }
-
-
-      if (sessionStorage.getItem("prodlines") === null) {
-        sessionStorage.prodlines = productionlinesTab;
-      } else {
-        sessionStorage.setItem("prodlines", productionlinesTab);
-      }
-
-
-
-
-      var selectCrewLeader = document.getElementById('crewLeader');
-      var valueCrewLeader = selectCrewLeader.options[selectCrewLeader.selectedIndex].value;
-
-
-      if (sessionStorage.getItem("crewLeader") === null) {
-        sessionStorage.crewLeader = valueCrewLeader;
-      } else {
-        sessionStorage.setItem("crewLeader", valueCrewLeader);
-      }
-
-
-      if (sessionStorage.getItem("typeTeam") === null) {
-        sessionStorage.typeTeam = valueTypeTeam;
-      } else {
-        sessionStorage.setItem("typeTeam", valueTypeTeam);
-      }
-
-
-      if (sessionStorage.getItem("workingEnd") === null) {
-        sessionStorage.workingEnd = document.getElementById('workingEnd').value;
-      } else {
-        sessionStorage.setItem("workingEnd", document.getElementById('workingEnd').value);
-      }
-
-      if (sessionStorage.getItem("workingDebut") === null) {
-        sessionStorage.workingDebut = document.getElementById('workingDebut').value;
-      } else {
-        sessionStorage.setItem("workingDebut", document.getElementById('workingDebut').value);
-      }
-
-      if (sessionStorage.getItem("site") === null) {
-        sessionStorage.site = document.getElementById('site').value;
-      } else {
-        sessionStorage.setItem("site", document.getElementById('site').value);
-      }
-
-      router.replace('/homePage')
-
-
 
 
 

@@ -13,12 +13,26 @@
       <input type="file" id="csv" name="profile_pic"
              accept=".csv">
       <p id="fileDisplayArea"></p>
-      <button type="button" class="btn btn-primary" v-on:click="readFile()">{{ $t('load') }}</button>
+      <button type="button" class="btn btn-primary" v-on:click="readFile(function(login) {errorRequest = 1; loginProbleme = login;})">{{ $t('load') }}</button>
 
     </div>
 
     <br/>
     <br/>
+
+
+
+    <template v-if="errorRequest!==0">
+      <div align="center" class="col productionName rcorners3">
+        {{$t("anErrorHasOccured")}} <br>
+        {{$t("loginMustBeUnique")}} : {{loginProbleme}}
+      </div>
+
+      <br/>
+      <br/>
+    </template>
+
+
 
     <form id="needs-validation" novalidate>
       <div class="form-group">
@@ -43,8 +57,14 @@
       </div>
 
       <div class="form-group">
+        <label for="inp">{{$t('language')}} </label>
+        <input type="text" class="form-control" id="in" v-model="user.language"   required>
+      </div>
+
+
+      <div class="form-group">
         <label for="d">{{$t("status")}}</label>
-        <select name="line" id="d" class="form-select" v-model="user.status">
+        <select name="line" id="d" class="form-select" v-model="user.status" required>
           <option value="0">{{ $t('operator') }}</option>
           <option value="1">{{ $t('supervisor') }}</option>
           <option value="2">{{ $t('administrator') }}</option>
@@ -54,7 +74,7 @@
 
       <div class="form-group">
         <label for="w">{{$t("worksite")}}</label>
-        <select name="m" id="w" class="form-select" v-model="user.worksite_name">
+        <select name="m" id="w" class="form-select" v-model="user.worksite_name" required>
           <option  v-for="w in worksites" :key="w.id" v-bind:value="w.name">
             {{w.name}}
           </option>
@@ -63,7 +83,7 @@
 
       <div class="form-group">
         <label for="l">{{$t("productionLine")}}</label>
-        <select name="line" id="l" class="form-select" v-model="user.productionline">
+        <select name="line" id="l" class="form-select" v-model="user.productionline" required>
           <template v-for="line in productionlines">
             <template v-if="line.name === user.worksite_name">
               <option v-bind:key="line.id" v-bind:value="line.productionline_name">
@@ -93,6 +113,7 @@
           <th scope="col">{{ $t('status') }}</th>
           <th scope="col">{{ $t('worksite') }}</th>
           <th scope="col">{{ $t('productionLine') }}</th>
+          <th scope="col">{{ $t('language') }}</th>
           <th scope="col">{{ $t('action') }}</th>
 
 
@@ -107,6 +128,7 @@
               <td>{{d.status}}</td>
               <td>{{d.worksite_name}}</td>
               <td>{{d.productionline}}</td>
+              <td>{{d.language}}</td>
               <td><button type="button" class="btn btn-danger" @click="deleteItem(d.id)">{{$t('delete')}}</button></td>
 
             </tr>
@@ -137,6 +159,9 @@ export default {
       userWorksite : null,
       effective : null,
       users : [],
+      errorRequest : 0,
+      loginProbleme : '',
+      i : 1,
       user: {
         login : null,
         password : null,
@@ -145,8 +170,11 @@ export default {
         firstname : null ,
         status : null,
         productionline : null,
+        language : null,
 
       },
+
+
     }
   },
   methods : {
@@ -164,20 +192,21 @@ export default {
       location.reload();
     },
 
-    readFile : function () {
+
+
+    readFile :  function (callback) {
       var textType = /.csv/;
       var doc = document.getElementById("csv").files[0];
 
       if (doc.type.match(textType)) {
 
-        //console.log(doc);
         var reader = new FileReader();
         reader.readAsText(doc);
-        reader.onload = async function (e) {
+         reader.onload = async function (e) {
           var rows = e.target.result.split('\n');
           var rowsSplited = null;
 
-          var i;
+          this.i = 1;
           var user2 = {
             login: null,
             password: null,
@@ -186,12 +215,17 @@ export default {
             firstname: null,
             status: null,
             productionline: null,
+            language: null,
 
           };
-          var effective;
-          for (i = 1; i < rows.length - 1; i++) {
-            rowsSplited = rows[i].split('\r')[0].split(',');
-            if (rowsSplited.length === 7) {
+
+          this.errorRequest = 0;
+
+          while (this.i < rows.length - 1 && this.errorRequest === 0) {
+            console.log("je passe là");
+
+            rowsSplited = rows[this.i].split('\r')[0].split(',');
+            if (rowsSplited.length === 8) {
               user2.login = rowsSplited[0];
               user2.password = rowsSplited[1];
               user2.worksite_name = rowsSplited[2];
@@ -199,17 +233,34 @@ export default {
               user2.firstname = rowsSplited[4];
               user2.status = rowsSplited[5];
               user2.productionline = rowsSplited[6];
+              user2.language = rowsSplited[7];
               console.log(user2);
 
               await axios.put(urlAPI + 'insertUser', user2)
-                  .then(response => (effective = response))
-              console.log(effective)
+                  .then(response => {
+                    this.effective = response;
+                    console.log(response)
+                    if (response.status === 500) {
+                      console.log("Je passe");
+                    } else {
+                      this.effective = response;
+                    }
+                  })
+                  .catch(error => {
+                    console.log("catch error");
+                    console.log(error);
+                    this.errorRequest = 1;
+                    this.loginProbleme = user2.login;
+                    callback(user2.login);
+                  })
             }
+            this.i++;
           }
-          location.reload();
-
-        }
-      }else{
+          if(this.errorRequest === 0){
+            location.reload();
+          }
+         }
+      } else {
         var fileDisplayArea = document.getElementById('fileDisplayArea');
         fileDisplayArea.innerText = this.$t('fileNotSupported');
 
@@ -230,12 +281,17 @@ export default {
         console.log(this.user);
 
 
+
         await axios.put(urlAPI + 'insertUser', this.user)
-            .then(response => (this.effective = response))
-
-        console.log('Effectif : ' + this.effective);
-        location.reload();
-
+            .then(response => {this.effective = response; console.log(response)
+              if(response.status === 500){
+                console.log("Je passe");
+              }else {
+                this.effective = response;
+                location.reload();
+              }
+            })
+            .catch(error => {console.log("je passe"); console.log(error); this.errorRequest=1;this.loginProbleme = this.user.login})
       }
 
 
@@ -277,4 +333,12 @@ export default {
   padding: 20px;
 }
 
+.rcorners3 {
+  margin-top : 20px;
+  border-radius: 25px;
+  border: 4px solid red;
+  padding: 20px;
+  color : red;
+  font-weight: bold;
+}
 </style>
