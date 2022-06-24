@@ -33,6 +33,8 @@
   "POStartTime" : "PO start time",
   "POEndTime" : "PO end time",
   "finalQuantityProduced(Cases)" :  "Final quantity produced (number of cases)",
+  "numberOfBottlesProduced" : "Number of bottles produced",
+  "numberOfCasesProduced" : "Number of cases produced",
   "performance" : "Performance",
   "totalPOProductionTime" : "Total PO Production Time",
   "totalPOOperatingTime" : "Total PO Operating Time",

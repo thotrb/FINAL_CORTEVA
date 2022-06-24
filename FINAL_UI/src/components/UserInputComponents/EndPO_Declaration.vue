@@ -271,6 +271,12 @@
           {{$t("quality")}}
         </div>
 
+        <div align="left" style="margin-left: 50px">
+          {{$t("numberOfBottlesProduced")}} : {{nbBottlesFilled}}<br/>
+          {{$t("numberOfCasesProduced")}} : {{finalQuantityProduced}}
+
+        </div>
+
 
         <table class="table table-hover" align="center">
           <thead>
@@ -401,6 +407,7 @@
       <h5>{{$t("quality")}}</h5>
 
       <br/>
+
 
 
       <table class="table table-hover" align="center">

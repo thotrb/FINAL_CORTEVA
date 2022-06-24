@@ -249,7 +249,7 @@ export default {
             i++;
           }
           if(this.errorRequest === 0){
-            location.reload();
+            //location.reload();
           }
         }
       }else{

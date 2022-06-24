@@ -33,6 +33,8 @@
   "POStartTime" : "Heure de début de PO",
   "POEndTime" : "Heure de fin de PO",
   "finalQuantityProduced(Cases)" :  "Quantité finale produite (nombre de caisses)",
+  "numberOfBottlesProduced" : "Nombre de bouteilles produites",
+  "numberOfCasesProduced" : "Nombre de caisses produites",
   "performance" : "Performance",
   "totalPOProductionTime" : "Temps de production total du PO",
   "totalPOOperatingTime" : "Temps operationnel total du PO",
