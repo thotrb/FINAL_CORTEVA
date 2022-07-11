@@ -311,6 +311,8 @@ export default {
                 this.chartObjects[shtdCat].data.datasets[0].data.push(shutdownEvent.totalDowntime);
                 this.chartObjects[shtdCat].data.datasets[1].data.push(shutdownEvent.frequency);
               }
+              this.chartObjects[shtdCat].data.datasets[0].data.sort((a, b) => b - a);
+              this.chartObjects[shtdCat].data.datasets[1].data.sort((a, b) => b - a);
               this.chartObjects[shtdCat].update();
             }
           });
