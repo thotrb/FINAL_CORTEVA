@@ -215,8 +215,9 @@ namespace CortevaApp.Controllers
         [HttpPut("PO/insertPO/PO")]
         public JsonResult CreatePO(PO po)
         {
-            string QueryNewPO = @"insert into dbo.ole_pos (number, GMIDCode, productionline_name, shift)
-                                  values (@Number, @GMIDCode, @ProductionLine, @Shift)";
+            string QueryNewPO = @"insert into dbo.ole_pos (number, GMIDCode, productionline_name, shift, created_at)
+                                  values (@Number, @GMIDCode, @ProductionLine, @Shift, @datePO)";
+
 
 
             DataTable NewPO = new DataTable();
@@ -232,6 +233,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@GMIDCode", po.GMIDCode);
                     command.Parameters.AddWithValue("@ProductionLine", po.productionline_name);
                     command.Parameters.AddWithValue("@Shift", po.shift);
+                    command.Parameters.AddWithValue("@datePO", po.created_at);
 
                     reader = command.ExecuteReader();
                     NewPO.Load(reader);

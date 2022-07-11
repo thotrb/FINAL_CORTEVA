@@ -28,17 +28,27 @@
 
           <label for="typeTeam" class="col-sm-2 rcorners1">{{$t("team")}}</label>
           <select name="Leader" id="typeTeam" class="rcorners2" v-model="selected">
-              <option v-for="shift in shiftCrew" :key="shift.workingDebut" v-bind:value="shift.type">
+              <option v-for="shift in shiftCrew" :key="shift.shift" v-bind:value="shift.type">
                 {{shift.type}}
               </option>
           </select>
+        </div>
+
+        <div class="form-group row">
+
+          <label for="typeTeam" class="col-sm-2 rcorners1">{{$t("date")}}</label>
+          <div class="col-sm-10">
+            <input type="date" id="date"
+                   class="form-control-plaintext rcorners2"
+                   v-model="datePO" required>
+          </div>
         </div>
 
 
         <div class="form-group row">
           <label for="workingDebut" class="col-sm-2 rcorners1">{{$t("startTime")}}</label>
           <template  v-for="shift in shiftCrew" >
-            <div class="col-sm-10" v-bind:key="shift.workingDebut">
+            <div class="col-sm-10" v-bind:key="shift.type">
                 <input v-if="shift.type===selected" type="text" id="workingDebut" readonly
                        class="form-control-plaintext rcorners2"
                        v-bind:value="shift.workingDebut">
@@ -49,13 +59,13 @@
 
         <div class="form-group row">
           <label for="workingEnd" class="col-sm-2 rcorners1">{{$t("endTime")}}</label>
-          <template  v-for="shift in shiftCrew" >
-            <div class="col-sm-10" v-bind:key="shift.workingDebut">
-                <input v-if="shift.type===selected" type="text" id="workingEnd" readonly
+            <div class="col-sm-10" v-for="shift in shiftCrew"  v-bind:key="shift.type">
+              <template v-if="shift.type===selected">
+                <input type="text" id="workingEnd" readonly
                        class="form-control-plaintext rcorners2"
                        v-bind:value="shift.workingEnd">
+              </template>
             </div>
-          </template>
         </div>
 
             <div v-for="productionLine in productionLParam" :key="productionLine.productionline_name" class="row production">
@@ -123,6 +133,10 @@ export default {
       effective: null,
       user: null,
       data: null,
+      currentYear : new Date().getFullYear(),
+      currentMonth : new Date().getMonth(),
+      currentDay : new Date().getDay(),
+      datePO: new Date().toISOString().substr(0, 10),
 
     };
   },
@@ -248,15 +262,16 @@ export default {
 
 
               console.log(element);
+              console.log(this.datePO);
 
 
 
               axios.put(urlAPI + 'PO/insertPO/PO', {
                 number: number,
                 GMIDCode: dcodesTab[i],
-
                 productionline_name: this.userWorksite.productionline,
-                shift: valueTypeTeam
+                shift: valueTypeTeam,
+                created_at : this.datePO
               })
                   .then(response => (this.effective = response))
 
