@@ -89,13 +89,11 @@ namespace CortevaApp.Controllers
         [HttpGet("previousBulk/{productionline}/{ponumber}/{currentGMID}")]
         public JsonResult getPreviousBulk(string site, string productionLine, string ponumber, string currentGMID)
         {
-            string queryPreviousBulk = @"select top 1 prod.""bulk""
+            string queryPreviousBulk = @"select distinct prod.""bulk""
                                         from dbo.ole_pos pos, dbo.ole_products prod
                                         where pos.GMIDCode = prod.GMID
                                         and pos.productionline_name = @productionLine
-                                        and pos.created_at < (select top 1 p2.created_at from dbo.ole_pos p2 where p2.number = @ponumber)
-                                        and prod.""bulk"" != (select top 1 prod2.""bulk"" from dbo.ole_products prod2 where prod2.GMID = @currentGMID)
-                                        order by pos.created_at desc";
+                                        order by prod.""bulk""";
 
             DataTable pos = new DataTable();
 

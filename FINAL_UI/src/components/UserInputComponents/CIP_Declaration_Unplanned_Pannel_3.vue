@@ -12,7 +12,14 @@
       <div class="form-group row">
         <label class="col-sm-2 col-form-label rcorners1" for="previousBulk">{{$t("previousBulk")}}</label>
         <div class="col-sm-10">
-          <input type="text" id="previousBulk" class="form-control-plaintext rcorners2" v-model="CIP_Event.previous_bulk" readonly>
+          <select id="previousBulk" v-model="CIP_Event.selected_bulk">
+          <option disabled selected value>-- {{ $t("select") }} --</option>
+          <template v-for="bulk of bulks">
+            <option v-bind:key="bulk" v-bind:value="bulk">
+              {{ bulk }}
+            </option>
+          </template>
+        </select>
         </div>
       </div>
 
@@ -80,6 +87,7 @@ export default {
       parameters: [],
       printedStep: 0,
       title: 'CIP',
+      bulks: [],
 
       CIP_Event: {
 
@@ -181,8 +189,8 @@ export default {
     let currentGMID = sessionStorage.getItem("GMID");
     let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber + "/" + currentGMID;
     axios.get(APIAddress).then(response => {
-      if (response.data[0] && response.data[0].bulk) {
-        this.CIP_Event.previous_bulk = response.data[0].bulk;
+      if (response.data[0]) {
+        this.bulks = response.data[0].map(b => b.bulk);
       }
     });
   },
