@@ -121,6 +121,17 @@ export default {
 
       this.CIP_Event.OLE = sessionStorage.getItem("poNumber");
       this.CIP_Event.shift = sessionStorage.getItem("typeTeam");
+  
+      let selectedDate = new Date(this.CIP_Event.created_at);
+      let now = new Date();
+      selectedDate.setHours(now.getHours(), now.getMinutes(), 0, 0);
+      let day = selectedDate.getDate();
+      let month = selectedDate.getMonth() + 1;
+      let year = selectedDate.getFullYear();
+      let hour = selectedDate.getHours();
+      let minute = selectedDate.getMinutes();
+      let dateFinale = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':00.000';
+      this.CIP_Event.created_at = dateFinale;
 
       console.log(this.CIP_Event);
       
