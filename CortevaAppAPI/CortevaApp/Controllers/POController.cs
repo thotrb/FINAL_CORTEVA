@@ -105,8 +105,6 @@ namespace CortevaApp.Controllers
                 using (SqlCommand command = new SqlCommand(queryPreviousBulk, connection))
                 {
                     command.Parameters.AddWithValue("@productionLine", productionLine);
-                    command.Parameters.AddWithValue("@ponumber", ponumber);
-                    command.Parameters.AddWithValue("@currentGMID", currentGMID);
                     reader = command.ExecuteReader();
                     pos.Load(reader);
                     reader.Close();
