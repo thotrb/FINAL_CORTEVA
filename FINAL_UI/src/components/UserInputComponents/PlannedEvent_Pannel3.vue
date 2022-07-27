@@ -122,6 +122,7 @@ export default {
         duration: 10,
         comment: '',
         shift: '',
+        created_at : sessionStorage.getItem("dateInput"),
       },
 
 

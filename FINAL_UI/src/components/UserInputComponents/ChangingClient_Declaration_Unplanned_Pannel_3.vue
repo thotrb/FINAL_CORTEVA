@@ -95,6 +95,8 @@ data() {
       comment :'',
 
       shift : '',
+
+      created_at : sessionStorage.getItem("dateInput"),
     },
 
 
@@ -110,6 +112,8 @@ methods: {
     this.ChangingClient_Event.comment = document.getElementById('comments').value;
     this.ChangingClient_Event.OLE = sessionStorage.getItem("poNumber");
     this.ChangingClient_Event.shift = sessionStorage.getItem("typeTeam");
+
+
     if (this.ChangingClient_Event.total_duration > 0) {
 
       await axios.post(urlAPI + "unplannedEvent/clientChanging", this.ChangingClient_Event);
