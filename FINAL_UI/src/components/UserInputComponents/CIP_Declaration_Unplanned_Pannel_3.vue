@@ -103,6 +103,9 @@ export default {
 
         shift : '',
 
+        created_at : sessionStorage.getItem("dateInput"),
+
+
         //commentaire
         comment :'',
         finished: true,

@@ -79,6 +79,8 @@ export default {
         comment: '',
         OLE:  '',
         shift : '',
+        created_at : sessionStorage.getItem("dateInput"),
+
 
       },
 

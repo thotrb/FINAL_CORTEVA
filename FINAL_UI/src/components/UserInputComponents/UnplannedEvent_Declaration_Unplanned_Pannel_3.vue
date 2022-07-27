@@ -185,6 +185,9 @@ export default {
         shift : '',
 
         issueOtherMachine : '',
+
+        created_at : sessionStorage.getItem("dateInput"),
+
       },
 
 

@@ -215,6 +215,12 @@ export default {
           sessionStorage.setItem("GMID", dcodesTab);
         }
 
+         if (sessionStorage.getItem("dateInput") === null) {
+          sessionStorage.dateInput = this.datePO;
+        } else {
+          sessionStorage.setItem("dateInput",  this.datePO);
+        }
+
         var POs = document.getElementsByClassName('PO');
         var poTab = [];
         var productionlinesTab = [];

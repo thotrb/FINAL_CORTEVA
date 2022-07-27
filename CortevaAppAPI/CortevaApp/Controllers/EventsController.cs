@@ -1144,8 +1144,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveUnplannedEventChangingFormat(UnplannedEventChangingFormat ue)
         {
             string QuerySaveUECF = @"insert into dbo.ole_unplanned_event_changing_formats
-                                   (OLE, productionline, predicted_duration, total_duration, comment, shift)
-                                   values (@OLE, @PL, @PD, @TD, @C, @shift)";
+                                   (created_at, OLE, productionline, predicted_duration, total_duration, comment, shift)
+                                   values (@created_at, @OLE, @PL, @PD, @TD, @C, @shift)";
 
 
             DataTable SaveUECF = new DataTable();
@@ -1157,6 +1157,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySaveUECF, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", ue.created_at);
                     command.Parameters.AddWithValue("@OLE", ue.OLE);
                     command.Parameters.AddWithValue("@PL", ue.productionline);
                     command.Parameters.AddWithValue("@PD", ue.predicted_duration);
@@ -1180,8 +1181,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveUnplannedEventChangingClient(UnplannedEventChangingClient ue)
         {
             string QuerySaveUECC = @"insert into dbo.ole_unplanned_event_changing_clients
-                                   (OLE, productionline, predicted_duration, total_duration, comment, lot_number, shift)
-                                   values (@OLE, @PL, @PD, @TD, @C, @LN, @shift)";
+                                   (created_at, OLE, productionline, predicted_duration, total_duration, comment, lot_number, shift)
+                                   values (@created_at, @OLE, @PL, @PD, @TD, @C, @LN, @shift)";
 
 
             DataTable SaveUECC = new DataTable();
@@ -1193,6 +1194,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySaveUECC, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", ue.created_at);
                     command.Parameters.AddWithValue("@OLE", ue.OLE);
                     command.Parameters.AddWithValue("@PL", ue.productionline);
                     command.Parameters.AddWithValue("@PD", ue.predicted_duration);
@@ -1216,8 +1218,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveUnplannedEventCIP(UnplannedEventCIP ue)
         {
             string QuerySaveUECIP = @"insert into dbo.ole_unplanned_event_cips
-                                   (OLE, productionline, predicted_duration, total_duration, comment, previous_bulk, shift, finished)
-                                   values (@OLE, @PL, @PD, @TD, @C, @PB, @shift, @finished)";
+                                   (created_at, OLE, productionline, predicted_duration, total_duration, comment, previous_bulk, shift, finished)
+                                   values (@created_at, @OLE, @PL, @PD, @TD, @C, @PB, @shift, @finished)";
 
 
             DataTable SaveUECIP = new DataTable();
@@ -1229,6 +1231,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySaveUECIP, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", ue.created_at);
                     command.Parameters.AddWithValue("@OLE", ue.OLE);
                     command.Parameters.AddWithValue("@PL", ue.productionline);
                     command.Parameters.AddWithValue("@PD", ue.predicted_duration);
@@ -1253,8 +1256,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveUnplannedEventUnplannedDowntime(UnplannedEventUnplannedDowntime ue)
         {
             string QuerySaveUEUD = @"insert into dbo.ole_unplanned_event_unplanned_downtimes
-                                   (OLE, productionline, implicated_machine, total_duration, comment, component, shift)
-                                   values (@OLE, @PL, @IM, @TD, @COMM, @COMP, @shift)";
+                                   (created_at, OLE, productionline, implicated_machine, total_duration, comment, component, shift)
+                                   values (@created_at, @OLE, @PL, @IM, @TD, @COMM, @COMP, @shift)";
 
 
             DataTable SaveUEUD = new DataTable();
@@ -1266,6 +1269,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySaveUEUD, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", ue.created_at);
                     command.Parameters.AddWithValue("@OLE", ue.OLE);
                     command.Parameters.AddWithValue("@PL", ue.productionline);
                     command.Parameters.AddWithValue("@COMP", ue.component);
@@ -1289,8 +1293,8 @@ namespace CortevaApp.Controllers
         public JsonResult SavePlannedEvent(PlannedEvent pe)
         {
             string QuerySavePE = @"insert into dbo.ole_planned_events
-                                   (OLE, productionline, reason, duration, comment, shift)
-                                   values (@OLE, @PL, @R, @D, @COMM, @shift)";
+                                   (created_at, OLE, productionline, reason, duration, comment, shift)
+                                   values (@created_at, @OLE, @PL, @R, @D, @COMM, @shift)";
 
 
             DataTable SavePE = new DataTable();
@@ -1302,6 +1306,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySavePE, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", pe.created_at);
                     command.Parameters.AddWithValue("@OLE", pe.OLE);
                     command.Parameters.AddWithValue("@PL", pe.productionline);
                     command.Parameters.AddWithValue("@R", pe.reason);
