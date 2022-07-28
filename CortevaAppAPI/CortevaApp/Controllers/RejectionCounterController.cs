@@ -39,11 +39,11 @@ namespace CortevaApp.Controllers
                                                           qualityControlRejection = @QualityControlRejection
                                                     where PO = @Po and shift = @shift
                                                 ELSE
-                                                  insert into dbo.ole_rejection_counters (po, fillerCounter, caperCounter,
+                                                  insert into dbo.ole_rejection_counters (created_at, po, fillerCounter, caperCounter,
                                                       labelerCounter, weightBoxCounter, qualityControlCounter,
                                                       fillerRejection, caperRejection, labelerRejection, weightBoxRejection,
                                                       qualityControlRejection, shift)
-                                                      values (@Po, @FillerCounter, @CaperCounter, @LabelerCounter, @WeightBoxCounter,
+                                                      values (@created_at, @Po, @FillerCounter, @CaperCounter, @LabelerCounter, @WeightBoxCounter,
                                                       @QualityControlCounter, @FillerRejection, @CaperRejection, @LabelerRejection,
                                                       @WeightBoxRejection, @QualityControlRejection, @shift)";
 
@@ -69,6 +69,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@WeightBoxRejection", rc.weightBoxRejection);
                     command.Parameters.AddWithValue("@QualityControlRejection", rc.qualityControlRejection);
                     command.Parameters.AddWithValue("@shift", rc.shift);
+                    command.Parameters.AddWithValue("@created_at", rc.created_at);
 
                     reader = command.ExecuteReader();
                     NewStoreRejection.Load(reader);

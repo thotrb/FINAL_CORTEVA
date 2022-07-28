@@ -242,8 +242,8 @@ namespace CortevaApp.Controllers
         }
 
 
-        [HttpPost("stopPO/{PO}/{availability}/{performance}/{quality}/{OLE}/{quantityProduced}/{totalDuration}/{totalOperatingTime}/{totalNetOperatingTime}/{shift}/{startPO}/{endPO}")]
-        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOperatingTime, int totalNetOperatingTime, string shift, string startPO, string endPO)
+        [HttpPost("stopPO/{PO}/{availability}/{performance}/{quality}/{OLE}/{quantityProduced}/{totalDuration}/{totalOperatingTime}/{totalNetOperatingTime}/{shift}/{startPO}/{endPO}/{datePO}")]
+        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOperatingTime, int totalNetOperatingTime, string shift, string startPO, string endPO, string datePO)
         {
             string QueryStopPO = @"update dbo.ole_pos
                                    set state = 0,
@@ -256,7 +256,8 @@ namespace CortevaApp.Controllers
                                    totalOperatingTime = @totalOT,
                                    totalNetOperatingTime = @totalNetOT,
                                    startTime = @startPO, 
-                                   endTime = @endPO
+                                   endTime = @endPO,
+                                   created_at = @datePO
                                    where number = @PO and shift=@shift";
 
 
@@ -281,6 +282,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@shift", shift);
                     command.Parameters.AddWithValue("@startPO", startPO);
                     command.Parameters.AddWithValue("@endPO", endPO);
+                    command.Parameters.AddWithValue("@datePO", datePO);
 
                     reader = command.ExecuteReader();
                     StopPO.Load(reader);

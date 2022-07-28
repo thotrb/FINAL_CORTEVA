@@ -12,14 +12,15 @@
       <div class="form-group row">
         <label class="col-sm-2 col-form-label rcorners1" for="previousBulk">{{$t("previousBulk")}}</label>
         <div class="col-sm-10">
-          <select id="previousBulk" v-model="CIP_Event.previous_bulk">
-          <option disabled selected value>-- {{ $t("select") }} --</option>
+          <input id="previousBulk" v-model="CIP_Event.previous_bulk" class="form-control-plaintext rcorners2" list="prevb">
+          <datalist id="prevb">
           <template v-for="bulk of bulks">
             <option v-bind:key="bulk" v-bind:value="bulk">
               {{ bulk }}
             </option>
           </template>
-        </select>
+          </datalist>
+    
         </div>
       </div>
 
