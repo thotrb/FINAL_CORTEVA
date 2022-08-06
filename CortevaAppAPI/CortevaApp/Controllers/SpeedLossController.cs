@@ -167,8 +167,8 @@ namespace CortevaApp.Controllers
         public JsonResult SaveSpeedLoss(SpeedLoss sl)
         {
             string QuerySaveSL = @"insert into dbo.ole_speed_losses
-                                   (OLE, productionline, duration, reason, comment, shift)
-                                   values (@OLE, @PL, @D, @R, @COMM, @shift)";
+                                   (created_at, OLE, productionline, duration, reason, comment, shift)
+                                   values (@created_at, @OLE, @PL, @D, @R, @COMM, @shift)";
 
 
             DataTable SaveSL = new DataTable();
@@ -180,6 +180,7 @@ namespace CortevaApp.Controllers
                 connection.Open();
                 using (SqlCommand command = new SqlCommand(QuerySaveSL, connection))
                 {
+                    command.Parameters.AddWithValue("@created_at", sl.created_at);
                     command.Parameters.AddWithValue("@OLE", sl.OLE);
                     command.Parameters.AddWithValue("@PL", sl.productionline);
                     command.Parameters.AddWithValue("@R", sl.reason);

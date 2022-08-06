@@ -565,6 +565,8 @@ export default {
         comment: '',
 
         shift : '',
+
+        created_at: '',
       },
 
 
@@ -1051,6 +1053,7 @@ export default {
         this.speedLossEvent.reason = reason;
         this.speedLossEvent.shift = sessionStorage.getItem("typeTeam");
         this.speedLossEvent.duration = document.getElementById('sl-duration').value;
+        this.speedLossEvent.created_at = sessionStorage.getItem('dateInput');
 
         console.log(this.speedLossEvent);
 
@@ -1059,6 +1062,7 @@ export default {
         } else {
 
           await axios.post(urlAPI+'speedLoss',  this.speedLossEvent)
+        
 
           window.location.reload();
         }
