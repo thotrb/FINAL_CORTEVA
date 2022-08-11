@@ -970,3 +970,4 @@ C:\Users\zgo158\Desktop\Corteva_App\FINAL_CORTEVA\CortevaAppAPI\CortevaApp\obj\D
 C:\Users\zgo158\Desktop\Corteva_App\FINAL_CORTEVA\CortevaAppAPI\CortevaApp\obj\Debug\netcoreapp3.1\CortevaApp.dll
 C:\Users\zgo158\Desktop\Corteva_App\FINAL_CORTEVA\CortevaAppAPI\CortevaApp\obj\Debug\netcoreapp3.1\CortevaApp.pdb
 C:\Users\zgo158\Desktop\Corteva_App\FINAL_CORTEVA\CortevaAppAPI\CortevaApp\obj\Debug\netcoreapp3.1\CortevaApp.genruntimeconfig.cache
+C:\Users\zgo158\Desktop\Corteva_App\FINAL_CORTEVA\CortevaAppAPI\CortevaApp\obj\Debug\netcoreapp3.1\CortevaApp.csproj.AssemblyReference.cache
