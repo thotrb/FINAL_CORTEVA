@@ -12,7 +12,13 @@
       <div class="form-group row">
         <label class="col-sm-2 col-form-label rcorners1" for="previousBulk">{{$t("previousBulk")}}</label>
         <div class="col-sm-10">
-          <input type="text" id="previousBulk" class="form-control-plaintext rcorners2" v-model="CIP_Event.previous_bulk" readonly>
+          <select id="previousBulk" v-model="CIP_Event.previous_bulk" class="form-control-plaintext rcorners2" list="prevb">
+          <template v-for="bulk of bulks">
+            <option v-bind:key="bulk" v-bind:value="bulk">
+              {{ bulk }}
+            </option>
+          </template>
+          </select>
         </div>
       </div>
 
@@ -80,6 +86,7 @@ export default {
       parameters: [],
       printedStep: 0,
       title: 'CIP',
+      bulks: [],
 
       CIP_Event: {
 
@@ -113,6 +120,17 @@ export default {
 
       this.CIP_Event.OLE = sessionStorage.getItem("poNumber");
       this.CIP_Event.shift = sessionStorage.getItem("typeTeam");
+  
+      let selectedDate = new Date(this.CIP_Event.created_at);
+      let now = new Date();
+      selectedDate.setHours(now.getHours(), now.getMinutes(), 0, 0);
+      let day = selectedDate.getDate();
+      let month = selectedDate.getMonth() + 1;
+      let year = selectedDate.getFullYear();
+      let hour = selectedDate.getHours();
+      let minute = selectedDate.getMinutes();
+      let dateFinale = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':00.000';
+      this.CIP_Event.created_at = dateFinale;
 
       console.log(this.CIP_Event);
       
@@ -184,8 +202,10 @@ export default {
     let currentGMID = sessionStorage.getItem("GMID");
     let APIAddress = urlAPI + "previousBulk/" + productionLine + "/" + PONumber + "/" + currentGMID;
     axios.get(APIAddress).then(response => {
-      if (response.data[0] && response.data[0].bulk) {
-        this.CIP_Event.previous_bulk = response.data[0].bulk;
+
+      if (response.data) {
+      
+        this.bulks = response.data.map(b => b.bulk);
       }
     });
   },

@@ -89,13 +89,11 @@ namespace CortevaApp.Controllers
         [HttpGet("previousBulk/{productionline}/{ponumber}/{currentGMID}")]
         public JsonResult getPreviousBulk(string site, string productionLine, string ponumber, string currentGMID)
         {
-            string queryPreviousBulk = @"select top 1 prod.""bulk""
+            string queryPreviousBulk = @"select distinct prod.""bulk""
                                         from dbo.ole_pos pos, dbo.ole_products prod
                                         where pos.GMIDCode = prod.GMID
                                         and pos.productionline_name = @productionLine
-                                        and pos.created_at < (select top 1 p2.created_at from dbo.ole_pos p2 where p2.number = @ponumber)
-                                        and prod.""bulk"" != (select top 1 prod2.""bulk"" from dbo.ole_products prod2 where prod2.GMID = @currentGMID)
-                                        order by pos.created_at desc";
+                                        order by prod.""bulk""";
 
             DataTable pos = new DataTable();
 
@@ -107,8 +105,6 @@ namespace CortevaApp.Controllers
                 using (SqlCommand command = new SqlCommand(queryPreviousBulk, connection))
                 {
                     command.Parameters.AddWithValue("@productionLine", productionLine);
-                    command.Parameters.AddWithValue("@ponumber", ponumber);
-                    command.Parameters.AddWithValue("@currentGMID", currentGMID);
                     reader = command.ExecuteReader();
                     pos.Load(reader);
                     reader.Close();
@@ -246,8 +242,8 @@ namespace CortevaApp.Controllers
         }
 
 
-        [HttpPost("stopPO/{PO}/{availability}/{performance}/{quality}/{OLE}/{quantityProduced}/{totalDuration}/{totalOperatingTime}/{totalNetOperatingTime}/{shift}/{startPO}/{endPO}")]
-        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOperatingTime, int totalNetOperatingTime, string shift, string startPO, string endPO)
+        [HttpPost("stopPO/{PO}/{availability}/{performance}/{quality}/{OLE}/{quantityProduced}/{totalDuration}/{totalOperatingTime}/{totalNetOperatingTime}/{shift}/{startPO}/{endPO}/{datePO}")]
+        public JsonResult StopPO(string po, double availability, double performance, double quality, double OLE, int quantityProduced, int totalDuration, int totalOperatingTime, int totalNetOperatingTime, string shift, string startPO, string endPO, string datePO)
         {
             string QueryStopPO = @"update dbo.ole_pos
                                    set state = 0,
@@ -260,7 +256,8 @@ namespace CortevaApp.Controllers
                                    totalOperatingTime = @totalOT,
                                    totalNetOperatingTime = @totalNetOT,
                                    startTime = @startPO, 
-                                   endTime = @endPO
+                                   endTime = @endPO,
+                                   created_at = @datePO
                                    where number = @PO and shift=@shift";
 
 
@@ -285,6 +282,7 @@ namespace CortevaApp.Controllers
                     command.Parameters.AddWithValue("@shift", shift);
                     command.Parameters.AddWithValue("@startPO", startPO);
                     command.Parameters.AddWithValue("@endPO", endPO);
+                    command.Parameters.AddWithValue("@datePO", datePO);
 
                     reader = command.ExecuteReader();
                     StopPO.Load(reader);

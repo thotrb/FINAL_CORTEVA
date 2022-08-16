@@ -271,7 +271,16 @@ export default {
       this.unplannedEvent.total_duration = document.getElementById('time').value;
       this.unplannedEvent.comment = document.getElementById('comments').value;
       this.unplannedEvent.shift = sessionStorage.getItem("typeTeam");
-
+      let selectedDate = new Date(this.unplannedEvent.created_at);
+      let now = new Date();
+      selectedDate.setHours(now.getHours(), now.getMinutes(), 0, 0);
+      let day = selectedDate.getDate();
+      let month = selectedDate.getMonth() + 1;
+      let year = selectedDate.getFullYear();
+      let hour = selectedDate.getHours();
+      let minute = selectedDate.getMinutes();
+      let dateFinale = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':00.000';
+      this.unplannedEvent.created_at = dateFinale;
 
       if (this.unplannedEvent.total_duration >= 0) {
         await axios.post(urlAPI + "unplannedEvent/unplannedDowntime", this.unplannedEvent);

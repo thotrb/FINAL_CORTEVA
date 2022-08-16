@@ -565,6 +565,8 @@ export default {
         comment: '',
 
         shift : '',
+
+        created_at: '',
       },
 
 
@@ -915,11 +917,12 @@ export default {
 
       console.log("END : " + end);
 
+      let selectedDate = sessionStorage.getItem("dateInput");
 
 
       await axios.post(urlAPI+'stopPO/'+this.endPO+'/'+this.availability+'/'+this.performance+'/'+this.quality+'/'+
           this.OLE+'/'+this.finalQuantityProduced+'/'+this.totalDuration+'/'+this.totalOperatingTime + '/'+this.totalNetOperatingTime+'/'+
-          sessionStorage.getItem("typeTeam")+'/'+this.startPO+'/'+end );
+          sessionStorage.getItem("typeTeam")+'/'+this.startPO+'/'+end+"/"+selectedDate );
 
       await this.resolveAfter1Second();
 
@@ -960,7 +963,8 @@ export default {
         labelerRejection : this.EtiqueteuseRejection,
         weightBoxRejection : this.WieghtBoxRejection*this.netOP[0].bottlesPerCase,
         qualityControlRejection : this.QualityControlRejection*this.netOP[0].bottlesPerCase,
-        shift : this.typeTeam
+        shift : this.typeTeam,
+        created_at: selectedDate
       });
 
       await this.resolveAfter1Second();
@@ -1049,6 +1053,7 @@ export default {
         this.speedLossEvent.reason = reason;
         this.speedLossEvent.shift = sessionStorage.getItem("typeTeam");
         this.speedLossEvent.duration = document.getElementById('sl-duration').value;
+        this.speedLossEvent.created_at = sessionStorage.getItem('dateInput');
 
         console.log(this.speedLossEvent);
 
@@ -1057,6 +1062,7 @@ export default {
         } else {
 
           await axios.post(urlAPI+'speedLoss',  this.speedLossEvent)
+        
 
           window.location.reload();
         }

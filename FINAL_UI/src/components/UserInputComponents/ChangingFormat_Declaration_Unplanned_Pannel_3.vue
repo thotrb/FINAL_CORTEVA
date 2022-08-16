@@ -97,6 +97,17 @@ export default {
       this.ChangingFormat_Event.comment = document.getElementById('comments').value;
       this.ChangingFormat_Event.OLE = sessionStorage.getItem("poNumber");
       this.ChangingFormat_Event.shift = sessionStorage.getItem("typeTeam");
+      let selectedDate = new Date(this.ChangingFormat_Event.created_at);
+      let now = new Date();
+      selectedDate.setHours(now.getHours(), now.getMinutes(), 0, 0);
+      let day = selectedDate.getDate();
+      let month = selectedDate.getMonth() + 1;
+      let year = selectedDate.getFullYear();
+      let hour = selectedDate.getHours();
+      let minute = selectedDate.getMinutes();
+      let dateFinale = year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':00.000';
+      this.ChangingFormat_Event.created_at = dateFinale;
+
       console.log(this.ChangingFormat_Event);
       if (this.ChangingFormat_Event.total_duration >= 0) {
         await axios.post(urlAPI + "unplannedEvent/changingFormat", this.ChangingFormat_Event);
