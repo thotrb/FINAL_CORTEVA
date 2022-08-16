@@ -335,6 +335,7 @@ namespace CortevaApp.Controllers
             string querySeqCips = @"select *
                                     from dbo.ole_unplanned_event_cips cip, dbo.ole_pos pos, dbo.ole_products prod
                                     where cip.productionline = @productionLine
+                                    and pos.productionline_name = @productionLine
                                     and year(cip.created_at) >= @startYear
                                     and year(cip.created_at) <= @endYear
                                     and pos.number = cip.OLE
@@ -344,6 +345,7 @@ namespace CortevaApp.Controllers
             string querySeqCovs = @"select *
                                     from dbo.ole_unplanned_event_changing_formats cov, dbo.ole_pos pos, dbo.ole_products prod
                                     where cov.productionline = @productionLine
+                                    and pos.productionline_name = @productionLine
                                     and year(cov.created_at) >= @startYear
                                     and year(cov.created_at) <= @endYear
                                     and pos.number = cov.OLE
@@ -531,6 +533,7 @@ namespace CortevaApp.Controllers
             string querySeqCips = @"select *
                                     from dbo.ole_unplanned_event_cips cip, dbo.ole_pos pos, dbo.ole_products prod
                                     where cip.productionline = @productionLine
+                                    and pos.productionline_name = @productionLine
                                     and cip.created_at >= @startDate
                                     and cip.created_at <= @endDate
                                     and pos.number = cip.OLE
@@ -540,6 +543,7 @@ namespace CortevaApp.Controllers
             string querySeqCovs = @"select *
                                     from dbo.ole_unplanned_event_changing_formats cov, dbo.ole_pos pos, dbo.ole_products prod
                                     where cov.productionline = @productionLine
+                                    and pos.productionline_name = @productionLine
                                     and cov.created_at >= @startDate
                                     and cov.created_at <= @endDate
                                     and pos.number = cov.OLE
