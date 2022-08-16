@@ -66,21 +66,21 @@
             <tbody>
             <template v-for="machine of Object.values(shutdowns.machines)">
               <tr class="t-row" :key="machine.id">
-                <td scope="col">{{$t(machine.machine)}}</td>
+                <td scope="col" style="display: flex;">{{$t(machine.machine)}}</td>
                 <td scope="col" class="center-text">{{machine.totalDowntime}}</td>
                 <td scope="col" class="center-text">{{machine.frequency}}</td>
                 <td scope="col"></td>
               </tr>
               <template v-for="cause of Object.values(machine.causes)">
                 <tr class="subrow" :key="cause.id">
-                  <td scope="col">&emsp;{{$t(cause.cause)}}</td>
+                  <td scope="col" style="display: flex;">&emsp;{{$t(cause.cause)}}</td>
                   <td scope="col" class="center-text">{{cause.totalDowntime}}</td>
                   <td scope="col" class="center-text">{{cause.frequency}}</td>
                   <td scope="col" class="center-text">{{cause.avgDuration}}</td>
                 </tr>
                 <template v-for="comment of Object.values(cause.comments)">
                   <tr class="sub-subrow" :key="comment.id">
-                    <td scope="col">&emsp;&emsp;{{comment.comment}}</td>
+                    <td scope="col" style="display: flex;">&emsp;&emsp;{{comment.comment}}</td>
                     <td scope="col" class="center-text">{{comment.totalDowntime}}</td>
                     <td scope="col" class="center-text">{{comment.frequency}}</td>
                     <td scope="col" class="center-text">{{comment.avgDuration}}</td>
@@ -290,8 +290,30 @@ export default {
               return acc;
             }, {});
 
-            this.shutdowns.machines = machinesShutdownsRanged;
-            this.shutdowns.external = externalShutdownsRanged;
+
+            let machinesShutdownsSorted = Object.keys(machinesShutdownsRanged).reduce((acc, cur) => {
+              acc.push([cur, machinesShutdownsRanged[cur]]);
+              return acc;
+            }, [])
+              .sort((a, b) => b[1].totalDowntime - a[1].totalDowntime)
+              .reduce((acc, cur) => {
+                acc[cur[0]] = cur[1];
+                return acc;
+              }, {});
+            
+            let externalShutdownsSorted = Object.keys(externalShutdownsRanged).reduce((acc, cur) => {
+              acc.push([cur, externalShutdownsRanged[cur]]);
+              return acc;
+            }, [])
+              .sort((a, b) => b[1].totalDowntime - a[1].totalDowntime)
+              .reduce((acc, cur) => {
+                acc[cur[0]] = cur[1];
+                return acc;
+              }, {});
+
+
+            this.shutdowns.machines = machinesShutdownsSorted;
+            this.shutdowns.external = externalShutdownsSorted;
             this.percentages.machines = 100 * totalMachineDowntime / (totalMachineDowntime + totalExternalDowntime);
             this.percentages.machines = (this.percentages.machines ? this.percentages.machines.toFixed(2) : "--");
             this.percentages.external = 100 * totalExternalDowntime / (totalMachineDowntime + totalExternalDowntime);
@@ -311,8 +333,6 @@ export default {
                 this.chartObjects[shtdCat].data.datasets[0].data.push(shutdownEvent.totalDowntime);
                 this.chartObjects[shtdCat].data.datasets[1].data.push(shutdownEvent.frequency);
               }
-              this.chartObjects[shtdCat].data.datasets[0].data.sort((a, b) => b - a);
-              this.chartObjects[shtdCat].data.datasets[1].data.sort((a, b) => b - a);
               this.chartObjects[shtdCat].update();
             }
           });
