@@ -811,7 +811,8 @@ export default {
       //var numerateur = n / this.summIdealRate;
       console.log("BIGTEST");
       console.log(n);
-      this.performance = n / this.operatingTime;
+      console.log(this.operatingTime);
+      this.performance = n / this.sommeWorkingTime;
 
       //=====
       //sumQty = (2400*4 + 1600*12)
