@@ -35,7 +35,8 @@ namespace CortevaApp.Controllers
 
             string queryFormats = @"select *
                                     from dbo.ole_formats f, dbo.ole_productionline pl
-                                    where pl.id = @productionlineId and pl.worksite_name = @worksite";
+                                    where pl.id = @productionlineId and pl.worksite_name = @worksite
+                                    and pl.productionline_name = f.productionlineName";
 
             DataTable machines = new DataTable();
             DataTable formats = new DataTable();

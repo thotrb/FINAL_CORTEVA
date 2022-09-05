@@ -1259,9 +1259,10 @@ namespace CortevaApp.Controllers
         [HttpPost("unplannedEvent/unplannedDowntime")]
         public JsonResult SaveUnplannedEventUnplannedDowntime(UnplannedEventUnplannedDowntime ue)
         {
+
             string QuerySaveUEUD = @"insert into dbo.ole_unplanned_event_unplanned_downtimes
-                                   (created_at, OLE, productionline, implicated_machine, total_duration, comment, component, shift)
-                                   values (@created_at, @OLE, @PL, @IM, @TD, @COMM, @COMP, @shift)";
+                                   (created_at, updated_at, OLE, productionline, implicated_machine, total_duration, comment, component, shift)
+                                   values (@created_at, @created_at, @OLE, @PL, @IM, @TD, @COMM, @COMP, @shift)";
 
 
             DataTable SaveUEUD = new DataTable();
