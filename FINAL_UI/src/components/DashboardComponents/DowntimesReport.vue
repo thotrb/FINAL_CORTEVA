@@ -679,6 +679,7 @@ export default {
           POArray.push(PO.number);
         }
 
+
         this.netOperatingTime += (this.allEvents['SITE'][i].qtyProduced * this.allEvents['SITE'][i].bottlesPerCase * 1) / this.allEvents['SITE'][i].idealRate * 1;
 
       }
@@ -812,7 +813,7 @@ export default {
       console.log("BIGTEST");
       console.log(n);
       console.log(this.operatingTime);
-      this.performance = n / this.sommeWorkingTime;
+      this.performance = n / this.operatingTime;
 
       //=====
       //sumQty = (2400*4 + 1600*12)

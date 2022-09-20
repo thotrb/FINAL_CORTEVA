@@ -730,7 +730,12 @@ export default {
         this.totalProductionTime -= (this.totalPlannedDowtimes);
         this.totalOperatingTime = this.totalProductionTime - this.totalUnplannedDowtimes;
 
-        this.availability = (this.totalOperatingTime / this.totalProductionTime).toFixed(3);
+        if (this.totalOperatingTime === 0 || this.totalProductionTime === 0) {
+          this.availability = 0;
+        } else {
+          this.availability = (this.totalOperatingTime / this.totalProductionTime).toFixed(3);
+
+        }
         if(this.availability > 1){
           this.availability = 1;
         }
@@ -742,7 +747,11 @@ export default {
 
         this.totalNetOperatingTime = this.totalOperatingTime - this.totalSpeedLosses;
 
-        this.differenceToJustify = (this.totalOperatingTime * this.netOP[0].idealRate - this.finalQuantityProduced * this.netOP[0].bottlesPerCase) / this.netOP[0].idealRate
+        if (this.totalOperatingTime === 0) {
+          this.differenceToJustify = 0;
+        } else {
+          this.differenceToJustify = (this.totalOperatingTime * this.netOP[0].idealRate - this.finalQuantityProduced * this.netOP[0].bottlesPerCase) / this.netOP[0].idealRate
+        }
 
         console.log('OH DIFF : ' + this.differenceToJustify);
         console.log('OP time' + this.totalOperatingTime);
