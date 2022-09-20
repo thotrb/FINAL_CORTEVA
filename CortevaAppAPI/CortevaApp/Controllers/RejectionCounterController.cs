@@ -36,8 +36,8 @@ namespace CortevaApp.Controllers
                                                           weightBoxCounter = @WeightBoxCounter, qualityControlCounter = @QualityControlCounter,
                                                           fillerRejection = @FillerRejection, caperRejection = @CaperRejection, 
                                                           labelerRejection = @LabelerRejection, weightBoxRejection = @WeightBoxRejection,
-                                                          qualityControlRejection = @QualityControlRejection
-                                                    where PO = @Po and shift = @shift
+                                                          qualityControlRejection = @QualityControlRejection, created_at = @created_at
+                                                          where PO = @Po and shift = @shift
                                                 ELSE
                                                   insert into dbo.ole_rejection_counters (created_at, po, fillerCounter, caperCounter,
                                                       labelerCounter, weightBoxCounter, qualityControlCounter,
