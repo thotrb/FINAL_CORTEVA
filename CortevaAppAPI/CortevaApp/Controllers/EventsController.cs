@@ -808,30 +808,24 @@ namespace CortevaApp.Controllers
                                        and bnc.created_at <= @endDate";
 
                     string QueryUEE = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                       from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
-                                        where mc.name = ud.component 
-                                        and mc.productionLine = ud.productionline
-                                        and ud.implicated_machine = 'other' 
+                                       from ole_unplanned_event_unplanned_downtimes ud
+                                        where ud.implicated_machine = 'other'
                                         and ud.productionline = @productionlineName 
                                         and ud.created_at >= @startDate
                                         and ud.created_at <= @endDate
                                        ";
 
                     string QueryUSM = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                        from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
-                                        where mc.name = ud.component 
-                                        and mc.productionLine = ud.productionline
-                                        and ud.implicated_machine != 'other' 
+                                        from ole_unplanned_event_unplanned_downtimes ud
+                                        where ud.implicated_machine != 'other'
                                         and ud.implicated_machine != 'filler' 
                                         and ud.productionline = @productionlineName 
                                         and ud.created_at >= @startDate
                                         and ud.created_at <= @endDate";
 
                     string QueryFUS = @"select isnull(sum(ud.total_duration),0) as Duration, count(*) as nbEvents
-                                       from machine_component mc, ole_unplanned_event_unplanned_downtimes ud
-                                        where mc.name = ud.component 
-                                         and mc.productionLine = ud.productionline
-                                        and ud.implicated_machine = 'filler' 
+                                       from ole_unplanned_event_unplanned_downtimes ud
+                                        where ud.implicated_machine = 'filler'
                                         and ud.productionline = @productionlineName 
                                         and ud.created_at >= @startDate
                                         and ud.created_at <= @endDate";

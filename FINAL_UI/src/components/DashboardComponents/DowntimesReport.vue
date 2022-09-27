@@ -883,10 +883,6 @@ export default {
         this.unplannedDowntimes = 1;
       }
 
-      if (this.plannedProductionTime === 0) {
-        this.plannedDowntimes = 1;
-      }
-
       this.OLE = this.availability * this.performance * this.quality;
 
       console.log('Planned Downtime : ' + sommePlannedEvents);
