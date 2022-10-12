@@ -474,25 +474,29 @@ export default {
                     let eventDurationInHours = event.total_duration / 60;
                     let eventDurationLabelCoef = Math.floor(event.total_duration / 10);
                     let durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
-
-                    //Search for overlapping CIP
-                    if (type == 'cip' && !event.finished) {
-                      let olCIP = await axios.get(urlAPI + "getOverlappedCIP/" + event.productionline + "/" + event.created_at.split('T')[0] + "/" + event.OLE);
-                      olCIP = olCIP.data;
-                      if (olCIP.length > 0) {
-                        this.downtimes[type][month].totalDuration += (olCIP[0].total_duration/60);
-                        eventDurationInHours += (olCIP[0].total_duration/60);
-                        eventDurationLabelCoef += Math.floor(olCIP[0].total_duration/10);
-                        durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
-                        CIPsToSkip.push(olCIP[0].id);
-                      }             
-                    }
-                    //Skip CIP if it is overlapping
-                    if (type == 'cip' && CIPsToSkip.includes(event.id)) continue;
-                    
                     const monthCreated = this.getMonth(event.created_at);
                     const month = this.months[monthCreated - 1];
 
+                    //Search for overlapping CIP
+                    if (type === 'cip' && !event.finished) {
+                      let olCIP = await axios.get(urlAPI + "getOverlappedCIP/" + event.productionline + "/" + event.created_at.split('T')[0] + "/" + event.OLE);
+                      olCIP = olCIP.data;
+                      if (olCIP.length > 0) {
+                        eventDurationInHours += (olCIP[0].total_duration/60);
+                        eventDurationLabelCoef += Math.floor(olCIP[0].total_duration/10);
+                        durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
+                        console.log("OlCIP", olCIP);
+                        CIPsToSkip.push(olCIP[0].id);
+                      }             
+                    }
+
+                    //Skip CIP if it is overlapping
+                    if (type === 'cip' && CIPsToSkip.includes(event.id)) continue;
+
+                    console.log("Event duration in hours: " + eventDurationInHours);
+                    console.log("Type", type);
+                    console.log("Month", month);
+                  
                     if (!Object.keys(labels[type]).includes(durationIntervalChartLabel)){
                       labels[type][durationIntervalChartLabel] = 1;
                     } else {
@@ -504,6 +508,7 @@ export default {
                     totalDuration[type] += eventDurationInHours;
                     totalNb[type]++;
                   }
+
                   totalDowntimeDuration += totalDuration[type];
                   //Nb.: Or (||) operator returns last velue when both are falsy
                   this.downtimes[type].general.yearlyDuration = totalDuration[type].toFixed(2);

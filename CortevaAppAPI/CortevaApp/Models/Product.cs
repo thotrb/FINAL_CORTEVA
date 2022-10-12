@@ -13,7 +13,7 @@ namespace CortevaApp.Models
         public string description { get; set; }
         public string formulationType { get; set; }
         public float size { get; set; }
-        public int idealRate { get; set; }
+        public float idealRate { get; set; }
 
         public int bottlesPerCase { get; set; }
     }
