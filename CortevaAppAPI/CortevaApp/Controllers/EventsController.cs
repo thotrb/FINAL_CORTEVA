@@ -60,7 +60,7 @@ namespace CortevaApp.Controllers
             int beginningMonth = Int16.Parse(_date[1]);
             int beginningDay = Int16.Parse(_date[2]);
             DateTime cipDateMax = new DateTime(beginningYear, beginningMonth, beginningDay);
-            cipDateMax = cipDateMax.AddDays(1);
+            cipDateMax = cipDateMax.AddDays(4);
             string dateString = cipDateMax.ToString("yyyy-MM-dd");
 
             string QueryOverlappingCIP = @"select * 
