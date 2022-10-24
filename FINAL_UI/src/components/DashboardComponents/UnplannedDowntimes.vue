@@ -480,12 +480,12 @@ export default {
                     //Search for overlapping CIP
                     if (type === 'cip' && !event.finished) {
                       let olCIP = await axios.get(urlAPI + "getOverlappedCIP/" + event.productionline + "/" + event.created_at.split('T')[0] + "/" + event.OLE);
+                      console.log(`Overlapping CIP for ${event.id} : ${olCIP.id}`)
                       olCIP = olCIP.data;
                       if (olCIP.length > 0) {
                         eventDurationInHours += (olCIP[0].total_duration/60);
                         eventDurationLabelCoef += Math.floor(olCIP[0].total_duration/10);
                         durationIntervalChartLabel = `${10 * eventDurationLabelCoef}-${10 * eventDurationLabelCoef + 9} min`;
-                        console.log("OlCIP", olCIP);
                         CIPsToSkip.push(olCIP[0].id);
                       }             
                     }
