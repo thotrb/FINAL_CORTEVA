@@ -712,7 +712,7 @@ export default {
 
         this.totalProductionTime = time1 + time2;
 
-        this.totalDuration = time2 - time1;
+        this.totalDuration = time2 + time1;
 
 
       }
@@ -918,7 +918,7 @@ export default {
       this.endPO = sessionStorage.getItem("pos").split(',')[this.indice];
 
 
-      console.log("TIME : " + this.totalDuration);
+      console.log("Total duration : " + this.totalDuration);
       console.log("TIME : " + this.totalOperatingTime);
       console.log("TIME : " + this.totalNetOperatingTime);
 
